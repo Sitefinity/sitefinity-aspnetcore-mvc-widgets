@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Progress.Sitefinity.AspNetCore.Widgets", "Progress.Sitefinity.AspNetCore.Widgets\Progress.Sitefinity.AspNetCore.Widgets.csproj", "{60A2698D-EB75-4E48-86B2-F2E687E0C9CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Progress.Sitefinity.AspNetCore.FormWidgets", "Progress.Sitefinity.AspNetCore.FormWidgets\Progress.Sitefinity.AspNetCore.FormWidgets.csproj", "{D8D2A64D-59E8-4CFF-A771-65B081BB0D3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60A2698D-EB75-4E48-86B2-F2E687E0C9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A2698D-EB75-4E48-86B2-F2E687E0C9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A2698D-EB75-4E48-86B2-F2E687E0C9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A2698D-EB75-4E48-86B2-F2E687E0C9CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D2A64D-59E8-4CFF-A771-65B081BB0D3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D2A64D-59E8-4CFF-A771-65B081BB0D3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D2A64D-59E8-4CFF-A771-65B081BB0D3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D2A64D-59E8-4CFF-A771-65B081BB0D3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5F997321-9DF5-4C03-96E1-131CE98E48CD}
+	EndGlobalSection
+EndGlobal

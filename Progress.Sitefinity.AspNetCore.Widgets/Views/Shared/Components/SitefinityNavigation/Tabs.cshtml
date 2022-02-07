@@ -1,0 +1,65 @@
+﻿@using Progress.Sitefinity.AspNetCore.TagHelpers;
+@using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
+
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation.NavigationViewModel
+
+<div class="@Model.WrapperCssClass">
+    <nav @Html.BuildAttributes(Model.Attributes)>
+
+        @{
+            RenderRootLevelNode(@Model.Nodes);
+            RenderSubLevelsRecursive(@Model.Nodes);
+        }
+    </nav>
+</div>
+
+@*Here is specified the rendering for the root level*@
+@{ void RenderRootLevelNode(IList<PageViewModel> nodes)
+    {
+        <ul class="nav nav-tabs">
+            @foreach (var node in nodes)
+            {
+                <li class="nav-item">
+                    <a class="nav-link @GetClass(node)" href="@node.Url" target="@node.LinkTarget">@node.Title</a>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@*Here is specified the rendering for all child levels*@
+@{void RenderSubLevelsRecursive(IList<PageViewModel> nodes)
+    {
+        var selectedNode = nodes.SingleOrDefault(node => node.IsCurrentlyOpened || node.HasChildOpen);
+
+        if (selectedNode != null)
+        {
+            <ul class="nav">
+                @foreach (var node in selectedNode.ChildNodes)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @GetClass(node)" href="@node.Url" target="@node.LinkTarget">@node.Title</a>
+                    </li>
+
+                }
+            </ul>
+            RenderSubLevelsRecursive(selectedNode.ChildNodes);
+        }
+    }
+}
+
+@*Resolves the class that will be added for each node depending whether it is selected*@
+@{ Microsoft.AspNetCore.Html.IHtmlContent GetClass(PageViewModel node)
+    {
+        if (node.IsCurrentlyOpened)
+        {
+            return Html.HtmlSanitize("active");
+        }
+        else if (node.HasChildOpen)
+        {
+            return Html.HtmlSanitize("active");
+        }
+
+        return null;
+    }
+}

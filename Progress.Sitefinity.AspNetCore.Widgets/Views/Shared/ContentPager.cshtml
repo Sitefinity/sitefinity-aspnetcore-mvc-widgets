@@ -1,0 +1,29 @@
+﻿@model Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager.ContentPagerViewModel
+
+@if (Model.EndPageIndex > 1)
+{
+    <ul class="pagination">
+        @if (Model.IsPreviousButtonVisible)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Model.GetPagerUrl(Model.PreviousPageIndex, this.Context)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+        @for (var pageNumber = Model.StartPageIndex; pageNumber <= Model.EndPageIndex; pageNumber++)
+        {
+            <li class="page-item @(Model.CurrentPage == pageNumber ? "active" : "")">
+                <a class="page-link" href="@Model.GetPagerUrl(pageNumber, this.Context)">@pageNumber</a>
+            </li>
+        }
+        @if (Model.IsNextButtonVisible)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Model.GetPagerUrl(Model.NextPageIndex, this.Context)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+    </ul>
+}

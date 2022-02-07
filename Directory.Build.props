@@ -1,0 +1,19 @@
+<Project>
+  <!-- Project Meta Information -->
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+    <!-- StyleCop Analyzers configuration -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CodeAnalysisRuleSet>..\Progress.Sitefinity.AspNetCore.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(LintErrors)' == true">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Pack="false" Include="..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+</Project>
