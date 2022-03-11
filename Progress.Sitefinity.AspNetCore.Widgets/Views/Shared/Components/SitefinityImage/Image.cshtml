@@ -22,9 +22,11 @@
             <picture class="@pictureWrapperClass">
                 @foreach (var thumbnail in sortedList)
                 {
-                    if (thumbnail.Width != Model.Width.Value && thumbnail.Height != Model.Height.Value) 
-                    { 
-                        <source media="(max-width: @(thumbnail.Width)px)" srcset="@thumbnail.Url" type="@thumbnail.MimeType" width="@thumbnail.Width" height="@thumbnail.Height">
+                    string sourceWidthAttr = Model.Width.HasValue && thumbnail.Width != Model.Width.Value ? string.Format(@"width={0}", thumbnail.Width) : string.Empty;
+                    string sourceHeightAttr = Model.Height.HasValue && thumbnail.Height != Model.Height.Value ? string.Format(@"height={0}", thumbnail.Height) : string.Empty;
+                    if (!string.IsNullOrWhiteSpace(sourceWidthAttr) && !string.IsNullOrWhiteSpace(sourceHeightAttr))
+                    {
+                        <source media="(max-width: @(thumbnail.Width)px)" srcset="@thumbnail.Url" type="@thumbnail.MimeType" @sourceWidthAttr @sourceHeightAttr>
                     }
                 }
                 <img @Html.BuildAttributes(Model.Attributes) loading="lazy" @(Model.FitToContainer ? "class=img-fluid" : "") src="@this.Model.SelectedImageUrl" title="@Model.Title" @Html.Raw(altAttr)>

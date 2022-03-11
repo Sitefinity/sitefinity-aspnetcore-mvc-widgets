@@ -129,6 +129,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
             var redirectUrlBuilder = new UriBuilder(context?.Request.GetDisplayUrl());
             var currentRequestBuilder = new UriBuilder(context?.Request.GetDisplayUrl());
             var currentRequestQuery = HttpUtility.ParseQueryString(currentRequestBuilder.Query);
+            currentRequestQuery.Remove(ErrorQueryKey);
+            currentRequestQuery.Remove(ShowSuccessMessageQueryKey);
+
             if (isError)
             {
                 currentRequestQuery[ErrorQueryKey] = isError.ToString();

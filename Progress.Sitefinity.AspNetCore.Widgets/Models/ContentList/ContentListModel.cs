@@ -40,16 +40,19 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         }
 
         /// <inheritdoc/>
-        public virtual async Task<object> HandleListView(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, IQueryCollection query)
+        public virtual async Task<object> HandleListView(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, HttpContext httpContext)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
+            if (httpContext == null)
+                throw new ArgumentNullException(nameof(httpContext));
+
             if (urlParameters == null)
                 urlParameters = new ReadOnlyCollection<string>(Array.Empty<string>());
 
-            var pageNumber = GetPageValue(entity, urlParameters, query, out IList<string> processedUrlSegments);
-            var viewModel = await this.InitializeViewModel(entity, query, pageNumber);
+            var pageNumber = GetPageValue(entity, urlParameters, httpContext, out IList<string> processedUrlSegments);
+            var viewModel = await this.InitializeViewModel(entity, httpContext.Request.Query, pageNumber);
             var listViewModel = viewModel as ContentListViewModel;
 
             if (listViewModel != null && listViewModel.Pager != null)
@@ -61,7 +64,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             return viewModel;
         }
 
-        private static int GetPageValue(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, IQueryCollection query, out IList<string> processedUrlSegments)
+        private static int GetPageValue(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, HttpContext httpContext, out IList<string> processedUrlSegments)
         {
             string pageValue = null;
 
@@ -100,11 +103,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     }
                 }
             }
-            else if (entity.PagerMode == PagerMode.QueryParameter && query != null)
+            else if (entity.PagerMode == PagerMode.QueryParameter && httpContext != null)
             {
                 StringValues queryValue;
                 var template = string.IsNullOrEmpty(entity.PagerQueryTemplate) ? ContentPagerViewModel.PageNumberDefaultQueryTemplate : entity.PagerQueryTemplate;
-                query.TryGetValue(template, out queryValue);
+                httpContext.AddVaryByQueryParams(template);
+                httpContext.Request.Query.TryGetValue(template, out queryValue);
 
                 if (queryValue.Count > 0)
                     pageValue = queryValue;

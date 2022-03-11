@@ -66,7 +66,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             }
             else
             {
-                viewModel = await this.model.HandleListView(context.Entity, this.requestContext.Model.UrlParameters, this.HttpContext.Request.Query);
+                viewModel = await this.model.HandleListView(context.Entity, this.requestContext.Model.UrlParameters, this.HttpContext);
             }
 
             if (viewModel is ContentListViewModelBase)

@@ -30,17 +30,17 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
             if (!contentListWidgets.Any())
                 return Task.CompletedTask;
 
-            return this.PreparePager(pageModel, httpContext.Request.Query, contentListWidgets);
+            return this.PreparePager(pageModel, httpContext, contentListWidgets);
         }
 
-        private Task PreparePager(PageModel pageModel, IQueryCollection query, IList<IViewComponentContext<ContentListEntity>> components)
+        private Task PreparePager(PageModel pageModel, HttpContext httpContext, IList<IViewComponentContext<ContentListEntity>> components)
         {
             var tasks = new List<Task>();
             var allTasksResolved = true;
             var resolvedSegments = new List<string>();
             foreach (var component in components)
             {
-                var resultingTask = this.contentListModel.HandleListView(component.Entity, pageModel.UrlParameters, query).ContinueWith(
+                var resultingTask = this.contentListModel.HandleListView(component.Entity, pageModel.UrlParameters, httpContext).ContinueWith(
                     (itemsTask) =>
                     {
                         if (itemsTask.IsFaulted)

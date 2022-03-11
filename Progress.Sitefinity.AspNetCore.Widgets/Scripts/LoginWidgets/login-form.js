@@ -86,9 +86,15 @@
                 xhr.responseType = 'json';
                 xhr.onload = function () {
                     const response = xhr.response;
-                    const token = response.Value;
-                    document.querySelectorAll("input[name = 'sf_antiforgery']").forEach(i => i.value = token);
-                    resolve();
+                    if(response != null)
+                    {
+                        const token = response.Value;
+                        document.querySelectorAll("input[name = 'sf_antiforgery']").forEach(i => i.value = token);
+                        resolve();
+                    }
+                    else{
+                        resolve();
+                    }
                 };
                 xhr.onerror = function () { reject(); };
                 xhr.send();

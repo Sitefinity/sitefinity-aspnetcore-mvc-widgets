@@ -9,6 +9,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Dto;
+using Progress.Sitefinity.RestSdk.OData;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
 {
@@ -241,8 +242,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
                     if (backgroundStyle.ImageItem == null && backgroundStyle.ImageItem.Id != null)
                         return string.Empty;
 
-                    var imageId = backgroundStyle.ImageItem.Id;
-                    var image = await this.service.GetItem<ImageDto>(new GetItemArgs() { Id = imageId });
+                    var image = await this.GetItemWithFallback<ImageDto>(backgroundStyle.ImageItem.Id, backgroundStyle.ImageItem.Provider);
+
                     var imageUrl = image != null ? image.Url : null;
                     var imagePosition = (string)null;
 
@@ -274,14 +275,25 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         {
             if (backgroundStyle.BackgroundType == Background.Video && backgroundStyle.VideoItem != null && backgroundStyle.VideoItem.Id != null)
             {
-                var videoId = backgroundStyle.VideoItem.Id;
-                var video = await this.service.GetItem<VideoDto>(new GetItemArgs() { Id = videoId });
-                var videoUrl = video != null ? video.Url : null;
-
-                return videoUrl;
+                var video = await this.GetItemWithFallback<VideoDto>(backgroundStyle.VideoItem.Id, backgroundStyle.VideoItem.Provider);
+                return video.Url;
             }
 
             return null;
+        }
+
+        private Task<TDO> GetItemWithFallback<TDO>(string id, string provider)
+            where TDO : SdkItem
+        {
+            var args = new BoundFunctionArgs()
+            {
+                Id = id,
+                Name = "Default.GetItemWithFallback()",
+                AdditionalQueryParams = new Dictionary<string, string>() { { "sf_fallback_prop_names", "*" }, { "$select", "*" } },
+                Provider = provider,
+            };
+
+            return (this.service as IODataRestClient).ExecuteBoundFunction<TDO>(args);
         }
 
         private const string ColumnNamePrefix = "Column";

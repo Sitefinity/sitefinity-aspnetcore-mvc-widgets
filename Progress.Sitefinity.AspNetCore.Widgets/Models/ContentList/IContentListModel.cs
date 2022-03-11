@@ -14,8 +14,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         /// </summary>
         /// <param name="entity">The content list entity.</param>
         /// <param name="urlParameters">The url parameters.</param>
-        /// <param name="query">The query colletion.</param>
+        /// <param name="httpContext">The http context.</param>
         /// <returns>The view model of the widget.</returns>
-        Task<object> HandleListView(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, IQueryCollection query);
+        Task<object> HandleListView(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, HttpContext httpContext);
     }
 }
