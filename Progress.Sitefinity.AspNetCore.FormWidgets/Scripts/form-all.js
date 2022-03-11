@@ -168,7 +168,8 @@ function initSubmit(formContainer) {
 
                 fetch(form.getAttribute('action'), { method: "POST", body: formData }).then(function (formSubmitResponse) {
                     formSubmitResponse.json().then(function (jsonFormSubmitResponse) {
-                        if (formSubmitResponse.status === 201) {
+                        // Successfull request statuses
+                        if (formSubmitResponse.status >= 200 && formSubmitResponse.status < 300) {
                             if (jsonFormSubmitResponse.success) {
                                 if (customSubmitAction === "True") {
                                     handleResponse(redirectUrl);
@@ -179,9 +180,13 @@ function initSubmit(formContainer) {
                             else {
                                 showErrorMessage(jsonFormSubmitResponse.error);
                             }
-                        } else if (formSubmitResponse.status === 500) {
+                        }
+                        // Client and Server error request statuses
+                        else if (formSubmitResponse.status >= 400 && formSubmitResponse.status < 600) {
                             showErrorMessage(jsonFormSubmitResponse.error);
                         }
+                    }, function (error) {
+                        showErrorMessage("Form submit response was not in json format and could not be parsed");
                     });
                 }, function (error) {
                     showErrorMessage(JSON.stringify(error));
@@ -325,10 +330,6 @@ function initFileField(formContainer) {
                 inputElement.removeEventListener("invalid", handleFileValidation);
                 inputContainer.remove();
                 adjustVisibility(fileFieldInputsContainer);
-
-                var firstFile = fileFieldInputsContainer.querySelector("input[type='file']");
-                if (firstFile)
-                    handleFileValidation(firstFile);
             });
         }
 
@@ -1891,20 +1892,6 @@ function formHiddenFieldsInitialization(formContainer) {
         var hiddenFieldsInputValue = hiddenFieldsInput.value;
         if (hiddenFieldsInputValue) {
             var hiddenFields = hiddenFieldsInputValue.split(',');
-
-            // for cases when input is added in script template, ex. 'File Upload' field
-            // $(formContainer).find('script[data-sf-role$="-template"]').each(function (i, script) {
-            //     var tempDiv = $('<div>').html($(script).html());
-            //     $.each(hiddenFields, function (index, fieldName) {
-            //         var templateField = $(tempDiv).find('[name="' + fieldName + '"]');
-            //         if (templateField && templateField.length > 0) {
-            //             templateField.attr('disabled', 'disabled');
-            //             $(script).html($(tempDiv).html());
-            //             return false;
-            //         }
-            //     });
-            // });
-
             hiddenFields.forEach((hiddenField) => {
                 var scriptWrapper = formContainer.querySelector('script[data-sf-role="start_field_' + hiddenField + '"]');
                 if (scriptWrapper) {
@@ -1930,10 +1917,12 @@ function formHiddenFieldsInitialization(formContainer) {
     }
 
     var wrapper = formContainer.closest('[data-sf-role="form-visibility-wrapper"]');
-    Array.from(wrapper.children).forEach((child) => {
-        wrapper.parentElement.insertBefore(child, wrapper);
-    });
-    wrapper.remove();
+    if (wrapper) {
+        Array.from(wrapper.children).forEach((child) => {
+            wrapper.parentElement.insertBefore(child, wrapper);
+        });
+        wrapper.remove();
+    }
 }
 
 // ------------------ Form hidden fields execution - End ----------------------

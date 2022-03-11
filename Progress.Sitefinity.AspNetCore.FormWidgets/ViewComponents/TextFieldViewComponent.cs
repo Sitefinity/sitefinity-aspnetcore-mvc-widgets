@@ -39,7 +39,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
 
             var viewModel = await this.model.InitializeViewModel(context.Entity);
 
-            return this.View(viewModel);
+            return this.View(context.Entity.SfViewName, viewModel);
         }
     }
 }
