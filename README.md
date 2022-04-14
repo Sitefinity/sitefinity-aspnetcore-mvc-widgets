@@ -1,7 +1,7 @@
 Widgets for the Net Core Renderer
 =======
 
-This repository contains custom the source of the OOB widgets which are part of the [Net Core Renderer project](https://www.progress.com/documentation/sitefinity-cms/overview-renderer).
+This repository contains the source of the OOB widgets which are part of the [Net Core Renderer project](https://www.progress.com/documentation/sitefinity-cms/overview-renderer).
 
 # Related Repositories
 
