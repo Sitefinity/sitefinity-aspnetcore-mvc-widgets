@@ -24,6 +24,10 @@
     <EmbeddedResource Include="Scripts\LoginWidgets\registration.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\registration.min.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\change-password.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\search-box.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\search-box.min.js" />
+	  <EmbeddedResource Include="Scripts\SearchWidgets\search-results.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\search-results.min.js" />
     <EmbeddedResource Include="Views\Shared\Components\SitefinityContentList\ViewsMetaData.json" />
 
     <!-- Excluding file from publish -->
@@ -52,8 +56,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="14.1.7800.48306" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="14.1.7800.48306" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="14.1.7800.48306" />
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="14.2.7900.145" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="14.2.7900.145" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="14.2.7900.145" />
   </ItemGroup>
 </Project>

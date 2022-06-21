@@ -92,7 +92,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         public IDictionary<string, CustomCssModel> CustomCssClass { get; set; }
 
         /// <summary>
-        /// Gets or sets the custom CSS for the columns and for the section.
+        /// Gets or sets the custom labels for the columns and for the section.
         /// </summary>
         [Category(PropertyCategory.Advanced)]
         [ContentSection("Labels")]

@@ -124,13 +124,18 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 throw new ArgumentNullException(nameof(item));
 
             string currentUrl = null;
-            if (this.DetailItemUrl != null)
+            if (this.DetailItemUrl.IsAbsoluteUri)
             {
                 currentUrl = this.DetailItemUrl.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped);
             }
             else
             {
-                currentUrl = httpContext.Request.Path.ToString();
+                var stringifiedUrl = this.DetailItemUrl.ToString();
+                var questionMarkIndex = stringifiedUrl.IndexOf("?", StringComparison.OrdinalIgnoreCase);
+                if (questionMarkIndex != -1)
+                    currentUrl = stringifiedUrl.Substring(0, questionMarkIndex);
+                else
+                    currentUrl = stringifiedUrl;
             }
 
             var pagerTemplate = this.Pager != null && this.Pager.PagerMode == PagerMode.URLSegments ? this.Pager.PagerSegmentTemplate : null;

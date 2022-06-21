@@ -222,9 +222,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             string filterByParentExpressionSerialized = null;
 
             if (this.HideListView(entity, selectedItemsType))
-            {
                 return new ContentListViewModel();
-            }
 
             var detailItemResult = await new ContentListModelForDetail(this.restService, this.requestContext).HandleDetailItem(entity, query);
             if (detailItemResult != null)
@@ -234,6 +232,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             viewModel.RenderLinks = !(entity.ContentViewDisplayMode == ContentViewDisplayMode.Master && entity.DetailPageMode == DetailPageSelectionMode.SamePage);
             viewModel.ListFieldMapping = entity.ListFieldMapping;
             viewModel.CssClasses = entity.CssClasses;
+            viewModel.DetailItemUrl = new Uri(this.requestContext.PageNode.ViewUrl, UriKind.RelativeOrAbsolute);
 
             var showPager = false;
             var currentPage = 1;
@@ -312,7 +311,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     var pageNodes = await this.restService.GetItems<PageNodeDto>(entity.DetailPage, new GetAllArgs() { Fields = new[] { nameof(PageNodeDto.ViewUrl) } });
                     var items = pageNodes.Items;
                     if (items.Count == 1)
-                        viewModel.DetailItemUrl = new Uri(items[0].ViewUrl, UriKind.Absolute);
+                        viewModel.DetailItemUrl = new Uri(items[0].ViewUrl, UriKind.RelativeOrAbsolute);
                 }
             }
 

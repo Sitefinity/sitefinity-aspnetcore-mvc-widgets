@@ -23,5 +23,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         /// Display only limited number of items.
         /// </summary>
         Limit,
+
+        /// <summary>
+        /// Display all the items.
+        /// </summary>
+        All,
     }
 }
