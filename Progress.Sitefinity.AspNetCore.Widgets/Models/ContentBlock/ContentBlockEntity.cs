@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Attributes;
@@ -18,6 +19,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock
         /// Gets or sets the content.
         /// </summary>
         [DataType(customDataType: KnownFieldTypes.Html)]
+        [ContentContainer]
         public string Content { get; set; }
 
         /// <summary>

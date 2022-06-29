@@ -11,6 +11,8 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Registration;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Search;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Section;
 using Progress.Sitefinity.AspNetCore.Widgets.Preparations;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
@@ -38,10 +40,12 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<ISectionModel, SectionModel>();
             services.AddTransient<IButtonModel, ButtonModel>();
             services.AddTransient<IContentListModel, ContentListModel>();
+            services.AddTransient<ISearchBoxModel, SearchBoxModel>();
             services.AddTransient<IRequestPreparation, NavigationPreparation>();
             services.AddTransient<IRequestPreparation, ImagePreparation>();
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
             services.AddTransient<IFormModel, FormModel>();
+            services.AddTransient<ISearchResultsModel, SearchResultsModel>();
             services.AddSingleton<IStyleClassesProvider>(serviceProvider => new StyleGenerator(serviceProvider.GetRequiredService<IWidgetConfig>()));
         }
     }
