@@ -5,6 +5,7 @@ using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Image;
 using Progress.Sitefinity.AspNetCore.Widgets.Preparations;
 using Progress.Sitefinity.RestSdk.Dto;
+using Progress.Sitefinity.RestSdk.Exceptions;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
 {
@@ -36,8 +37,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
+            context.State.TryGetValue(ImagePreparation.PreparedData, out object value);
+
+            if (value is ErrorCodeException ex)
+            {
+                throw new ErrorCodeException(ex.Message);
+            }
+
             ImageViewModel viewModel;
-            if (context.State.TryGetValue(ImagePreparation.PreparedData, out object value) && value is ImageDto item && this.model is IImageModelWithPreparation)
+            if (value is ImageDto item && this.model is IImageModelWithPreparation)
             {
                 viewModel = await (this.model as IImageModelWithPreparation).InitializeViewModel(context.Entity, item);
             }

@@ -39,5 +39,10 @@
         /// Gets or sets the base64 encoded scroing information for Azure.
         /// </summary>
         public string ScroingInfo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value if search results should be provided for all indexed sites or only for the current site.
+        /// </summary>
+        public int ShowResultsForAllIndexedSites { get; set; }
     }
 }

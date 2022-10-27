@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Preparations;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Button;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Classification;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Form;
@@ -40,12 +42,14 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<ISectionModel, SectionModel>();
             services.AddTransient<IButtonModel, ButtonModel>();
             services.AddTransient<IContentListModel, ContentListModel>();
+            services.AddTransient<IClassificationModel, ClassificationModel>();
             services.AddTransient<ISearchBoxModel, SearchBoxModel>();
             services.AddTransient<IRequestPreparation, NavigationPreparation>();
             services.AddTransient<IRequestPreparation, ImagePreparation>();
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
             services.AddTransient<IFormModel, FormModel>();
             services.AddTransient<ISearchResultsModel, SearchResultsModel>();
+            services.AddTransient<IBreadcrumbModel, BreadcrumbModel>();
             services.AddSingleton<IStyleClassesProvider>(serviceProvider => new StyleGenerator(serviceProvider.GetRequiredService<IWidgetConfig>()));
         }
     }

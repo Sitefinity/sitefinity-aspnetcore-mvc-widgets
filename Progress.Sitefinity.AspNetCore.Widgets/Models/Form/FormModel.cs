@@ -121,7 +121,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Form
 
                 var margins = this.styles.GetMarginsClasses(entity);
                 viewModel.CssClass = (entity.CssClass + " " + margins).Trim();
-                viewModel.SubmitUrl = $"/forms/submit/{formDto.Name}?{QueryParamNames.Site}={this.requestContext.Site.Id}&{QueryParamNames.SiteTempFlag}=true";
+                viewModel.SubmitUrl = $"/forms/submit/{formDto.Name}/{this.requestContext.Culture}?{QueryParamNames.Site}={this.requestContext.Site.Id}&{QueryParamNames.SiteTempFlag}=true";
 
                 if (entity.FormSubmitAction == FormSubmitAction.Redirect)
                 {

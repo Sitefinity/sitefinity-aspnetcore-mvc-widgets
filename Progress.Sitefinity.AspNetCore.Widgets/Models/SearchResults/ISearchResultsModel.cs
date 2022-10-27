@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
 {
@@ -13,7 +13,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         /// </summary>
         /// <param name="entity">The search results entity.</param>
         /// <param name="searchParamsModel">The search params modeul.</param>
+        /// <param name="httpContext">The current http context.</param>
         /// <returns>The view model of the widget.</returns>
-        Task<SearchResultsViewModel> InitializeViewModel(SearchResultsEntity entity, SearchParamsModel searchParamsModel);
+        Task<SearchResultsViewModel> InitializeViewModel(SearchResultsEntity entity, SearchParamsModel searchParamsModel, HttpContext httpContext);
     }
 }

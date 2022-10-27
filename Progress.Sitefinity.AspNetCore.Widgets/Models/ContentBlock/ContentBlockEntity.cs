@@ -30,13 +30,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock
         public string WrapperCssClass { get; set; }
 
         /// <summary>
-        ///     Gets or sets the name of the provider.
+        /// Gets or sets the name of the provider.
         /// </summary>
         /// <value>The name of the provider.</value>
         public string ProviderName { get; set; }
 
         /// <summary>
-        ///     Gets or sets the ID of the ContentBlockItem if the Content is shared across multiple controls.
+        /// Gets or sets the ID of the ContentBlockItem if the Content is shared across multiple controls.
         /// </summary>
         public Guid SharedContentID { get; set; }
 

@@ -2,7 +2,6 @@
 @using Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
 @model Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults.SearchResultsViewModel;
 @inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
-@inject Progress.Sitefinity.AspNetCore.Web.IRequestContext requestContext;
 
 <environment include="Development">
     <script src="Scripts/SearchWidgets/search-results.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
@@ -12,19 +11,22 @@
 </environment>
 
 @{
-    var sorting = !string.IsNullOrEmpty(requestContext.GetQueryParam("orderBy")) ? requestContext.GetQueryParam("orderBy") : Model.Sorting.ToString();
+    var queryCollection = this.Context.Request.Query;
+    var orderByQuery = this.Context.Request.Query["orderBy"].ToString();
+    var sorting = !string.IsNullOrEmpty(orderByQuery) ? orderByQuery : Model.Sorting.ToString();
     var sortingSelectId = Html.GetUniqueId("sf-sort-");
-    var searchTerm = requestContext.GetQueryParam("searchQuery");
+    var searchTerm = this.Context.Request.Query["searchQuery"].ToString();
 
     @if (!string.IsNullOrEmpty(searchTerm) || renderContext.IsEdit)
-    {   
+    {
         <div class="@Model.CssClass"
              data-sf-role='search-results'
              data-sf-search-query='@searchTerm'
-             data-sf-search-catalogue='@requestContext.GetQueryParam("indexCatalogue")'
-             data-sf-words-mode='@requestContext.GetQueryParam("wordsMode")'
-             data-sf-language='@requestContext.GetQueryParam("sf_culture")'
-             data-sf-scoring-info='@requestContext.GetQueryParam("scoringInfo")'
+             data-sf-search-catalogue='@queryCollection["indexCatalogue"]'
+             data-sf-words-mode='@queryCollection["wordsMode"]'
+             data-sf-language='@queryCollection["sf_culture"]'
+             data-sf-scoring-info='@queryCollection["scoringInfo"]'
+             data-sf-results-all='@queryCollection["resultsForAllSites"]'
              data-sf-sorting='@sorting'
              @Html.BuildAttributes(Model.Attributes)>
             <div class="d-flex align-items-center justify-content-between my-3">
@@ -51,7 +53,7 @@
                         @for (int i = 0; i < count; i++)
                         {
                             var language = Model.Languages.ElementAt(i);
-                            <span><a class="text-decoration-none" data-sf-role='search-results-language' 
+                            <span><a class="text-decoration-none" data-sf-role='search-results-language'
                                 data-sf-language='@language.Name'
                                 href="#">@language.DisplayName</a>@(i + 1 < count ? ',' : null)</span>
                         }

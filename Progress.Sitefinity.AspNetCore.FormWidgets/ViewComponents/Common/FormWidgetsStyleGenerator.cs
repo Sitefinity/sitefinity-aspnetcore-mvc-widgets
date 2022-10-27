@@ -27,7 +27,12 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents.Common
             this.widgetConfiguration = widgetConfig;
         }
 
-        internal string GetFieldSizeCss(FieldSize fieldSize)
+        /// <summary>
+        /// Gets the field size css.
+        /// </summary>
+        /// <param name="fieldSize">The field size.</param>
+        /// <returns>The css.</returns>
+        public string GetFieldSizeCss(FieldSize fieldSize)
         {
             var key = $"Width{fieldSize.ToString()}";
 

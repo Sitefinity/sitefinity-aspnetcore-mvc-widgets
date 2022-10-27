@@ -132,6 +132,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         public string SortExpression { get; set; }
 
         /// <summary>
+        /// Gets or sets the select expression.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [DisplayName("Select expression")]
+        [DefaultValue("*")]
+        [Description("Custom expression for selecting the fields of the content type. By default '*' (asterisk) selects all. Use ';' (semicolon) when listing specific fields. Example: Id; Title; Thumbnail(Id, Title)")]
+        public string SelectExpression { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the canonical URL tag should be added to the page when the canonical meta tag should be added to the page.
         /// If the value is not set, the settings from SystemConfig -> ContentLocationsSettings -> DisableCanonicalURLs will be used.
         /// </summary>

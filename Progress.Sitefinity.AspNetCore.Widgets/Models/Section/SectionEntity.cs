@@ -82,6 +82,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         public IDictionary<string, SimpleBackgroundStyle> ColumnsBackground { get; set; }
 
         /// <summary>
+        /// Gets or sets the tag name.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [DisplayName("Tag name")]
+        [DefaultValue("section")]
+        public string TagName { get; set; }
+
+        /// <summary>
         /// Gets or sets the custom CSS for the columns and for the section.
         /// </summary>
         [Category(PropertyCategory.Advanced)]

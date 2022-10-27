@@ -1,17 +1,18 @@
-﻿@model Progress.Sitefinity.AspNetCore.Widgets.Models.Section.SectionViewModel;
-    <section style="@this.Model.SectionStyle" class="row @this.Model.SectionClasses" @Html.BuildAttributes(Model.Attributes, "Section")>
-        @if (this.Model.ShowVideo && this.Model.VideoUrl != null)
-        {
-            <div class="sc-video__wrapper">
-                <video class="sc-video__element" autoplay muted loop>
-                    <source src="@this.Model.VideoUrl">
-                </video>
-            </div>
+﻿@using Progress.Sitefinity.AspNetCore.Models
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.Section.SectionViewModel;
+<sf-wrapper style="@this.Model.SectionStyle" tag-name="@Model.TagName" html-attributes="@Model.SectionAttributes" class="row @this.Model.SectionClasses">
+    @if (this.Model.ShowVideo && this.Model.VideoUrl != null)
+    {
+        <div class="sc-video__wrapper">
+            <video class="sc-video__element" autoplay muted loop>
+                <source src="@this.Model.VideoUrl">
+            </video>
+        </div>
 
-        }
-        @for (var i = 0; i < this.Model.ColumnsCount; i++)
-        {
-            <div html-attributes="@this.Model.ColumnsAttributes[i]" style="@this.Model.ColumnStyles[i]" class="col-md-@this.Model.ColumnProportions[i] @this.Model.ColumnsClasses[i]" data-sfcontainer container-context="@this.Model.Context.ContainerContext(this.Model.ColumnNames[i], this.Model.ColumnTitles[i])">
-            </div>
-        }
-    </section>
+    }
+    @for (var i = 0; i < this.Model.ColumnsCount; i++)
+    {
+        <div html-attributes="@this.Model.ColumnsAttributes[i]" style="@this.Model.ColumnStyles[i]" class="col-md-@this.Model.ColumnProportions[i] @this.Model.ColumnsClasses[i]" data-sfcontainer container-context="@this.Model.Context.ContainerContext(this.Model.ColumnNames[i], this.Model.ColumnTitles[i])">
+        </div>
+    }
+</sf-wrapper>

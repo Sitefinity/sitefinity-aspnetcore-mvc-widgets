@@ -4,12 +4,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Classification;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
 using Progress.Sitefinity.Clients.LayoutService.Dto;
@@ -50,15 +52,20 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
             if (urlParameters == null)
                 urlParameters = new ReadOnlyCollection<string>(Array.Empty<string>());
-
             var pageNumber = GetPageValue(entity, urlParameters, httpContext, out IList<string> processedUrlSegments);
-            var viewModel = await this.InitializeViewModel(entity, httpContext.Request.Query, pageNumber);
+            var (classificationFilter, processedClassificationSegments) = await GetClassificationFilter(entity, urlParameters, this.restService);
+            var viewModel = await this.InitializeViewModel(entity, httpContext.Request.Query, pageNumber, classificationFilter);
             var listViewModel = viewModel as ContentListViewModel;
 
-            if (listViewModel != null && listViewModel.Pager != null)
+            if (listViewModel != null)
             {
-                listViewModel.Pager.ProcessedUrlSegments = processedUrlSegments;
-                listViewModel.Pager.IsPageNumberValid = listViewModel.Pager.IsPageValid(listViewModel.Pager.CurrentPage);
+                listViewModel.ResolvedUrlSegments = processedClassificationSegments;
+
+                if (listViewModel.Pager != null)
+                {
+                    listViewModel.Pager.ProcessedUrlSegments = processedUrlSegments;
+                    listViewModel.Pager.IsPageNumberValid = listViewModel.Pager.IsPageValid(listViewModel.Pager.CurrentPage);
+                }
             }
 
             return viewModel;
@@ -69,6 +76,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             string pageValue = null;
 
             processedUrlSegments = new List<string>();
+
             if (urlParameters == null)
                 urlParameters = new ReadOnlyCollection<string>(Array.Empty<string>());
 
@@ -119,7 +127,71 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             return pageNumber;
         }
 
-        private static void ChangeLogicalOperator(MixedContentContext mixedContentContext, LogicalOperator logicalOperator, string additionalFilter, string dynamicFilterByParent)
+        private static async Task<Tuple<CombinedFilter, IList<string>>> GetClassificationFilter(ContentListEntity entity, ReadOnlyCollection<string> urlParameters, IRestClient restService)
+        {
+            var processedUrlSegments = new List<string>();
+            if (urlParameters == null)
+                urlParameters = new ReadOnlyCollection<string>(Array.Empty<string>());
+
+            var template = ClassificationViewModel.ClassificationDefaultUlrSegment;
+            CombinedFilter filter = null;
+            var prefix = template.Split(ClassificationViewModel.ClassificationSlot)[0];
+            var pattern = "(^" + prefix + "((?:\\w|-){1,}),(.+?);?$)+";
+            var taxonomySegmentMatches = urlParameters
+                .Select(x => Regex.Match(x, pattern))
+                .Where(m => m.Success);
+
+            if (taxonomySegmentMatches.Count() == 1)
+            {
+                filter = new CombinedFilter
+                {
+                    Operator = CombinedFilter.LogicalOperators.And,
+                };
+
+                var taxonomyFilters = taxonomySegmentMatches.First().Value.Split(';');
+
+                var rootIndex = urlParameters.IndexOf(taxonomySegmentMatches.First().Groups[0].Value);
+                processedUrlSegments.Add(urlParameters.ElementAt(rootIndex));
+
+                foreach (var taxonomyFilter in taxonomyFilters)
+                {
+                    var match = Regex.Match(taxonomyFilter, pattern);
+                    var taxnomyName = match.Groups[2].Value;
+                    var taxaUrlSegments = match.Groups[3].Value;
+
+                    var taxonUrl = string.Join('/', taxaUrlSegments);
+                    var restClient = restService as RestClient;
+                    var typename = restClient.ServiceMetadata.GetSetNameFromType(entity.SelectedItems.Content[0].Type);
+                    Dictionary<string, string> additionalParams = new Dictionary<string, string>
+                    {
+                        { "@param", $"'{HttpUtility.UrlEncode(taxonUrl)}'" },
+                    };
+                    var taxonId = await restClient.ExecuteBoundFunction<ODataWrapper<Guid>>(new BoundFunctionArgs
+                    {
+                        Name = $"Default.GetTaxonByUrl(taxonomyName='{taxnomyName}',taxonUrl=@param)",
+                        Type = "taxonomies",
+                        AdditionalQueryParams = additionalParams,
+                    });
+
+                    var relatedClassificationFieldName = restClient.ServiceMetadata.GetTaxonomyFieldName(typename, taxnomyName);
+
+                    if (relatedClassificationFieldName != null)
+                    {
+                        filter.ChildFilters.Add(new FilterClause { FieldValue = taxonId.Value.ToString(), Operator = FilterClause.Operators.ContainsOr, FieldName = relatedClassificationFieldName });
+                    }
+                    else
+                    {
+                        // in case there is no such field in the selected type
+                        filter.ChildFilters = new List<object> { new FilterClause { FieldValue = Guid.Empty, FieldName = "Id", Operator = FilterClause.Operators.Equal } };
+                        break;
+                    }
+                }
+            }
+
+            return new Tuple<CombinedFilter, IList<string>>(filter, processedUrlSegments);
+        }
+
+        private static void ChangeLogicalOperator(MixedContentContext mixedContentContext, LogicalOperator logicalOperator, string additionalFilter, string dynamicFilterByParent, CombinedFilter classificationFilter)
         {
             if (mixedContentContext != null && mixedContentContext.Content != null && mixedContentContext.Content.Length > 0 && mixedContentContext.Content[0].Variations != null)
             {
@@ -127,28 +199,40 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 {
                     var variation = mixedContentContext.Content[0].Variations[i];
                     object complexFilter = null;
-                    if (variation.Filter.Key == FilterConverter.Types.Complex && !string.IsNullOrEmpty(variation.Filter.Value))
+                    object idFilter = null;
+                    object filter = null;
+
+                    if (!string.IsNullOrEmpty(variation.Filter.Value))
                     {
-                        complexFilter = JsonConvert.DeserializeObject<CombinedFilter>(variation.Filter.Value);
-                        if (logicalOperator == LogicalOperator.AND)
+                        if (variation.Filter.Key == FilterConverter.Types.Complex)
                         {
-                            (complexFilter as CombinedFilter).Operator = CombinedFilter.LogicalOperators.And;
+                            complexFilter = JsonConvert.DeserializeObject<CombinedFilter>(variation.Filter.Value);
+                            if (logicalOperator == LogicalOperator.AND)
+                            {
+                                (complexFilter as CombinedFilter).Operator = CombinedFilter.LogicalOperators.And;
+                            }
+                            else
+                            {
+                                (complexFilter as CombinedFilter).Operator = CombinedFilter.LogicalOperators.Or;
+                            }
                         }
-                        else
+                        else if (variation.Filter.Key == FilterConverter.Types.Ids)
                         {
-                            (complexFilter as CombinedFilter).Operator = CombinedFilter.LogicalOperators.Or;
+                            idFilter = FilterConverter.From(variation.Filter);
                         }
                     }
+
+                    filter = complexFilter ?? idFilter;
 
                     if (!string.IsNullOrEmpty(additionalFilter))
                     {
                         var deserializedFilter = FilterConverter.From(new KeyValuePair<string, string>("Complex", additionalFilter));
-                        if (complexFilter != null)
+                        if (filter != null)
                         {
                             complexFilter = new CombinedFilter()
                             {
-                                Operator = (complexFilter as CombinedFilter).Operator,
-                                ChildFilters = new[] { complexFilter, deserializedFilter },
+                                Operator = logicalOperator == LogicalOperator.AND ? CombinedFilter.LogicalOperators.And : CombinedFilter.LogicalOperators.Or,
+                                ChildFilters = new[] { filter, deserializedFilter },
                             };
                         }
                         else
@@ -160,17 +244,32 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     if (!string.IsNullOrEmpty(dynamicFilterByParent))
                     {
                         var deserializedDynamicFilter = FilterConverter.From(new KeyValuePair<string, string>("Complex", dynamicFilterByParent));
-                        if (complexFilter != null)
+                        if (filter != null)
                         {
                             complexFilter = new CombinedFilter()
                             {
                                 Operator = logicalOperator == LogicalOperator.AND ? CombinedFilter.LogicalOperators.And : CombinedFilter.LogicalOperators.Or,
-                                ChildFilters = new[] { complexFilter, deserializedDynamicFilter },
+                                ChildFilters = new[] { filter, deserializedDynamicFilter },
                             };
                         }
                         else
                         {
                             complexFilter = deserializedDynamicFilter;
+                        }
+                    }
+
+                    if (classificationFilter != null)
+                    {
+                        if (complexFilter != null)
+                        {
+                            (complexFilter as CombinedFilter).ChildFilters.Add(classificationFilter);
+                        }
+
+                        complexFilter = complexFilter ?? new CombinedFilter { ChildFilters = { classificationFilter }, Operator = CombinedFilter.LogicalOperators.And };
+
+                        if (filter != null)
+                        {
+                            (complexFilter as CombinedFilter).ChildFilters.Add(filter);
                         }
                     }
 
@@ -211,7 +310,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             return true;
         }
 
-        private async Task<object> InitializeViewModel(ContentListEntity entity, IQueryCollection query, int pageNumber)
+        private async Task<object> InitializeViewModel(ContentListEntity entity, IQueryCollection query, int pageNumber, CombinedFilter classificationFilter)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -232,7 +331,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             viewModel.RenderLinks = !(entity.ContentViewDisplayMode == ContentViewDisplayMode.Master && entity.DetailPageMode == DetailPageSelectionMode.SamePage);
             viewModel.ListFieldMapping = entity.ListFieldMapping;
             viewModel.CssClasses = entity.CssClasses;
-            viewModel.DetailItemUrl = new Uri(this.requestContext.PageNode.ViewUrl, UriKind.RelativeOrAbsolute);
+            viewModel.DetailItemUrl = new Uri(this.requestContext.PageNode?.ViewUrl ?? string.Empty, UriKind.RelativeOrAbsolute);
 
             var showPager = false;
             var currentPage = 1;
@@ -293,9 +392,20 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     }
                 }
 
-                getAllArgs.Fields.Add("*");
+                if (string.IsNullOrEmpty(entity.SelectExpression))
+                {
+                    getAllArgs.Fields.Add("*");
+                }
+                else
+                {
+                    var split = entity.SelectExpression.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var field in split)
+                    {
+                        getAllArgs.Fields.Add(field.Trim());
+                    }
+                }
 
-                ChangeLogicalOperator(entity.SelectedItems, entity.SelectionGroupLogicalOperator, entity.FilterExpression, filterByParentExpressionSerialized);
+                ChangeLogicalOperator(entity.SelectedItems, entity.SelectionGroupLogicalOperator, entity.FilterExpression, filterByParentExpressionSerialized, classificationFilter);
                 var result = await this.restService.GetItems<SdkItem>(entity.SelectedItems, getAllArgs).ConfigureAwait(false);
                 viewModel.Items = result.Items;
 
@@ -304,6 +414,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     var pagerTemplate = string.IsNullOrEmpty(entity.PagerTemplate) ? ContentPagerViewModel.PageNumberDefaultTemplate : entity.PagerTemplate;
                     var pagerQueryTemplate = string.IsNullOrEmpty(entity.PagerQueryTemplate) ? ContentPagerViewModel.PageNumberDefaultQueryTemplate : entity.PagerQueryTemplate;
                     viewModel.Pager = new ContentPagerViewModel(currentPage, (int)result.TotalCount, entity.ListSettings.ItemsPerPage, pagerTemplate, pagerQueryTemplate, entity.PagerMode);
+                    viewModel.Pager.ViewUrl = this.requestContext.PageNode?.ViewUrl;
                 }
 
                 if (entity.DetailPageMode == DetailPageSelectionMode.ExistingPage)

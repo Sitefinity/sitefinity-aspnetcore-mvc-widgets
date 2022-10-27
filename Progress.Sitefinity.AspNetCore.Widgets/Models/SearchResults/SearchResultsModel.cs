@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
@@ -38,12 +39,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         }
 
         /// <inheritdoc/>
-        public async Task<SearchResultsViewModel> InitializeViewModel(SearchResultsEntity entity, SearchParamsModel searchParamsModel)
+        public async Task<SearchResultsViewModel> InitializeViewModel(SearchResultsEntity entity, SearchParamsModel searchParamsModel, HttpContext httpContext)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             if (searchParamsModel == null)
                 throw new ArgumentNullException(nameof(searchParamsModel));
+            if (httpContext == null)
+                throw new ArgumentNullException(nameof(httpContext));
+
+            httpContext.AddVaryByQueryParams(new[] { "searchQuery", "page", "sf_culture", "orderBy" });
 
             var currentSite = await this.restClient.Sites().GetCurrentSite();
             var margins = this.styles.GetMarginsClasses(entity);
@@ -133,13 +138,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                     ["indexCatalogue"] = searchParamsModel.IndexCatalogue,
                     ["searchQuery"] = searchParamsModel.SearchQuery,
                     ["wordsMode"] = searchParamsModel.WordsMode,
-                    ["orderBy"] = orderByClause,
+                    ["$orderBy"] = orderByClause,
                     ["sf_culture"] = searchParamsModel.Culture,
                     ["$skip"] = skip.ToString(CultureInfo.InvariantCulture),
                     ["$top"] = take.ToString(CultureInfo.InvariantCulture),
                     ["searchFields"] = entity.SearchFields,
                     ["highlightedFields"] = entity.HighlightedFields,
                     ["scoringInfo"] = searchParamsModel.ScroingInfo,
+                    ["resultsForAllSites"] = searchParamsModel.ShowResultsForAllIndexedSites.ToString("F0", CultureInfo.InvariantCulture),
                 },
             });
 

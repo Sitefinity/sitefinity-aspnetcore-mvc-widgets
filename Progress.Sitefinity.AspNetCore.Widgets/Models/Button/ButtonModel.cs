@@ -45,12 +45,27 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
 
         private string GetButtonCss(string buttonKey, ButtonEntity entity)
         {
+            string returnValue = null;
             if (entity.Style != null && entity.Style.ContainsKey(buttonKey))
             {
-                return entity.Style[buttonKey].DisplayStyle;
+                var displayStyle = entity.Style[buttonKey].DisplayStyle;
+                var resolvedStyle = this.styles.GetConfiguredButtonClasses(displayStyle);
+                if (!string.IsNullOrEmpty(resolvedStyle))
+                {
+                    returnValue = resolvedStyle;
+                }
+                else
+                {
+                    // For backward compatibility because previously the style value was stored in the DB
+                    returnValue = displayStyle;
+                }
+            }
+            else
+            {
+                returnValue = this.styles.GetConfiguredButtonClasses(buttonKey);
             }
 
-            return this.styles.GetConfiguredButtonClasses(buttonKey);
+            return returnValue ?? string.Empty;
         }
     }
 }

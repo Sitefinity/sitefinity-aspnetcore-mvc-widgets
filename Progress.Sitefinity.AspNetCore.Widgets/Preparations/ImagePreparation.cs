@@ -35,6 +35,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                 var resultingTask = this.imageModel.GetImage(component.Entity, batchClient as IODataRestClient).ContinueWith(
                     (itemsTask) =>
                 {
+                    if (itemsTask.IsFaulted)
+                    {
+                        component.State.Add(ImagePreparation.PreparedData, itemsTask.Exception.InnerException);
+                        return;
+                    }
+
                     component.State.Add(ImagePreparation.PreparedData, itemsTask.Result);
                 }, TaskScheduler.Current);
 

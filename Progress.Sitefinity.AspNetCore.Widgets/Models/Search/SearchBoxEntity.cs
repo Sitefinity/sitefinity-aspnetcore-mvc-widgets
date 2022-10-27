@@ -103,6 +103,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
         public string SuggestionFields { get; set; }
 
         /// <summary>
+        /// Gets or sets the option to show search results from all indexed sites or from current site only.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [DisplayName("Search scope")]
+        [DataType(customDataType: KnownFieldTypes.Choices)]
+        [Choice(Choices = "[{\"Title\":\"All sites in the index\",\"Name\":\"1\",\"Value\":1,\"Icon\":null},{\"Title\":\"Current site only\",\"Name\":\"2\",\"Value\":2,\"Icon\":null}, {\"Title\":\"As set for the system\",\"Name\":\"0\",\"Value\":0,\"Icon\":\"ban\"}]", SideLabel = "characters")]
+        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"This setting takes effect only if your search index\",\"Presentation\":[]}, {\"Value\":\"contains multiple sites. It’s possible to search\",\"Presentation\":[2]}, {\"Value\":\"in all of the sites in the index or in the current\",\"Presentation\":[2]}, {\"Value\":\"site only.\",\"Presentation\":[2]}]},{\"Type\":1,\"Chunks\":[{\"Value\":\"To see how this is set for the system, go to\",\"Presentation\":[]},{\"Value\":\"Administration > Settings > Advanced > Search\",\"Presentation\":[2,3]},{\"Value\":\"and find the setting Search in all sites in an index.\",\"Presentation\":[]}]}]")]
+        public int ShowResultsForAllIndexedSites { get; set; }
+
+        /// <summary>
         /// Gets or sets the search box placeholder.
         /// </summary>
         [Category(PropertyCategory.Advanced)]

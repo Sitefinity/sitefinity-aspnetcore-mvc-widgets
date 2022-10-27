@@ -32,6 +32,7 @@
             var language = languageValue || parentElement.getAttribute("data-sf-language") || "";
             var orderBy = orderValue || parentElement.getAttribute("data-sf-sorting") || "";
             var scroingInfo = parentElement.getAttribute("data-sf-scoring-info");
+            var resultsForAllSites = parentElement.getAttribute("data-sf-results-all");
 
             var query = "?searchQuery=" + query +
                 "&indexCatalogue=" + index +
@@ -43,13 +44,20 @@
                 query = query + "&scoringInfo=" + scroingInfo;
             }
 
+            if (resultsForAllSites == "True") {
+                query += "&resultsForAllSites=True";
+            }
+            else if (resultsForAllSites == "False") {
+                query += "&resultsForAllSites=False";
+            }
+
             window.location.search = query;
         }
     }
 
     document.addEventListener('widgetLoaded', function (args) {
         if (args.detail.model.Name === "SitefinitySearchResults") {
-            enhanceWidgets(args.detail.element);
+            init(args.detail.element);
         }
     });
 

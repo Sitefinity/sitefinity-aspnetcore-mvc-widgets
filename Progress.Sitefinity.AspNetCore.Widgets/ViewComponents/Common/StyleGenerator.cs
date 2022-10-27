@@ -63,45 +63,22 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common
         /// <inheritdoc/>
         public string GetConfiguredButtonClasses(string buttonType)
         {
-            ChoiceConfig displayStyle = this.StylingConfig.ButtonClasses.FirstOrDefault(c => c.Key == buttonType);
-            if (displayStyle == null)
-            {
-                displayStyle = GetDafultBtnClasses().FirstOrDefault(c => c.Key == buttonType);
-            }
-
+            var displayStyle = this.StylingConfig.ButtonClasses.FirstOrDefault(c => c.Key == buttonType);
             if (displayStyle != null)
             {
                 return displayStyle.Value;
             }
 
-            return string.Empty;
+            return null;
         }
 
-        private static ChoiceConfig[] GetDafultBtnClasses()
+        /// <inheritdoc/>
+        public string GetDefaultButtonClass()
         {
-            var buttonClasses = new ChoiceConfig[]
-            {
-                new ChoiceConfig()
-                {
-                    Key = "Primary",
-                    Value = "btn btn-primary",
-                    Title = "Primary action",
-                },
-                new ChoiceConfig()
-                {
-                    Key = "Secondary",
-                    Value = "btn btn-secondary",
-                    Title = "Secondary action",
-                },
-                new ChoiceConfig()
-                {
-                    Key = "Link",
-                    Value = "Link",
-                    Title = string.Empty,
-                },
-            };
+            if (this.StylingConfig.ButtonClasses.Count > 0)
+                return this.StylingConfig.ButtonClasses[0].Value;
 
-            return buttonClasses;
+            return null;
         }
 
         private static string GetAlignmentClasses(StylingConfig stylingConfig, Alignment position)

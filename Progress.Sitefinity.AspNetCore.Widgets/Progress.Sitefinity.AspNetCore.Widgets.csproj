@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\recommendations.min.js" />
+    <EmbeddedResource Include="Scripts\recommendations.js" />
     <EmbeddedResource Include="Scripts\accordion.js" />
     <EmbeddedResource Include="Scripts\accordion.min.js" />
     <EmbeddedResource Include="Scripts\call-to-action.min.js" />
@@ -56,8 +58,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="14.2.7900.145" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="14.2.7900.145" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="14.2.7900.145" />
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="14.3.8000.269" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="14.3.8000.269" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="14.3.8000.269" />
   </ItemGroup>
 </Project>
