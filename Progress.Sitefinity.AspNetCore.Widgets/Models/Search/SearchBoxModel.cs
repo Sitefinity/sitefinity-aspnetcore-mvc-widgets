@@ -58,6 +58,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
             viewModel.SuggestionFields = entity.SuggestionFields;
             viewModel.WebServicePath = $"/{this.sfConfig.WebServicePath}";
             viewModel.SearchResultsPageUrl = await this.GetPageNodeUrl(entity.SearchResultsPage);
+            viewModel.ShowResultsForAllIndexedSites = entity.ShowResultsForAllIndexedSites;
             viewModel.ScoringProfile = new ScoringProfile
             {
                 ScoringSetting = entity.ScoringProfile ?? string.Empty,

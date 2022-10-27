@@ -70,6 +70,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
         public string WebServicePath { get; set; }
 
         /// <summary>
+        /// Gets or sets the option to show search results from all indexed sites.
+        /// </summary>
+        public int ShowResultsForAllIndexedSites { get; set; }
+
+        /// <summary>
         /// Gets or sets the attributes for the search box.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]

@@ -68,5 +68,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common
         /// <param name="buttonType">The button type.</param>
         /// <returns>The CSS classes.</returns>
         public string GetConfiguredButtonClasses(string buttonType);
+
+        /// <summary>
+        /// Gets the default classes for the button.
+        /// </summary>
+        /// <returns>The CSS classes.</returns>
+        public string GetDefaultButtonClass();
     }
 }

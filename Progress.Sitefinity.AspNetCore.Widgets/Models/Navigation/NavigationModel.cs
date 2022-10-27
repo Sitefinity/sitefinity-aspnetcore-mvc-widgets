@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Progress.Sitefinity.AspNetCore.Areas.Diagnostics.Profiling;
+using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Dto;
@@ -15,15 +18,19 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
     /// </summary>
     public class NavigationModel : INavigationModel, INavigationModelWithPreparation
     {
+        private IRequestContext requestContext;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NavigationModel"/> class.
         /// </summary>
         /// <param name="restService">The HTTP client.</param>
+        /// <param name="requestContext">The request context.</param>
         /// <param name="styles">The style classes provider.</param>
-        public NavigationModel(IODataRestClient restService, IStyleClassesProvider styles)
+        public NavigationModel(IODataRestClient restService, IStyleClassesProvider styles, IRequestContext requestContext)
         {
             this.restService = restService;
             this.styles = styles;
+            this.requestContext = requestContext;
         }
 
         /// <inheritdoc/>
@@ -75,10 +82,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                 { "levelsToInclude", entity.LevelsToInclude.ToString() },
                 { "showParentPage", entity.ShowParentPage.ToString() },
                 { "selectedPageId", selectedPageId.ToString() },
+                { Constants.QueryParams.PageNodeId, this.requestContext.Model.Id.ToString() },
                 { "selectedPages", JsonConvert.SerializeObject(entity.CustomSelectedPages.ItemIdsOrdered) },
             };
 
-            return restClient.ExecuteBoundFunction<ODataWrapper<PageViewModel[]>>(new BoundActionArgs()
+            return restClient.ExecuteBoundFunction<ODataWrapper<PageViewModel[]>>(new BoundFunctionArgs()
             {
                 Name = $"Default.HierarhicalByLevelsResponse()",
                 Type = "pages",

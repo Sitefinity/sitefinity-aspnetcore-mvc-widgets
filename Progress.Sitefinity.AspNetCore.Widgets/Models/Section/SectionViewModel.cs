@@ -81,5 +81,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]
         public IList<IList<AttributeModel>> ColumnsAttributes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the section attributes.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]
+        public IList<AttributeModel> SectionAttributes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tag name.
+        /// </summary>
+        public string TagName { get; set; }
     }
 }

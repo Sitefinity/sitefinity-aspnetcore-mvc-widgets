@@ -45,6 +45,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         public ContentPagerViewModel Pager { get; set; }
 
         /// <summary>
+        /// Gets or sets the additional url segments to be marked as resolved.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "By design.")]
+        public IList<string> ResolvedUrlSegments { get; set; }
+
+        /// <summary>
         /// Gets or sets the css classes for the list view.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "By design")]

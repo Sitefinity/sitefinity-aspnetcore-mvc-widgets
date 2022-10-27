@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.AspNetCore.ViewComponents.AttributeConfigurator.Attributes;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Attributes;
 using Progress.Sitefinity.RestSdk.Dto;
@@ -23,8 +24,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         /// Gets or sets the color style.
         /// </summary>
         [DisplayName("Value")]
-        [DataType(customDataType: KnownFieldTypes.Color)]
-        [DefaultValue(SimpleBackgroundStyle.DefaultColor)]
+        [ColorPalette("Default")]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"BackgroundType\",\"operator\":\"Equals\",\"value\":\"Color\"}]}")]
         public string Color { get; set; }
 

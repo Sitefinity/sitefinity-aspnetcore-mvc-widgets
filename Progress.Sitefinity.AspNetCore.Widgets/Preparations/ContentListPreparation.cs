@@ -50,20 +50,25 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                         }
 
                         var listViewModel = itemsTask.Result as ContentListViewModel;
-                        if (listViewModel != null && listViewModel.Pager != null)
+                        if (listViewModel != null)
                         {
-                            var processedUrlSegments = listViewModel.Pager.ProcessedUrlSegments;
-                            var isPageNumberValid = listViewModel.Pager.IsPageNumberValid;
+                            if (listViewModel.Pager != null)
+                            {
+                                var processedUrlSegments = listViewModel.Pager.ProcessedUrlSegments;
+                                var isPageNumberValid = listViewModel.Pager.IsPageNumberValid;
 
-                            if (isPageNumberValid)
-                            {
-                                component.State.Add(ContentListPreparation.PreparedData, listViewModel);
-                                resolvedSegments.AddRange(processedUrlSegments);
+                                if (isPageNumberValid)
+                                {
+                                    component.State.Add(ContentListPreparation.PreparedData, listViewModel);
+                                    resolvedSegments.AddRange(processedUrlSegments);
+                                }
+                                else
+                                {
+                                    allTasksResolved = false;
+                                }
                             }
-                            else
-                            {
-                                allTasksResolved = false;
-                            }
+
+                            pageModel.MarkUrlParametersResolved(listViewModel.ResolvedUrlSegments);
                         }
                     }, TaskScheduler.Current);
 
@@ -79,6 +84,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
             if (allTasksResolved)
             {
                 pageModel.MarkUrlParametersResolved();
+            }
+            else
+            {
+                pageModel.MarkUrlParametersResolved(resolvedSegments);
             }
 
             return Task.WhenAll(tasks);

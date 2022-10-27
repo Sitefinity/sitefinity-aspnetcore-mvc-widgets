@@ -43,6 +43,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
                 throw new ArgumentNullException(nameof(entity));
 
             var viewModel = new SectionViewModel();
+            viewModel.TagName = entity.TagName;
             viewModel.ColumnsCount = entity.ColumnsCount;
             viewModel.ColumnProportions = entity.ColumnProportionsInfo;
             viewModel.ColumnNames = PopulateColumnNames(entity);
@@ -55,6 +56,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
             viewModel.VideoUrl = viewModel.ShowVideo ? await this.GetVideoUrl(entity.SectionBackground) : null;
             viewModel.Attributes = entity.Attributes;
             viewModel.ColumnsAttributes = ConstructColumnsAttributes(entity);
+            if (entity.Attributes != null && entity.Attributes.TryGetValue("Section", out IList<AttributeModel> value))
+            {
+                viewModel.SectionAttributes = value;
+            }
 
             return viewModel;
         }

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
+using Progress.Sitefinity.Clients.LayoutService.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager
 {
@@ -139,6 +141,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager
         public bool IsPageNumberValid { get; set; }
 
         /// <summary>
+        /// Gets or sets the page view url.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings", Justification = "ViewModel")]
+        public string ViewUrl { get; set; }
+
+        /// <summary>
         /// Gets the pages url for the pager.
         /// </summary>
         /// <param name="pageNumber">The page number.</param>
@@ -148,7 +156,22 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager
         public string GetPagerUrl(int pageNumber, HttpContext context)
         {
             string path = context?.Request.Path;
-            string queryString = context.Request.QueryString.ToString();
+
+            // in case we are accessing it from home page
+            if (path == "/" && !string.IsNullOrEmpty(this.ViewUrl))
+            {
+                if (this.ViewUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                {
+                    var uri = new Uri(this.ViewUrl, UriKind.Absolute);
+                    path = $"/{uri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped)}";
+                }
+                else
+                {
+                    path = this.ViewUrl;
+                }
+            }
+
+            string queryString = context?.Request.QueryString.ToString();
 
             if (this.PagerMode == PagerMode.URLSegments)
             {

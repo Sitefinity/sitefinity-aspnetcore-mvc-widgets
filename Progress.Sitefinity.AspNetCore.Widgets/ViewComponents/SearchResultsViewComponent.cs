@@ -35,8 +35,28 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
                 throw new ArgumentNullException(nameof(context));
 
             var searchParamsModel = this.GetSearchParams();
-            var viewModel = await this.model.InitializeViewModel(context.Entity, searchParamsModel);
+            var viewModel = await this.model.InitializeViewModel(context.Entity, searchParamsModel, this.HttpContext);
             return this.View(context.Entity.SfViewName, viewModel);
+        }
+
+        /// <summary>
+        /// Convert the value of showResultsForAllIndexedSites property form string to int.
+        /// </summary>
+        /// <param name="showResultsForAllIndexedSites">The showResultsForAllIndexedSites string value.</param>
+        /// <returns>Returns the value of the property as int.</returns>
+        private static int ConvertResultsSetting(string showResultsForAllIndexedSites)
+        {
+            switch (showResultsForAllIndexedSites)
+            {
+                case "":
+                    return 0;
+                case "True":
+                    return 1;
+                case "False":
+                    return 2;
+                default:
+                    return 0;
+            }
         }
 
         private SearchParamsModel GetSearchParams()
@@ -48,7 +68,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             string culture = this.HttpContext.Request.Query["sf_culture"];
             string pageParam = this.HttpContext.Request.Query["page"];
             string scoringProfile = this.HttpContext.Request.Query["scoringInfo"];
+            string showResultsForAllIndexedSites = this.HttpContext.Request.Query["resultsForAllSites"];
             int page = 1;
+            var resultsForAllSites = ConvertResultsSetting(showResultsForAllIndexedSites);
             if (!string.IsNullOrEmpty(pageParam) && int.TryParse(pageParam, out int pageNumber) && pageNumber > 0)
             {
                 page = pageNumber;
@@ -63,6 +85,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
                 Culture = culture,
                 Page = page,
                 ScroingInfo = scoringProfile,
+                ShowResultsForAllIndexedSites = resultsForAllSites,
             };
 
             return searchParams;

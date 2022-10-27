@@ -50,7 +50,8 @@
                 culture: input.getAttribute("data-sf-culture"),
                 suggestionFields: input.getAttribute("data-sf-suggestions-fields"),
                 servicePath: input.getAttribute("data-sf-service-path"),
-                orderBy: input.getAttribute("data-sf-sort")
+                orderBy: input.getAttribute("data-sf-sort"),
+                resultsForAllSites: input.getAttribute("data-sf-results-all")
             };
         }
 
@@ -98,6 +99,12 @@
                 "&scoringInfo=" + data.scoringSetting +
                 "&suggestionFields=" + data.suggestionFields +
                 "&searchQuery=" + input.value;
+            if (data.resultsForAllSites == 1) {
+                requestUrl += "&resultsForAllSites=True";
+            }
+            else if (data.resultsForAllSites == 2) {
+                requestUrl += "&resultsForAllSites=False";
+            }
 
             fetch(requestUrl).then(function (res) {
                 res.json().then(function (suggestions) {
@@ -142,6 +149,14 @@
             var sorting = input.getAttribute("data-sf-sort");
             if (sorting) {
                 url = url + "&orderBy=" + sorting;
+            }
+
+            var resultsForAllSites = input.getAttribute("data-sf-results-all");
+            if (resultsForAllSites == 1) {
+                url += "&resultsForAllSites=True";
+            }
+            else if (resultsForAllSites == 2) {
+                url += "&resultsForAllSites=False";
             }
 
             return url;
