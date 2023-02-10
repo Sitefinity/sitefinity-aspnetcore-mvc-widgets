@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.Configuration;
+using Progress.Sitefinity.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Button;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 
@@ -8,30 +10,54 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common
 {
     internal class StyleGenerator : IStyleClassesProvider
     {
-        public StyleGenerator(IWidgetConfig widgetConfig)
+        private IHttpContextAccessor httpContextAccessor;
+        private StylingConfig stylingConfig;
+
+        public StyleGenerator(IWidgetConfig widgetConfig, IHttpContextAccessor httpContextAccessor)
         {
             if (widgetConfig == null)
                 throw new ArgumentNullException(nameof(widgetConfig));
 
-            this.StylingConfig = widgetConfig.Styling;
+            if (httpContextAccessor == null)
+                throw new ArgumentNullException(nameof(httpContextAccessor));
 
-            OffsetSize margin, padding;
-            if (Enum.TryParse(this.StylingConfig.DefaultMargin, out margin))
-            {
-                this.DefaultMargin = margin;
-            }
+            this.httpContextAccessor = httpContextAccessor;
+            this.stylingConfig = widgetConfig.Styling;
+        }
 
-            if (Enum.TryParse(this.StylingConfig.DefaultPadding, out padding))
+        public StylingConfig StylingConfig
+        {
+            get
             {
-                this.DefaultPadding = padding;
+                var config = this.httpContextAccessor.HttpContext.GetStylingConfigForCurrentPackage();
+                if (config != null)
+                    return config;
+
+                return this.stylingConfig;
             }
         }
 
-        public StylingConfig StylingConfig { get; private set; }
+        public OffsetSize DefaultMargin
+        {
+            get
+            {
+                if (Enum.TryParse(this.StylingConfig.DefaultMargin, out OffsetSize margin))
+                    return margin;
 
-        public OffsetSize DefaultMargin { get; private set; } = OffsetSize.None;
+                return OffsetSize.None;
+            }
+        }
 
-        public OffsetSize DefaultPadding { get; private set; } = OffsetSize.None;
+        public OffsetSize DefaultPadding
+        {
+            get
+            {
+                if (Enum.TryParse(this.StylingConfig.DefaultPadding, out OffsetSize margin))
+                    return margin;
+
+                return OffsetSize.None;
+            }
+        }
 
         public string GetMarginsClasses<T>(IHasMargins<T> entity)
             where T : OffsetStyleBase

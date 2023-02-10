@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Models;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
@@ -75,9 +76,26 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
         public int ShowResultsForAllIndexedSites { get; set; }
 
         /// <summary>
+        /// Gets or sets the active class.
+        /// </summary>
+        public string ActiveClass { get; set; }
+
+        /// <summary>
+        /// Gets or sets the search autocomplete items class.
+        /// </summary>
+        public string SearchAutocompleteItemClass { get; set; }
+
+        /// <summary>
         /// Gets or sets the attributes for the search box.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]
+
         public IDictionary<string, IList<AttributeModel>> Attributes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the attributes for the columns and for the section.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in the model.")]
+        public IDictionary<VisibilityStyle, string> VisibilityClasses { get; set; }
     }
 }

@@ -36,16 +36,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            NavigationViewModel viewModel;
-            if (context.State.TryGetValue(NavigationPreparation.PreparedData, out object value) && value is PageViewModel[] items && this.model is INavigationModelWithPreparation modelWithPreparation)
-            {
-                viewModel = modelWithPreparation.InitializeViewModel(context.Entity, items);
-            }
-            else
-            {
-                viewModel = await this.model.InitializeViewModel(context.Entity);
-            }
-
+            var viewModel = await this.model.InitializeViewModel(context.Entity);
             return this.View(context.Entity.SfViewName, viewModel);
         }
     }

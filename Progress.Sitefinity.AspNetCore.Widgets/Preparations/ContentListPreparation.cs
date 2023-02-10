@@ -23,7 +23,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
         {
             var context = httpContext.RequestServices.GetService<IRequestContext>();
             var contentListWidgets = pageModel.AllViewComponentsFlat
-                .Where(x => typeof(IViewComponentContext<ContentListEntity>).IsAssignableFrom(x.GetType()))
+                .Where(x => typeof(IViewComponentContext<ContentListEntity>).IsAssignableFrom(x.GetType()) && x.Name == "SitefinityContentList")
                 .Select(context => context as IViewComponentContext<ContentListEntity>)
                 .ToList();
 

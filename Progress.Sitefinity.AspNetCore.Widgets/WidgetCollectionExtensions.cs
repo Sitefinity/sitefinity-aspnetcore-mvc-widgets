@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Preparations;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb;
@@ -44,13 +45,16 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<IContentListModel, ContentListModel>();
             services.AddTransient<IClassificationModel, ClassificationModel>();
             services.AddTransient<ISearchBoxModel, SearchBoxModel>();
-            services.AddTransient<IRequestPreparation, NavigationPreparation>();
-            services.AddTransient<IRequestPreparation, ImagePreparation>();
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
+
             services.AddTransient<IFormModel, FormModel>();
             services.AddTransient<ISearchResultsModel, SearchResultsModel>();
             services.AddTransient<IBreadcrumbModel, BreadcrumbModel>();
-            services.AddSingleton<IStyleClassesProvider>(serviceProvider => new StyleGenerator(serviceProvider.GetRequiredService<IWidgetConfig>()));
+            services.AddSingleton<IStyleClassesProvider>(serviceProvider =>
+            {
+                var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                return new StyleGenerator(serviceProvider.GetRequiredService<IWidgetConfig>(), httpContextAccessor);
+            });
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
@@ -136,7 +137,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                 AdditionalQueryParams = new Dictionary<string, string>()
                 {
                     ["indexCatalogue"] = searchParamsModel.IndexCatalogue,
-                    ["searchQuery"] = searchParamsModel.SearchQuery,
+                    ["searchQuery"] = HttpUtility.UrlEncode(searchParamsModel.SearchQuery),
                     ["wordsMode"] = searchParamsModel.WordsMode,
                     ["$orderBy"] = orderByClause,
                     ["sf_culture"] = searchParamsModel.Culture,

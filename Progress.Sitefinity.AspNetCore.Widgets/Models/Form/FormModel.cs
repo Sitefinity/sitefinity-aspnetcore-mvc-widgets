@@ -85,7 +85,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Form
                     queryParams = query.ToDictionary(x => x.Key, y => HttpUtility.UrlEncode(y.Value.ToString()));
                 }
 
-                if (!this.renderContext.IsLive())
+                if (!this.renderContext.IsLive)
                 {
                     viewModel.SkipDataSubmission = true;
                 }
@@ -142,6 +142,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Form
                 viewModel.HiddenFields = string.Join(",", GetHiddenFields(viewModel.FormModel));
                 viewModel.Attributes = entity.Attributes;
             }
+
+            viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
+            viewModel.InvalidClass = this.styles.StylingConfig.InvalidClass;
 
             return viewModel;
         }

@@ -15,7 +15,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
     /// <summary>
     /// The model for the Image widget.
     /// </summary>
-    public class ImageModel : IImageModel, IImageModelWithPreparation
+    public class ImageModel : IImageModel
     {
         private IODataRestClient restClient;
 
@@ -36,6 +36,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// <param name="entity">The image entity.</param>
         /// <param name="restClient">The rest client.</param>
         /// <returns>The image.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "public")]
         public Task<ImageDto> GetImage(ImageEntity entity, IRestClient restClient)
         {
             if (restClient == null)
@@ -61,14 +62,23 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
             return Task.FromResult<ImageDto>(null);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Initializes the view model.
+        /// </summary>
+        /// <param name="entity">The navigation entity.</param>
+        /// <returns>The view model of the widget.</returns>
         public async Task<ImageViewModel> InitializeViewModel(ImageEntity entity)
         {
             var image = await this.GetImage(entity, this.restClient);
             return await this.InitializeViewModel(entity, image);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Initializes the view model.
+        /// </summary>
+        /// <param name="entity">The image entity.</param>
+        /// <param name="image">The image.</param>
+        /// <returns>The view model of the widget.</returns>
         public Task<ImageViewModel> InitializeViewModel(ImageEntity entity, ImageDto image)
         {
             if (entity == null)

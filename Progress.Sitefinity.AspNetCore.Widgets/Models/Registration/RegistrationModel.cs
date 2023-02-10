@@ -89,6 +89,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
             viewModel.Labels.ValidationRequiredMessage = entity.ValidationRequiredMessage;
             viewModel.Labels.ValidationMismatchMessage = entity.ValidationMismatchMessage;
             viewModel.Labels.ValidationInvalidEmailMessage = entity.ValidationInvalidEmailMessage;
+            viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
+            viewModel.InvalidClass = this.styles.StylingConfig.InvalidClass;
 
             viewModel.LoginPageUrl = this.GetPageNodeUrl(entity.LoginPage);
 
@@ -132,7 +134,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
                 viewModel.RequiresQuestionAndAnswer = result.RequiresQuestionAndAnswer;
                 viewModel.ActivationMethod = result.ActivationMethod;
 
-                if (this.renderContext.IsLive())
+                if (this.renderContext.IsLive)
                 {
                     var request = this.httpContextAccessor.HttpContext.Request;
                     viewModel.ActivationPageUrl = $"{request.Scheme}://{request.Host}{request.Path}";
@@ -150,7 +152,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         {
             encryptedParam = null;
 
-            if (this.renderContext.IsLive())
+            if (this.renderContext.IsLive)
             {
                 if (this.httpContextAccessor.HttpContext.Request.Query.TryGetValue(EncryptedParam, out StringValues queryString))
                 {

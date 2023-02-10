@@ -18,16 +18,16 @@
         for (let i = 0; i < recommendationsMetadatas.length; i++) {
             const currentRecommendationMetadata = recommendationsMetadatas[i];
             const uniqueId = currentRecommendationMetadata.getElementsByClassName("unique-id")[0].value;
-            const baseUrl = currentRecommendationMetadata.getElementsByClassName("base-url")[0].value;
+            const webServicePath = currentRecommendationMetadata.getElementsByClassName("web-service-path")[0].value;
             const conversionId = currentRecommendationMetadata.getElementsByClassName("conversion-id")[0].value;
             const maxNumberOfItems = currentRecommendationMetadata.getElementsByClassName("max-number-of-items")[0].value;
             const siteId = currentRecommendationMetadata.getElementsByClassName("site-id")[0].value;
 
-            executeRecommendationFlow(baseUrl, parseInt(conversionId), uniqueId, parseInt(maxNumberOfItems), siteId);
+            executeRecommendationFlow(webServicePath, parseInt(conversionId), uniqueId, parseInt(maxNumberOfItems), siteId);
         }
     }
 
-    function executeRecommendationFlow(baseUrl, conversionId, widgetUniqueId, maxNumberOfItems, siteId) {
+    function executeRecommendationFlow(webServicePath, conversionId, widgetUniqueId, maxNumberOfItems, siteId) {
         if (window.DataIntelligenceSubmitScript) {
             let clientJourney = window.DataIntelligenceSubmitScript._client.recommenderClient.getClientJourney();
             if (clientJourney && clientJourney.length > 0) {
@@ -36,7 +36,7 @@
                     journeyJson: JSON.stringify(clientJourney)
                 }
 
-                getRecommendations(`${baseUrl}/Default.GetRecommendations()?sf_site=${siteId}`, data)
+                getRecommendations(`/${webServicePath}/Default.GetRecommendations()?sf_site=${siteId}`, data)
                     .then(handleResponseData);
             }
         }

@@ -1,7 +1,22 @@
 ﻿(function () {
     document.addEventListener('DOMContentLoaded', function () {
         var widgetContainer = document.querySelector("[data-sf-role='sf-change-password-container']");
+        var visibilityClassElement = document.querySelector('[data-sf-visibility-hidden]');
+        var visibilityClassHidden = visibilityClassElement.dataset ? visibilityClassElement.dataset.sfVisibilityHidden : null;
+        var invalidClassElement = document.querySelector('[data-sf-invalid]');
+        var classInvalidValue = invalidClassElement.dataset && isNotEmpty(invalidClassElement.dataset.sfInvalid) ? invalidClassElement.dataset.sfInvalid : null;
+        var classInvalid = classInvalidValue ? processCssClass(classInvalidValue) : null;
+        var invalidDataAttr = "data-sf-invalid";
         var form = widgetContainer.querySelector("form");
+
+        function processCssClass(str) {
+            var classList = str.split(" ");
+            return classList;
+        }
+
+        function isNotEmpty(attr) {
+            return (attr && attr !== "");
+        }
 
         form.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -96,19 +111,27 @@
         };
 
         var invalidateElement = function (element) {
-            if (!element) {
-                return;
-            }
+            if (element) {
 
-            element.classList.add('is-invalid');
+                if (classInvalid) {
+                    element.classList.add(...classInvalid);
+                }
+
+                //adding data attribute for queries, to be used instead of a class
+                element.setAttribute(invalidDataAttr, "");
+            }
         };
 
         var resetValidationErrors = function (parentElement) {
-            var invalidElements = parentElement.querySelectorAll('.is-invalid');
+            var invalidElements = parentElement.querySelectorAll(`[${invalidDataAttr}]`);
             invalidElements.forEach(function (element) {
-                element.classList.remove('is-invalid');
+                if (classInvalid) {
+                    element.classList.remove(...classInvalid);
+                }
+
+                element.removeAttribute(invalidDataAttr);
             });
-        }
+        };
 
         var redirect = function (redirectUrl) {
             window.location = redirectUrl;
@@ -127,8 +150,11 @@
         var showMessage = function (message, parentElement, querySelector) {
             var messageElement = parentElement.querySelector(querySelector);
             messageElement.innerText = message;
-            messageElement.classList.add("d-block");
-            messageElement.classList.remove("d-none");
+            if (visibilityClassHidden) {
+                messageElement.classList.remove(visibilityClassHidden);
+            } else {
+                messageElement.style.display = "";
+            }
         };
 
         var hideSuccessMessage = function (parentElement) {
@@ -141,8 +167,11 @@
 
         var hideMessage = function (parentElement, querySelector) {
             var element = parentElement.querySelector(querySelector);
-            element.classList.add("d-none");
-            element.classList.remove("d-block");
+            if (visibilityClassHidden) {
+                element.classList.add(visibilityClassHidden);
+            } else {
+                element.style.display = "none";
+            }
         };
     });
 })();

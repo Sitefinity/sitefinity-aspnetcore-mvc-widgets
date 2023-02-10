@@ -48,6 +48,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword
             viewModel.Labels.ValidationRequiredMessage = entity.ValidationRequiredMessage;
             viewModel.Labels.ValidationMismatchMessage = entity.ValidationMismatchMessage;
             viewModel.Labels.ExternalProviderMessageFormat = entity.ExternalProviderMessageFormat;
+            viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
+            viewModel.InvalidClass = this.styles.StylingConfig.InvalidClass;
 
             viewModel.PostPasswordChangeAction = entity.PostPasswordChangeAction;
 

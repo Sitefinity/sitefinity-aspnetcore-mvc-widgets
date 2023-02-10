@@ -70,6 +70,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm
             viewModel.Labels.SubmitButtonLabel = entity.SubmitButtonLabel;
             viewModel.Labels.ValidationInvalidEmailMessage = entity.ValidationInvalidEmailMessage;
             viewModel.Labels.ValidationRequiredMessage = entity.ValidationRequiredMessage;
+            viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
+            viewModel.InvalidClass = this.styles.StylingConfig.InvalidClass;
 
             if (entity.PostLoginAction == PostLoginAction.RedirectToPage && entity.PostLoginRedirectPage?.Content?[0]?.Variations?.Length != 0)
             {

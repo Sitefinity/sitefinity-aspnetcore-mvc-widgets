@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Progress.Sitefinity.AspNetCore.Models;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Recommendations
@@ -43,10 +40,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Recommendations
         public string SiteId { get; set; }
 
         /// <summary>
-        /// Gets or sets the base url.
+        /// Gets or sets the web service path.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings", Justification = "Url")]
-        public string BaseUrl { get; set; }
+        public string WebServicePath { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the recommendations widget.

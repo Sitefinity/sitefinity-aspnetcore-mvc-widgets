@@ -30,6 +30,8 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.ContentBlock
         [Category(PropertyCategory.Advanced)]
         [DisplayName("Tag name")]
         [DefaultValue("div")]
+        [Description("Up to twenty characters in the range a-z are allowed")]
+        [RegularExpression(@"^[a-z]{1,20}$", ErrorMessage = "Up to twenty characters in the range a-z are allowed.")]
         public string TagName { get; set; }
     }
 }

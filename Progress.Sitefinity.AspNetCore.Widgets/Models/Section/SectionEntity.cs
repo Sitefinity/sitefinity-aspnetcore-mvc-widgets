@@ -87,6 +87,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         [Category(PropertyCategory.Advanced)]
         [DisplayName("Tag name")]
         [DefaultValue("section")]
+        [Description("Up to twenty characters in the range a-z are allowed")]
+        [RegularExpression(@"^[a-zA-Z]{1,20}$", ErrorMessage = "Up to twenty characters in the range a-z and A-Z are allowed.")]
         public string TagName { get; set; }
 
         /// <summary>
