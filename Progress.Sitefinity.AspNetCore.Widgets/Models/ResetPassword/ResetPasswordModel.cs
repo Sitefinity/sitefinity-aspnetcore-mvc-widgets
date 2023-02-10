@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -79,6 +80,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
             viewModel.Labels.ForgottenPasswordLabel = entity.ForgottenPasswordLabel;
             viewModel.Labels.InvalidEmailFormatMessage = entity.InvalidEmailFormatMessage;
             viewModel.Labels.FieldIsRequiredMessage = entity.FieldIsRequiredMessage;
+            viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
+            viewModel.InvalidClass = this.styles.StylingConfig.InvalidClass;
 
             if (entity.LoginPage?.Content?[0]?.Variations?.Length != 0)
             {
@@ -116,7 +119,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
             }
             else
             {
-                if (this.renderContext.IsLive())
+                if (this.renderContext.IsLive)
                 {
                     var request = this.httpContextAccessor.HttpContext.Request;
                     viewModel.ResetPasswordUrl = $"{request.Scheme}://{request.Host}{request.Path}";
@@ -131,7 +134,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
 
         private bool IsResetPasswordRequest()
         {
-            return this.renderContext.IsLive() && this.httpContextAccessor.HttpContext.Request.Query.ContainsKey(PasswordRecoveryQueryStringKey);
+            return this.renderContext.IsLive && this.httpContextAccessor.HttpContext.Request.Query.ContainsKey(PasswordRecoveryQueryStringKey);
         }
     }
 }

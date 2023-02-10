@@ -74,7 +74,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb
         /// </summary>
         [ViewSelector]
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 1)]
-        [DisplayName("View")]
+        [DisplayName("Breadcrumb template")]
         public string SfViewName { get; set; }
 
         /// <summary>

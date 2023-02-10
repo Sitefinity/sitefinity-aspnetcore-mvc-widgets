@@ -7,6 +7,21 @@
         var successMessageContainer = widgetContainer.querySelector('[data-sf-role="success-message-container"]');
         var errorMessageContainer = widgetContainer.querySelector('[data-sf-role="error-message-container"]');
         var sentEmailLabel = successMessageContainer.querySelector('[data-sf-role="sent-email-label"]');
+        var visibilityClassElement = document.querySelector('[data-sf-visibility-hidden]');
+        var visibilityClassHidden = visibilityClassElement.dataset ? visibilityClassElement.dataset.sfVisibilityHidden : null;
+        var invalidClassElement = document.querySelector('[data-sf-invalid]');
+        var classInvalidValue = invalidClassElement.dataset && isNotEmpty(invalidClassElement.dataset.sfInvalid) ? invalidClassElement.dataset.sfInvalid : null;
+        var classInvalid = classInvalidValue ? processCssClass(classInvalidValue) : null;
+        var invalidDataAttr = "data-sf-invalid";
+
+        function processCssClass(str) {
+            var classList = str.split(" ");
+            return classList;
+        }
+
+        function isNotEmpty(attr) {
+            return (attr && attr !== "");
+        }
 
         form.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -67,28 +82,44 @@
 
         var invalidateElement = function (element) {
             if (element) {
-                element.classList.add('is-invalid');
+
+                if (classInvalid) {
+                    element.classList.add(...classInvalid);
+                }
+
+                //adding data attribute for queries, to be used instead of a class
+                element.setAttribute(invalidDataAttr, "");
             }
         };
 
         var resetValidationErrors = function (parentElement) {
-            var invalidElements = parentElement.querySelectorAll('.is-invalid');
+            var invalidElements = parentElement.querySelectorAll(`[${invalidDataAttr}]`);
             invalidElements.forEach(function (element) {
-                element.classList.remove('is-invalid');
+                if (classInvalid) {
+                    element.classList.remove(...classInvalid);
+                }
+
+                element.removeAttribute(invalidDataAttr);
             });
         };
 
         var showElement = function (element) {
             if (element) {
-                element.classList.add("d-block");
-                element.classList.remove("d-none");
+                if (visibilityClassHidden) {
+                    element.classList.remove(visibilityClassHidden);
+                } else {
+                    element.style.display = "";
+                }
             }
         };
 
         var hideElement = function (element) {
             if (element) {
-                element.classList.add("d-none");
-                element.classList.remove("d-block");
+                if (visibilityClassHidden) {
+                    element.classList.add(visibilityClassHidden);
+                } else {
+                    element.style.display = "none";
+                }
             }
         };
 

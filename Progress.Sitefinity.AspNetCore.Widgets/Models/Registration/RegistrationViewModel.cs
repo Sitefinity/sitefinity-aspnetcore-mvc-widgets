@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 
@@ -73,10 +74,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         public bool IsAccountActivationRequest { get; set; }
 
         /// <summary>
+        /// Gets or sets the invalid class.
+        /// </summary>
+        public string InvalidClass { get; set; }
+
+        /// <summary>
         /// Gets or sets the activation page url.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings", Justification = "Reviewed.")]
         public string ActivationPageUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the attributes for the columns and for the section.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in the model.")]
+        public IDictionary<VisibilityStyle, string> VisibilityClasses { get; set; }
 
         /// <inheritdoc/>
         protected override bool ShowSuccessMessageQueryParameter => true;

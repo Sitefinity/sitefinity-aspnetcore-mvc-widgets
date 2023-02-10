@@ -1,13 +1,124 @@
+var hiddenDataAttr = "data-sf-hidden";
+var formContainerSelector = "form [data-sf-role='form-container']";
+
 function init(event) {
     if (event && event.type === "widgetLoaded") {
-        var container = event.detail.element.querySelector("[data-sf-role='form-container']");
+        var container = event.detail.element.querySelector(formContainerSelector);
         if (container) {
             initFields(container);
         }
     } else {
-        document.querySelectorAll("[data-sf-role='form-container']").forEach(function (formContainer) {
+        document.querySelectorAll(formContainerSelector).forEach(function (formContainer) {
             initFields(formContainer);
         });
+    }
+}
+
+function getInvalidClass() {
+    var invalidClassElement = document.querySelector('[data-sf-invalid]');
+    var classInvalidValue = invalidClassElement.dataset ? invalidClassElement.dataset.sfInvalid : null;
+    var classInvalid = classInvalidValue ? processCssClass(classInvalidValue) : null;
+    return classInvalid;
+}
+
+function processCssClass(str) {
+    var classList = str.split(" ");
+    return classList;
+}
+
+function getVisibilityHidden() {
+    var visibilityHiddenClassElement = document.querySelector('[data-sf-visibility-hidden]');
+    var visibilityClassHidden = visibilityHiddenClassElement.dataset ? visibilityHiddenClassElement.dataset.sfVisibilityHidden : null;
+    return visibilityClassHidden;
+}
+
+function getVisibilityClassVisible() {
+    var visibilityVisibleClassElement = document.querySelector('[data-sf-visibility-visible]');
+    var visibilityClassVisible = visibilityVisibleClassElement.dataset ? visibilityVisibleClassElement.dataset.sfVisibilityVisible : null;
+    return visibilityClassVisible;
+}
+
+function getVisibilityClassInlineVisible() {
+    var visibilityInlineVisibleClassElement = document.querySelector('[data-sf-visibility-inline-visible]');
+    var visibilityClassInlineVisible = visibilityInlineVisibleClassElement.dataset ? visibilityInlineVisibleClassElement.dataset.sfVisibilityInlineVisible : null;
+    return visibilityClassInlineVisible;
+}
+
+function toggleShowStyles(element, shouldAdd = true) {
+    var visibilityClassVisible = getVisibilityClassVisible();
+
+    if (shouldAdd) {
+
+        if (element.style.display === "none") {
+            element.style.display = "";
+        }
+
+        if (visibilityClassVisible) {
+            element.classList.add(visibilityClassVisible);
+        } else {
+            element.style.display = "block";
+        }
+
+    } else {
+
+        if (visibilityClassVisible) {
+            element.classList.remove(visibilityClassVisible);
+        } else {
+            element.style.display = "";
+        }
+    }
+
+}
+
+function toggleShowInlineStyles(element, shouldAdd = true) {
+    var visibilityClassInlineVisible = getVisibilityClassInlineVisible();
+
+    if (shouldAdd) {
+
+        if (element.style.display === "none") {
+            element.style.display = "";
+        }
+
+        if (visibilityClassInlineVisible) {
+            element.classList.add(visibilityClassInlineVisible);
+        } else {
+            element.style.display = "inline-block";
+        }
+
+    } else {
+
+        if (visibilityClassInlineVisible) {
+            element.classList.remove(visibilityClassInlineVisible);
+        } else {
+            element.style.display = "";
+        }
+    }
+
+}
+
+function toggleHideStyles(element, shouldAdd = true) {
+    var visibilityClassHidden = getVisibilityHidden();
+
+    if (shouldAdd) {
+
+        if (visibilityClassHidden) {
+            element.classList.add(visibilityClassHidden);
+        } else {
+            element.style.display = "none";
+        }
+
+        //setting a data attribute to use for queries, instead of the class
+        element.setAttribute(hiddenDataAttr, "");
+
+    } else {
+
+        if (visibilityClassHidden) {
+            element.classList.remove(visibilityClassHidden);
+        } else {
+            element.style.display = "";
+        }
+
+        element.removeAttribute(hiddenDataAttr);
     }
 }
 
@@ -66,32 +177,33 @@ function initSubmit(formContainer) {
     var submitButton = formContainer.querySelectorAll('[data-sf-role="submit-button-container"] button');
 
     function showSuccessMessage() {
-        loadingSpinner.classList.add("d-none");
-        loadingSpinner.classList.remove("d-block");
-        successMessage.classList.add("d-block");
+        toggleShowStyles(loadingSpinner, false);
+        toggleHideStyles(loadingSpinner);
+
+        toggleShowStyles(successMessage);
     }
 
     function showErrorMessage(message) {
         errorMessage.innerText = message;
-        errorMessage.classList.add("d-block");
+        toggleShowStyles(errorMessage);
 
-        loadingSpinner.classList.add("d-none");
-        loadingSpinner.classList.remove("d-block");
+        toggleShowStyles(loadingSpinner, false);
+        toggleHideStyles(loadingSpinner);
 
-        fieldsContainer.classList.remove("d-none");
-        fieldsContainer.classList.add("d-block");
+        toggleHideStyles(fieldsContainer, false);
+        toggleShowStyles(fieldsContainer);
     }
 
     function triggerLoading() {
-        errorMessage.classList.remove("d-block");
+        toggleShowStyles(errorMessage, false);
 
-        loadingSpinner.classList.remove("d-none");
-        loadingSpinner.classList.add("d-block");
+        toggleHideStyles(loadingSpinner, false);
+        toggleShowStyles(loadingSpinner);
 
-        successMessage.classList.add("d-block");
+        toggleShowStyles(successMessage);
 
-        fieldsContainer.classList.add("d-none");
-        fieldsContainer.classList.remove("d-block");
+        toggleShowStyles(fieldsContainer, false);
+        toggleHideStyles(fieldsContainer);
     }
 
     function handleResponse(redirectUrl, successMessageVal) {
@@ -115,7 +227,8 @@ function initSubmit(formContainer) {
 
         var formFields = e.target.querySelectorAll('[data-sf-role*="field-container"');
         var isValid = true;
-        Array.from(formFields).filter(x => !x.classList.contains("d-none")).forEach(formField => {
+
+        Array.from(formFields).filter(x => !x.hasAttribute(hiddenDataAttr)).forEach(formField => {
             var fieldType = formField.getAttribute("data-sf-role");
             var localResult = true;
             switch (fieldType) {
@@ -238,13 +351,13 @@ function toggleOtherChoiceInputVisibility(choiceField) {
         var isOtherChoiceChecked = otherChoice.checked;
         if (!isOtherChoiceChecked) {
             otherChoiceInput.required = false;
-            otherChoiceInput.classList.add("d-none");
-            otherChoiceInput.classList.remove("d-block");
+            toggleShowStyles(otherChoiceInput, false);
+            toggleHideStyles(otherChoiceInput);
         } else {
             var isRequired = otherChoice.required || choiceField.querySelector('[data-sf-role="required-validator"]')?.value === 'True';
             otherChoiceInput.required = isRequired;
-            otherChoiceInput.classList.remove("d-none");
-            otherChoiceInput.classList.add("d-block");
+            toggleHideStyles(otherChoiceInput, false);
+            toggleShowStyles(otherChoiceInput);
         }
     }
 }
@@ -304,9 +417,16 @@ function initFileField(formContainer) {
 
         for (let i = 0; i < allRemoveLinks.length; i++) {
             const removeLink = allRemoveLinks[i];
-            removeLink.classList.toggle("d-none", !show);
-            removeLink.classList.toggle("d-inline-block", show);
+
+            if (show) {
+                toggleHideStyles(removeLink, false);
+                toggleShowInlineStyles(removeLink);
+            } else {
+                toggleHideStyles(removeLink);
+                toggleShowInlineStyles(removeLink, false);
+            }
         }
+
     };
 
     function initInput(inputTemplate, container) {
@@ -350,10 +470,14 @@ function initFileField(formContainer) {
 
     for (var i = 0; i < containers.length; i++) {
         var container = containers[i];
-        var inputTemplate = container.querySelector('[data-sf-role="file-input-template"]').innerHTML;
+        var fileInputTemplate = container.querySelector('[data-sf-role="file-input-template"]');
 
-        initInput(inputTemplate, container);
-        attachAddEvent(inputTemplate, container);
+        if (fileInputTemplate) {
+            var inputTemplate = container.querySelector('[data-sf-role="file-input-template"]').innerHTML;
+
+            initInput(inputTemplate, container);
+            attachAddEvent(inputTemplate, container);
+        }
     }
 }
 
@@ -468,6 +592,8 @@ function handleTextValidation(source) {
 }
 
 function handleFileValidation(source) {
+    var classInvalid = getInvalidClass();
+
     if (source instanceof Event) {
         source = source.target;
     }
@@ -483,13 +609,16 @@ function handleFileValidation(source) {
             var fileSizeViolationMessageContainer = fileInputs[i].closest('[data-sf-role="single-file-input-wrapper"]').querySelector('[data-sf-role="filesize-violation-message"]');
             var fileTypeViolationMessageContainer = fileInputs[i].closest('[data-sf-role="single-file-input-wrapper"]').querySelector('[data-sf-role="filetype-violation-message"]');
             if (fileSizeViolationMessageContainer)
-                fileSizeViolationMessageContainer.classList.remove("d-block");
+            toggleShowStyles(fileSizeViolationMessageContainer, false);
 
             if (fileTypeViolationMessageContainer)
-                fileTypeViolationMessageContainer.classList.remove("d-block");
+                toggleShowStyles(fileTypeViolationMessageContainer, false);
 
-            violationMessageContainer.classList.remove("d-block");
-            fileInputs[i].classList.remove("is-invalid");
+            toggleShowStyles(violationMessageContainer, false);
+
+            if (classInvalid) {
+                fileInputs[i].classList.remove(...classInvalid);
+            }
 
             if (fileInputs[i].value) {
                 validInput = true;
@@ -497,11 +626,14 @@ function handleFileValidation(source) {
         }
 
         if (!validInput) {
-            for (var i = 0; i < fileInputs.length; i++) {
-                fileInputs[i].classList.add("is-invalid");
+            if (classInvalid) {
+                for (var i = 0; i < fileInputs.length; i++) {
+                    fileInputs[i].classList.add(...classInvalid);
+                }
             }
 
-            violationMessageContainer.classList.add("d-block");
+            toggleShowStyles(violationMessageContainer);
+
             return false;
         }
     }
@@ -517,13 +649,13 @@ function handleFileValidation(source) {
             if (fileInputs[i].files.length > 0) {
                 var file = fileInputs[i].files[0];
                 var fileSizeViolationMessageContainer = fileInputs[i].closest('[data-sf-role="single-file-input-wrapper"]').querySelector('[data-sf-role="filesize-violation-message"]');
-                if ((minSize > 0 && file.size < minSize) || (maxSize > 0 && file.size > maxSize)) {
-                    fileSizeViolationMessageContainer.classList.add("d-block");
+                if ((minSize > 0 && file.size < minSize) || (maxSize > 0 && file.size > maxSize)) {;
+                    toggleShowStyles(fileSizeViolationMessageContainer);
                     hasViolations = true;
                     fileInputs[i].focus();
                     continue;
                 } else {
-                    fileSizeViolationMessageContainer.classList.remove("d-block");
+                    toggleShowStyles(fileSizeViolationMessageContainer, false);
                 }
             }
         }
@@ -541,12 +673,12 @@ function handleFileValidation(source) {
                 if (stopIndex >= 0) {
                     var extension = fileInputs[i].value.substring(stopIndex).toLowerCase();
                     if (validationRestrictions.allowedFileTypes.indexOf(extension) < 0) {
-                        violationMessage.classList.add("d-block");
+                        toggleShowStyles(violationMessage);
                         hasViolations = true;
                         fileInputs[i].focus();
                         continue;
                     } else {
-                        violationMessage.classList.remove("d-block");
+                        toggleShowStyles(violationMessage, false);
                     }
                 }
             }
@@ -597,17 +729,20 @@ function getHiddenFieldValue(input, attrVal) {
 }
 
 function setErrorMessage(input, message, isErrorContainerSibling = false, setInputInvalidClass = true) {
+    var classInvalid = getInvalidClass();
+
     var errorMessagesContainer = getErrorMessageContainer(input);
 
     if (errorMessagesContainer) {
         errorMessagesContainer.innerText = message;
 
-        if (setInputInvalidClass) {
-            input.classList.add("is-invalid");
+        if (setInputInvalidClass && classInvalid) {
+            input.classList.add(...classInvalid);
         }
 
         if (!isErrorContainerSibling) {
-            errorMessagesContainer.classList.add("d-block");
+            toggleShowStyles(errorMessagesContainer);
+
         }
     } else {
         input.setCustomValidity(message);
@@ -620,13 +755,19 @@ function setErrorMessage(input, message, isErrorContainerSibling = false, setInp
 }
 
 function clearErrorMessage(input, isErrorContainerSibling) {
+    var classInvalid = getInvalidClass();
+
     var errorMessagesContainer = getErrorMessageContainer(input);
 
     if (errorMessagesContainer) {
         errorMessagesContainer.innerText = "";
-        input.classList.remove("is-invalid");
+
+        if (classInvalid) {
+            input.classList.remove(...classInvalid);
+        }
+
         if (!isErrorContainerSibling) {
-            errorMessagesContainer.classList.remove("d-block");
+            toggleShowStyles(errorMessagesContainer, false);
         }
     }
 }
@@ -1685,8 +1826,9 @@ SendNotificationRuleActionExecutor.prototype.isConflict = function (actionData, 
 
                     var sibling = scriptWrapper.nextElementSibling;
                     while (!sibling.matches(this._getFieldEndSelector(fieldControlId))) {
-                        sibling.classList.remove("d-none");
-                        sibling.classList.add("d-block");
+                        toggleHideStyles(sibling, false);
+
+                        toggleShowStyles(sibling);
                         sibling = sibling.nextElementSibling;
                     }
                 }
@@ -1707,8 +1849,8 @@ SendNotificationRuleActionExecutor.prototype.isConflict = function (actionData, 
 
                     var sibling = scriptWrapper.nextElementSibling;
                     while (!sibling.matches(this._getFieldEndSelector(fieldControlId))) {
-                        sibling.classList.add("d-none");
-                        sibling.classList.remove("d-block");
+                        toggleShowStyles(sibling, false);
+                        toggleHideStyles(sibling);
                         sibling = sibling.nextElementSibling;
                     }
                 }
@@ -1903,8 +2045,8 @@ function formHiddenFieldsInitialization(formContainer) {
 
                     var sibling = scriptWrapper.nextElementSibling;
                     while (!sibling.matches('script[data-sf-role="end_field_' + hiddenField + '"]')) {
-                        sibling.classList.add("d-none");
-                        sibling.classList.remove("d-block");
+                        toggleShowStyles(sibling, false);
+                        toggleHideStyles(sibling);
                         sibling = sibling.nextElementSibling;
                     }
                 }

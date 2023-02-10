@@ -94,7 +94,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             recommendationsViewModel.UniqueId = Guid.NewGuid();
             recommendationsViewModel.Header = entity.Header ?? RecommendationsConstants.DefaultHeader;
             recommendationsViewModel.MaxNumberOfItems = entity.MaxNumberOfItems;
-            recommendationsViewModel.BaseUrl = this.httpContextAccessor.HttpContext.Request.Scheme + "://" + this.httpContextAccessor.HttpContext.Request.Host.ToString() + $"/{this.sitefinityConfig.WebServicePath}";
+            recommendationsViewModel.WebServicePath = this.sitefinityConfig.WebServicePath;
             recommendationsViewModel.Attributes = entity.Attributes;
             var margins = this.styles.GetMarginsClasses(entity);
             recommendationsViewModel.CssClass = (entity.CssClass + " " + margins).Trim();

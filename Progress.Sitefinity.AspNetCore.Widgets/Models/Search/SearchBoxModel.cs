@@ -70,6 +70,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
 
             var margins = this.styles.GetMarginsClasses(entity);
             viewModel.CssClass = (entity.CssClass + " " + margins).Trim();
+            viewModel.ActiveClass = this.styles.StylingConfig.ActiveClass;
+            viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
+            viewModel.SearchAutocompleteItemClass = this.styles.StylingConfig.SearchAutocompleteItemClass;
 
             return viewModel;
         }

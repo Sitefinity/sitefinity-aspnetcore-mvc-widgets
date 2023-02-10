@@ -37,22 +37,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            context.State.TryGetValue(ImagePreparation.PreparedData, out object value);
-
-            if (value is ErrorCodeException ex)
-            {
-                throw new ErrorCodeException(ex.Message);
-            }
-
-            ImageViewModel viewModel;
-            if (value is ImageDto item && this.model is IImageModelWithPreparation)
-            {
-                viewModel = await (this.model as IImageModelWithPreparation).InitializeViewModel(context.Entity, item);
-            }
-            else
-            {
-                viewModel = await this.model.InitializeViewModel(context.Entity);
-            }
+            var viewModel = await this.model.InitializeViewModel(context.Entity);
 
             return this.View(viewModel.ViewName, viewModel);
         }

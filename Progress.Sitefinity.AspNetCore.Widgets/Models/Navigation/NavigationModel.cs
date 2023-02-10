@@ -16,7 +16,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
     /// <summary>
     /// The model for the Navigation widget.
     /// </summary>
-    public class NavigationModel : INavigationModel, INavigationModelWithPreparation
+    public class NavigationModel : INavigationModel
     {
         private IRequestContext requestContext;
 
@@ -43,7 +43,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
             return this.InitializeViewModel(entity, items.Value);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Initializes the view model with a preloaded state.
+        /// </summary>
+        /// <param name="entity">The navigation entity.</param>
+        /// <param name="items">The page items.</param>
+        /// <returns>The view model of the widget.</returns>
         public NavigationViewModel InitializeViewModel(NavigationEntity entity, PageViewModel[] items)
         {
             if (entity == null)
@@ -60,7 +65,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
             return viewModel;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Loads the items for the provided entity using hte provided <see cref="IODataRestClient" /> instance.
+        /// </summary>
+        /// <param name="entity">The entity class.</param>
+        /// <param name="restClient">The rest client.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         public Task<ODataWrapper<PageViewModel[]>> GetItems(NavigationEntity entity, IODataRestClient restClient)
         {
             if (entity == null)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Models;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Form
@@ -56,6 +57,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Form
         public string Rules { get; set; }
 
         /// <summary>
+        /// Gets or sets the invalid class.
+        /// </summary>
+        public string InvalidClass { get; set; }
+
+        /// <summary>
         /// Gets or sets the hidden fields.
         /// </summary>
         public string HiddenFields { get; set; }
@@ -65,5 +71,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Form
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]
         public IDictionary<string, IList<AttributeModel>> Attributes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the attributes for the columns and for the section.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in the model.")]
+        public IDictionary<VisibilityStyle, string> VisibilityClasses { get; set; }
     }
 }
