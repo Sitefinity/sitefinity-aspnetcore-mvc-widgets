@@ -185,7 +185,7 @@
         }
 
         /**
-         * Autocomplete dropdown functionality 
+         * Autocomplete dropdown functionality
          */
         function autocomplete(inputField) {
             var suggestionsDropdown = inputField.parentNode.parentNode.querySelector("[data-sf-role='search-box-autocomplete']");
@@ -319,15 +319,16 @@
                 if (suggestionsDropdown) {
 
                     if (visibilityClassHidden) {
-                        suggestionsDropdown.classList.add(visibilityClassHidden);
+                        suggestionsDropdown?.classList.add(visibilityClassHidden);
                     } else {
-                        suggestionsDropdown.style.display = "none";
+                        if (suggestionsDropdown != null)
+                            suggestionsDropdown.style.display = "none";
                     }
                 }
             }
 
             function dropdownFocusout(e) {
-                if (suggestionsDropdown && !suggestionsDropdown.contains(e.relatedTarget)) {
+                if (suggestionsDropdown != null && !suggestionsDropdown.contains(e.relatedTarget)) {
                     hide(false);
                 }
             }
@@ -362,9 +363,8 @@
             }
 
             function clearAutocompleteDropdownWidth() {
-                if (suggestionsDropdown) {
+                if (suggestionsDropdown != null)
                     suggestionsDropdown.style.width = "";
-                }
             }
 
             inputField.addEventListener("keyup", inputKeyupHandler);

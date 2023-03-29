@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.ViewComponents.AttributeConfigurator.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Content;
@@ -28,14 +29,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// <summary>
         /// Gets or sets the image title for the page.
         /// </summary>
-        [Mirror(nameof(Item), "Title")]
         [DescriptionExtended(InlineDescription = "(for current page)")]
         public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the image alternative text for the page.
         /// </summary>
-        [Mirror(nameof(Item), "AlternativeText")]
         [DisplayName("Alternative text")]
         [DescriptionExtended(InlineDescription = "(for current page)")]
         public string AlternativeText { get; set; }
@@ -51,6 +50,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// </summary>
         [DisplayName("Link to...")]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"ClickAction\",\"operator\":\"Equals\",\"value\":\"OpenLink\"}]}")]
+        [Required(ErrorMessage = "Please select a link")]
+        [DataType(customDataType: "linkSelector")]
         public LinkModel ActionLink { get; set; }
 
         /// <summary>
@@ -76,7 +77,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 1)]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"ImageSize\",\"operator\":\"Equals\",\"value\":\"CustomSize\"}]}")]
         [DataType(customDataType: "customSize")]
-        [Mirror(nameof(Item))]
         public CustomSizeModel CustomSize { get; set; }
 
         /// <summary>
@@ -86,7 +86,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 1)]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"ImageSize\",\"operator\":\"Equals\",\"value\":\"Thumbnail\"}]}")]
         [DataType(customDataType: "thumbnail")]
-        [Mirror(nameof(Item), "Url")]
         public ThumbnailDto Thumnail { get; set; }
 
         /// <summary>

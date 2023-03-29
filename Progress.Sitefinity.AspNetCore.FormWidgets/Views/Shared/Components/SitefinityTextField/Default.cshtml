@@ -5,16 +5,8 @@
 
 @{
     var textBoxUniqueId = Model.FieldName;
-    var ariaDescribedByAttribute = string.Empty;
     var textBoxErrorMessageId = Html.GetUniqueId("TextboxErrorMessage");
-    @if (Model.HasDescription)
-    {
-        ariaDescribedByAttribute = $"aria-describedby='{textBoxUniqueId} {textBoxErrorMessageId}'";
-    }
-    else
-    {
-        ariaDescribedByAttribute = $"aria-describedby='{textBoxErrorMessageId}'";
-    }
+    var ariaDescribedByAttribute = Model.HasDescription ? $"{textBoxUniqueId} {textBoxErrorMessageId}" : textBoxErrorMessageId;
 }
 
 <script data-sf-role='start_field_@textBoxUniqueId' data-sf-role-field-name='@textBoxUniqueId'></script>
@@ -31,8 +23,8 @@
            value="@Model.PredefinedValue"
            data-sf-role="text-field-input"
            @(Model.Readonly ? "readonly" : "")
-           @Html.Raw(ariaDescribedByAttribute)
-           @Html.Raw(Model.ValidationAttributes) />
+           aria-describedby="@ariaDescribedByAttribute"
+           @Model.ValidationAttributes />
 
     @if (Model.HasDescription)
     {

@@ -6,9 +6,10 @@
     var titleCss = Model.GetFieldCss("Title");
     var textCss = Model.GetFieldCss("Text");
     var wrapperCss = Model.GetFieldCss("Content list");
+    var classAttr = string.IsNullOrEmpty(wrapperCss) ? null : wrapperCss;
 }
 
-<div @Html.Raw(string.IsNullOrEmpty(wrapperCss) ? "" : $"class='{wrapperCss}'") @Html.BuildAttributes(Model.Attributes)>
+<div class="@classAttr" @Html.BuildAttributes(Model.Attributes)>
     @{
         var first = Model.Items.FirstOrDefault();
     }
@@ -27,10 +28,11 @@
             @if (title != null)
             {
                 var itemUrl = Model.GetItemUrl(this.Context, item);
-                <h5 @Html.Raw(string.IsNullOrEmpty(titleCss) ? "" : $"class='{titleCss}'")>
+                classAttr = string.IsNullOrEmpty(titleCss) ? null : titleCss;
+                <h5 class="@classAttr">
                     @if (itemUrl != null && Model.RenderLinks)
                     {
-                        <a href="@itemUrl.ToString()">@title</a>
+                        <a href="@itemUrl.ToString()">@Html.HtmlSanitize(title)</a>
                     }
                     else
                     {
@@ -43,7 +45,8 @@
 
             @if (text != null)
             {
-                <p @Html.Raw(string.IsNullOrEmpty(textCss) ? "" : $"class='{textCss}'")>@Html.HtmlSanitize(text)</p>
+                classAttr = string.IsNullOrEmpty(textCss) ? null : textCss;
+                <p class="@classAttr">@Html.HtmlSanitize(text)</p>
             }
         </div>
     }

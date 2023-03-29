@@ -26,13 +26,19 @@
     <EmbeddedResource Include="Scripts\LoginWidgets\registration.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\registration.min.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\change-password.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\facets-widget.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\facets-widget.min.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\query-string-utils.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\query-string-utils.min.js" />
     <EmbeddedResource Include="Scripts\SearchWidgets\search-box.js" />
     <EmbeddedResource Include="Scripts\SearchWidgets\search-box.min.js" />
-	  <EmbeddedResource Include="Scripts\SearchWidgets\search-results.js" />
+    <EmbeddedResource Include="Scripts\SearchWidgets\search-results.js" />
     <EmbeddedResource Include="Scripts\SearchWidgets\search-results.min.js" />
     <EmbeddedResource Include="Views\Shared\Components\SitefinityContentList\ViewsMetaData.json" />
 
     <!-- Excluding file from publish -->
+    <Content Remove="package.json" />
+    <Content Remove="package-lock.json" />
     <Content Remove="Views\Shared\Components\SitefinityContentList\ViewsMetaData.json" />
     <!-- Excluding file from publish -->
 
@@ -58,8 +64,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="14.3.8023.62" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="14.3.8023.62" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="14.3.8023.62" />
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="14.4.8100.439" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="14.4.8100.439" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="14.4.8100.439" />
   </ItemGroup>
 </Project>

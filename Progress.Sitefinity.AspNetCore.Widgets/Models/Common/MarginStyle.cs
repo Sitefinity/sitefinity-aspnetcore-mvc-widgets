@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.ViewComponents.AttributeConfigurator.Attributes;
 using Progress.Sitefinity.Renderer.Designers;
 

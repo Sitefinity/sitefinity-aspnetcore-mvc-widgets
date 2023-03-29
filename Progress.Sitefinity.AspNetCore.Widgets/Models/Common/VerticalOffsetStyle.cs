@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Progress.Sitefinity.AspNetCore.Configuration;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.Renderer.Designers;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
@@ -49,7 +50,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
         public virtual OffsetSize? Bottom { get; set; }
 
         /// <inheritdoc/>
-        protected internal override string GetClasses(StylingConfig stylingConfig, string offsetType, OffsetSize defaultValue = OffsetSize.None)
+        public override string GetClasses(StylingConfig stylingConfig, string offsetType, OffsetSize defaultValue = OffsetSize.None)
         {
             var classes = new StringBuilder(0);
             AddClassesForDirection(stylingConfig, offsetType, "Top", this.Top, defaultValue, classes);

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.Renderer.Models;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
 {
@@ -16,7 +18,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
         /// <summary>
         /// Gets or sets the action link for the primary action.
         /// </summary>
+        [Obsolete("Use PrimaryActionLink property instead.")]
         public string PrimaryActionHref { get; set; }
+
+        /// <summary>
+        /// Gets or sets the primary action link model.
+        /// </summary>
+        public LinkModel PrimaryActionLink { get; set; }
 
         /// <summary>
         /// Gets or sets the action label for the secondary action.
@@ -26,7 +34,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
         /// <summary>
         /// Gets or sets the action link for the secondary action.
         /// </summary>
+        [Obsolete("Use SecondaryActionLink property instead.")]
         public string SecondaryActionHref { get; set; }
+
+        /// <summary>
+        /// Gets or sets the secondary action link model.
+        /// </summary>
+        public LinkModel SecondaryActionLink { get; set; }
 
         /// <summary>
         /// Gets or sets the CSS class of the button.

@@ -13,14 +13,13 @@
 </environment>
 
 @{
-    string classAttr = string.IsNullOrEmpty(@Model.CssClass) ? "class='position-relative'" : string.Format(@"class='position-relative {0}'",
-            @Model.CssClass);
+    string classAttr = string.IsNullOrEmpty(@Model.CssClass) ? "position-relative" : string.Format("position-relative {0}", @Model.CssClass);
     bool disabled = @renderContext.IsEdit;
     var queryCollection = this.Context.Request.Query;
     var cultureParam = queryCollection[Progress.Sitefinity.RestSdk.QueryParamNames.Culture].ToString();
     string culture = !string.IsNullOrEmpty(cultureParam) ? cultureParam : @Model.Culture;
     string sort = queryCollection["orderBy"];
-    <div @Html.Raw(@classAttr)
+    <div class="@classAttr"
     data-sf-search-autocomplete-item-class="@Model.SearchAutocompleteItemClass"
     data-sf-visibility-hidden="@Model.VisibilityClasses[Progress.Sitefinity.AspNetCore.Configuration.VisibilityStyle.Hidden]"
     data-sf-active-class="@Model.ActiveClass">
@@ -36,7 +35,8 @@
                            data-sf-suggestions-fields="@Model.SuggestionFields"
                            data-sf-results-all="@Model.ShowResultsForAllIndexedSites"
                            data-sf-service-path="@Model.WebServicePath" disabled="@disabled" type="text"
-                           placeholder="@Model.SearchBoxPlaceholder" />
+                           placeholder="@Model.SearchBoxPlaceholder"
+                           @Html.BuildAttributes(Model.Attributes) />
                     <button data-sf-role="search-button" class="btn btn-primary ms-2 flex-shrink-0" disabled="@disabled">
                         @Model.SearchButtonLabel
                     </button>

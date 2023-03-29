@@ -5,8 +5,11 @@
 @inject IRestClient restClient;
 
 @model Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList.ContentDetailViewModel
+@{
+    string classAttr = string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass;
+}
 
-<div @Html.Raw(string.IsNullOrEmpty(Model.CssClass) ? "" : $"class='{Model.CssClass}'") @Html.BuildAttributes(Model.Attributes)>
+<div class="@classAttr" @Html.BuildAttributes(Model.Attributes)>
     <h3>
         <span>@(Model.Item.GetValue<string>("Title"))</span>
     </h3>
@@ -18,7 +21,7 @@
         }
         @if (!string.IsNullOrEmpty(author))
         {
-            @Html.Raw($"By {author}");
+            @($"By {author}");
         }
     </div>
 

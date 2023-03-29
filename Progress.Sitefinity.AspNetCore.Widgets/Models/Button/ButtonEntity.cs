@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Attributes;
@@ -28,6 +29,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
         /// </summary>
         [DisplayName("Action link")]
         [ContentSection(PrimaryAction, 2)]
+        [DataType(customDataType: "linkSelector")]
         public LinkModel PrimaryActionLink { get; set; }
 
         /// <summary>
@@ -43,6 +45,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
         /// </summary>
         [DisplayName("Action link")]
         [ContentSection(SecondaryAction, 2)]
+        [DataType(customDataType: "linkSelector")]
         public LinkModel SecondaryActionLink { get; set; }
 
         /// <summary>

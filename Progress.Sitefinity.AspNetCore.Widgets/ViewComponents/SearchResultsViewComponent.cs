@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view compnent for Section widget.
     /// </summary>
-    [SitefinityWidget(Title = "Search results", Order = 0, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Search results", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.NavigationAndSearch)]
+    [SitefinityWidget(Title = "Search results", Order = 1, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Search results", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.NavigationAndSearch)]
     [ViewComponent(Name = "SitefinitySearchResults")]
     public class SearchResultsViewComponent : ViewComponent
     {
@@ -69,6 +69,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             string pageParam = this.HttpContext.Request.Query["page"];
             string scoringProfile = this.HttpContext.Request.Query["scoringInfo"];
             string showResultsForAllIndexedSites = this.HttpContext.Request.Query["resultsForAllSites"];
+            string filter = this.HttpContext.Request.Query["filter"];
             int page = 1;
             var resultsForAllSites = ConvertResultsSetting(showResultsForAllIndexedSites);
             if (!string.IsNullOrEmpty(pageParam) && int.TryParse(pageParam, out int pageNumber) && pageNumber > 0)
@@ -86,6 +87,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
                 Page = page,
                 ScroingInfo = scoringProfile,
                 ShowResultsForAllIndexedSites = resultsForAllSites,
+                Filter = filter,
             };
 
             return searchParams;

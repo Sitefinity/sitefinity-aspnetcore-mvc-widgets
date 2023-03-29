@@ -11,11 +11,11 @@
         var paragraphErrorMessageId = Html.GetUniqueId("ParagraphErrorMessage");
         if (!string.IsNullOrEmpty(Model.InstructionalText))
         {
-            ariaDescribedByAttribute = $"aria-describedby='{paragraphUniqueId} {paragraphErrorMessageId}'";
+            ariaDescribedByAttribute = $"{paragraphUniqueId} {paragraphErrorMessageId}";
         }
         else
         {
-            ariaDescribedByAttribute = $"aria-describedby='{paragraphErrorMessageId}'";
+            ariaDescribedByAttribute = paragraphErrorMessageId;
         }
     }
 }
@@ -32,8 +32,8 @@
            placeholder="@Model.PlaceholderText"
            data-sf-role="paragraph-text-field-textarea"
            @(Model.Readonly ? "readonly" : "")
-           @Html.Raw(ariaDescribedByAttribute)
-           @Html.Raw(Model.ValidationAttributes)>@Model.PredefinedValue</textarea>
+           aria-describedby="@ariaDescribedByAttribute"
+           @Model.ValidationAttributes>@Model.PredefinedValue</textarea>
 
     @if (Model.HasDescription)
     {

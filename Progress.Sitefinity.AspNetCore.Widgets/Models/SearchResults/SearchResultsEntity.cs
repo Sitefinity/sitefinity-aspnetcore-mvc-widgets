@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.ViewComponents.AttributeConfigurator.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;

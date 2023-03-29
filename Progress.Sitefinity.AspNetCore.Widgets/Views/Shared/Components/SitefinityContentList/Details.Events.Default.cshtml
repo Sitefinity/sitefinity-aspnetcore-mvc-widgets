@@ -1,8 +1,11 @@
 ﻿@using Progress.Sitefinity.RestSdk.Dto;
 
 @model Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList.ContentDetailViewModel
+@{
+    string classAttr = string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass;
+}
 
-<div @Html.Raw(string.IsNullOrEmpty(Model.CssClass) ? "" : $"class='{Model.CssClass}'") @Html.BuildAttributes(Model.Attributes)>
+<div class="@classAttr" @Html.BuildAttributes(Model.Attributes)>
     <h3 class="sf-event-title">
         <span>@(Model.Item.GetValue<string>("Title"))</span>
     </h3>

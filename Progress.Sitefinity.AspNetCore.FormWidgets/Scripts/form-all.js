@@ -206,9 +206,14 @@ function initSubmit(formContainer) {
         toggleHideStyles(fieldsContainer);
     }
 
-    function handleResponse(redirectUrl, successMessageVal) {
+    function handleResponse(redirectUrl, successMessageVal, openInNewWindow) {
         if (redirectUrl) {
-            document.location.replace(redirectUrl);
+            if (openInNewWindow) {
+                showSubmittedForm();
+                window.open(redirectUrl, '_blank');
+            } else {
+                document.location.replace(redirectUrl);
+            }
         } else {
             if (successMessageVal)
                 successMessage.innerText = successMessageVal;
@@ -217,10 +222,22 @@ function initSubmit(formContainer) {
         }
     }
 
+    function showSubmittedForm() {
+        submitButton.forEach(button => button.setAttribute('disabled', 'disabled'));
+
+        loadingSpinner.classList.remove("d-block");
+        loadingSpinner.classList.add("d-none");
+
+        successMessage.classList.remove("d-block");
+        successMessage.classList.add("d-none");
+
+        fieldsContainer.classList.remove("d-none");
+        fieldsContainer.classList.add("d-block");
+    }
+
     submitButton.forEach(button => button.addEventListener("click", function (e) {
         shouldScrollToFirstErrorField = true;
     }));
-
 
     form.onsubmit = function (e) {
         e?.preventDefault();
@@ -287,7 +304,7 @@ function initSubmit(formContainer) {
                                 if (customSubmitAction === "True") {
                                     handleResponse(redirectUrl);
                                 } else {
-                                    handleResponse(jsonFormSubmitResponse.redirectUrl, jsonFormSubmitResponse.message);
+                                    handleResponse(jsonFormSubmitResponse.redirectUrl, jsonFormSubmitResponse.message, jsonFormSubmitResponse.openInNewWindow);
                                 }
                             }
                             else {
@@ -309,7 +326,7 @@ function initSubmit(formContainer) {
                 csrfResponse.json().then(function (jsonCsrfResponse) {
                     sendSubmitRequest(jsonCsrfResponse.Value);
                 });
-            } else if (csrfResponse.status === 204) {
+            } else if (csrfResponse.status === 204 || csrfResponse.status === 404) {
                 sendSubmitRequest();
             } else {
                 showErrorMessage("Failed to submit form due to lack of csrf token");

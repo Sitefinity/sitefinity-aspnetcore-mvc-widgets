@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.RestSdk;
@@ -20,11 +21,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword
         /// <param name="config">Sitefinity configuration settings.</param>
         /// <param name="restService">The client for Sitefinity web services.</param>
         /// <param name="styles">The html classes for styling provider.</param>
-        public ChangePasswordModel(ISitefinityConfig config, IODataRestClient restService, IStyleClassesProvider styles)
+        /// <param name="httpContextAccessor">The http context accessor.</param>
+        public ChangePasswordModel(ISitefinityConfig config, IODataRestClient restService, IStyleClassesProvider styles, IHttpContextAccessor httpContextAccessor)
         {
             this.config = config;
             this.restService = restService;
             this.styles = styles;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <inheritdoc/>
@@ -56,6 +59,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword
             var margins = this.styles.GetMarginsClasses(entity);
             viewModel.CssClass = (entity.CssClass + " " + margins.Trim()).Trim();
 
+            this.httpContextAccessor.HttpContext.DisableCache();
+
             var user = await this.restService.Users().GetCurrentUser();
             viewModel.ExternalProviderName = user?.ExternalProviderName;
 
@@ -77,5 +82,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword
         private readonly ISitefinityConfig config;
         private readonly IODataRestClient restService;
         private readonly IStyleClassesProvider styles;
+        private readonly IHttpContextAccessor httpContextAccessor;
     }
 }
