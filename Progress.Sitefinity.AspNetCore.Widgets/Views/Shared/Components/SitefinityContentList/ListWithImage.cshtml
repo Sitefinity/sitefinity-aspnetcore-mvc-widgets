@@ -6,9 +6,10 @@
     var titleCss = Model.GetFieldCss("Title");
     var textCss = Model.GetFieldCss("Text");
     var wrapperCss = Model.GetFieldCss("Content list");
+    string classAttr = string.IsNullOrEmpty(wrapperCss) ? null : wrapperCss;
 }
 
-<div @Html.Raw(string.IsNullOrEmpty(wrapperCss) ? "" : $"class='{wrapperCss}'") @Html.BuildAttributes(Model.Attributes)>
+<div class="@classAttr" @Html.BuildAttributes(Model.Attributes)>
     @{
         var first = Model.Items.FirstOrDefault();
     }
@@ -38,11 +39,13 @@
             <div class="flex-grow-1 ms-3">
                 @if (title != null)
                 {
-                    <h5 @Html.Raw(string.IsNullOrEmpty(titleCss) ? "" : $"class='{titleCss}'")>@Html.HtmlSanitize(title)</h5>
+                    classAttr = string.IsNullOrEmpty(titleCss) ? null : titleCss;
+                    <h5 class="@classAttr">@Html.HtmlSanitize(title)</h5>
                 }
                 @if (text != null)
                 {
-                    <p @Html.Raw(string.IsNullOrEmpty(textCss) ? "" : $"class='{textCss}'")>@Html.HtmlSanitize(text)</p>
+                    classAttr = string.IsNullOrEmpty(textCss) ? null : textCss;
+                    <p class="@classAttr">@Html.HtmlSanitize(text)</p>
                 }
 
                 @if (Model.RenderLinks)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
@@ -43,7 +44,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock
             };
 
             var margins = this.styles.GetMarginsClasses(entity);
-            viewModel.WrapperCssClass = (entity.WrapperCssClass + " " + margins).Trim();
+            var paddings = this.styles.GetPaddingsClasses(entity);
+            viewModel.WrapperCssClass = (entity.WrapperCssClass + " " + margins + " " + paddings).Trim();
 
             if (entity.SharedContentID != Guid.Empty)
             {

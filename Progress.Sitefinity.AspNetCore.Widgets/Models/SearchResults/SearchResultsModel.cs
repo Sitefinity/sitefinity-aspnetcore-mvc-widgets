@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
+using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
@@ -20,20 +22,24 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
     public class SearchResultsModel : ISearchResultsModel
     {
         private readonly IODataRestClient restClient;
+        private readonly IRequestContext requestContext;
         private readonly IStyleClassesProvider styles;
         private IStringLocalizer<SearchResultsModel> localizer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchResultsModel"/> class.
         /// </summary>
+        /// <param name="requestContext">The request context.</param>
         /// <param name="restClient">The rest client.</param>
         /// <param name="localizer">The localization provider.</param>
         /// <param name="styles">The styles provider.</param>
         public SearchResultsModel(
+            IRequestContext requestContext,
             IODataRestClient restClient,
             IStringLocalizer<SearchResultsModel> localizer,
             IStyleClassesProvider styles)
         {
+            this.requestContext = requestContext;
             this.restClient = restClient;
             this.localizer = localizer;
             this.styles = styles;
@@ -49,9 +55,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
             if (httpContext == null)
                 throw new ArgumentNullException(nameof(httpContext));
 
-            httpContext.AddVaryByQueryParams(new[] { "searchQuery", "page", "sf_culture", "orderBy" });
+            httpContext.AddVaryByQueryParams(new[] { "searchQuery", "page", "sf_culture", "orderBy", "filter" });
 
-            var currentSite = await this.restClient.Sites().GetCurrentSite();
+            var currentSite = this.requestContext.Site;
+            var languages = currentSite.Cultures.Select(x => new Sitefinity.RestSdk.Clients.Sites.Dto.SiteDto.CultureDto()
+            {
+                Name = x.Name,
+                DisplayName = CultureInfo.GetCultureInfo(x.Name).DisplayName,
+            });
+
             var margins = this.styles.GetMarginsClasses(entity);
             var cssClass = (entity.CssClass + " " + margins).Trim();
 
@@ -63,7 +75,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                 ResultsNumberLabel = entity.ResultsNumberLabel,
                 Attributes = entity.Attributes,
                 CssClass = cssClass,
-                Languages = currentSite.Cultures,
+                Languages = languages,
                 AllowUsersToSortResults = entity.AllowUsersToSortResults == 1,
                 Sorting = entity.Sorting,
                 SoryByLabel = this.localizer.GetString("Sort by"),
@@ -147,6 +159,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                     ["highlightedFields"] = entity.HighlightedFields,
                     ["scoringInfo"] = searchParamsModel.ScroingInfo,
                     ["resultsForAllSites"] = searchParamsModel.ShowResultsForAllIndexedSites.ToString("F0", CultureInfo.InvariantCulture),
+                    ["filter"] = searchParamsModel.Filter,
                 },
             });
 

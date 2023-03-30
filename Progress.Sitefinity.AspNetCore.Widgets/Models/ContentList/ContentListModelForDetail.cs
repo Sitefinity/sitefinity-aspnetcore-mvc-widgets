@@ -73,6 +73,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                         return new ContentDetailViewModel(item);
                     }
 
+                    if (detailItem != null && !string.IsNullOrEmpty(detailItem.ErrorMessage))
+                    {
+                        throw new DetailItemException(detailItem.ErrorMessage);
+                    }
+
                     if (entity.ContentViewDisplayMode == ContentViewDisplayMode.Detail)
                     {
                         var item = await this.LoadItem(entity.SelectedItems.ItemIdsOrdered[0], entity.SelectedItems.Content[0].Variations[0].Source, selectedItemsType, query);

@@ -14,7 +14,9 @@
     if (!renderContext.IsEdit)
     {
         <div data-sf-role='form-visibility-wrapper' style='display: none'>
-            @RenderForm();
+            @{
+                await RenderForm();
+            }
         </div>
     }
     else

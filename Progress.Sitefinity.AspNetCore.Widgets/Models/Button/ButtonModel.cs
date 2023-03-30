@@ -28,8 +28,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
             var viewModel = new ButtonViewModel();
             viewModel.PrimaryActionLabel = entity.PrimaryActionLabel;
             viewModel.SecondaryActionLabel = entity.SecondaryActionLabel;
-            viewModel.PrimaryActionHref = entity.PrimaryActionLink != null ? entity.PrimaryActionLink.Href : string.Empty;
-            viewModel.SecondaryActionHref = entity.SecondaryActionLink != null ? entity.SecondaryActionLink.Href : string.Empty;
+            viewModel.PrimaryActionLink = entity.PrimaryActionLink;
+            viewModel.SecondaryActionLink = entity.SecondaryActionLink;
+
             var margins = this.styles.GetMarginsClasses(entity);
             var alignment = this.styles.GetAlignmenClasses(entity);
             viewModel.CssClass = (entity.CssClass + " " + margins + " " + alignment).Trim();

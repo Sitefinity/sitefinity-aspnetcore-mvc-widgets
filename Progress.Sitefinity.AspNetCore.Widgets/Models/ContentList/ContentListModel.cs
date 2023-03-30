@@ -156,7 +156,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 foreach (var taxonomyFilter in taxonomyFilters)
                 {
                     var match = Regex.Match(taxonomyFilter, pattern);
-                    var taxnomyName = match.Groups[2].Value;
+                    var taxonomyName = match.Groups[2].Value;
                     var taxaUrlSegments = match.Groups[3].Value;
 
                     var taxonUrl = string.Join('/', taxaUrlSegments);
@@ -168,12 +168,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     };
                     var taxonId = await restClient.ExecuteBoundFunction<ODataWrapper<Guid>>(new BoundFunctionArgs
                     {
-                        Name = $"Default.GetTaxonByUrl(taxonomyName='{taxnomyName}',taxonUrl=@param)",
+                        Name = $"Default.GetTaxonByUrl(taxonomyName='{taxonomyName}',taxonUrl=@param)",
                         Type = "taxonomies",
                         AdditionalQueryParams = additionalParams,
                     });
 
-                    var relatedClassificationFieldName = restClient.ServiceMetadata.GetTaxonomyFieldName(typename, taxnomyName);
+                    var relatedClassificationFieldName = restClient.ServiceMetadata.GetTaxonomyFieldName(typename, taxonomyName);
 
                     if (relatedClassificationFieldName != null)
                     {

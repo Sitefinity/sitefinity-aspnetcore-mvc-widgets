@@ -4,17 +4,9 @@
 
 @{
     var fileFieldUniqueId = Model.FieldName;
-    string ariaDescribedByAttribute = string.Empty;
     var fileFieldErrorMessageId = Html.GetUniqueId("FileFieldErrorMessage");
     var labelAdditionalClassList = Model.HasDescription ? "mb-1" : null;
-    @if (Model.HasDescription)
-    {
-        ariaDescribedByAttribute = $"aria-describedby='{fileFieldUniqueId} {fileFieldErrorMessageId}'";
-    }
-    else
-    {
-        ariaDescribedByAttribute = $"aria-describedby='{fileFieldErrorMessageId}'";
-    }
+    string ariaDescribedByAttribute = Model.HasDescription ? $"{fileFieldUniqueId} {fileFieldErrorMessageId}" : fileFieldErrorMessageId;
 }
 
 <script data-sf-role='start_field_@fileFieldUniqueId' data-sf-role-field-name='@fileFieldUniqueId'></script>
@@ -36,8 +28,8 @@
                     title="@Model.Label"
                     name="@Model.FieldName"
                     type="file"
-                    @Html.Raw(ariaDescribedByAttribute)
-                    @Html.Raw(Model.ValidationAttributes) />
+                    aria-describedby="@ariaDescribedByAttribute"
+                    @Model.ValidationAttributes />
             </div>
         }
 
@@ -64,8 +56,8 @@
                     title="@Model.Label"
                     name="@Model.FieldName"
                     type="file"
-                    @Html.Raw(ariaDescribedByAttribute)
-                    @Html.Raw(Model.ValidationAttributes) />
+                    aria-describedby="@ariaDescribedByAttribute"
+                    @Model.ValidationAttributes />
 
                 @if (Model.AllowMultipleFiles)
                 {

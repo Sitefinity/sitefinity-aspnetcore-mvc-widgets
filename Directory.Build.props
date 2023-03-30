@@ -1,7 +1,7 @@
 <Project>
   <!-- Project Meta Information -->
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
     <!-- StyleCop Analyzers configuration -->

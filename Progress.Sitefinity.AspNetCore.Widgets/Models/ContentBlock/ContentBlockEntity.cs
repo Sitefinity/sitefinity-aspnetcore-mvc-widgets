@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.Renderer.Designers;
@@ -13,7 +14,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock
     /// <summary>
     /// The entity for the Content block widget. Contains all of the data persited in the database.
     /// </summary>
-    public class ContentBlockEntity : IHasMargins<MarginVerticalStyle>
+    public class ContentBlockEntity : IHasMargins<MarginStyle>, IHasPaddings<PaddingStyle>
     {
         /// <summary>
         /// Gets or sets the content.
@@ -50,13 +51,22 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock
         public string TagName { get; set; }
 
         /// <summary>
-        /// Gets or sets the margins.
+        /// Gets or sets the paddings.
         /// </summary>
         [Category(PropertyCategory.Advanced)]
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 1)]
+        [DisplayName("Padding")]
+        [TableView("Content block")]
+        public PaddingStyle Paddings { get; set; }
+
+        /// <summary>
+        /// Gets or sets the margins.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 2)]
         [DisplayName("Margins")]
-        [TableView("Content")]
-        public MarginVerticalStyle Margins { get; set; }
+        [TableView("Content block")]
+        public MarginStyle Margins { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the content block.

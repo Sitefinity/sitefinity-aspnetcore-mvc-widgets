@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Content;
+using Progress.Sitefinity.Renderer.Models;
 using Progress.Sitefinity.RestSdk.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
@@ -34,7 +36,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// <summary>
         /// Gets or sets the action link.
         /// </summary>
+        [Obsolete("Use ActionLinkModel property instead.")]
         public string ActionLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets the action link models.
+        /// </summary>
+        public LinkModel ActionLinkModel { get; set; }
 
         /// <summary>
         /// Gets or sets the image size.

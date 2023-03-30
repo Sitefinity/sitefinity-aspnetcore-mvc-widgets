@@ -13,7 +13,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the classification widget.
     /// </summary>
-    [SitefinityWidget(Title = ClassificationViewComponent.Title, Order = 2, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Select classification", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "tag", Category = WidgetCategory.NavigationAndSearch)]
+    [SitefinityWidget(Title = ClassificationViewComponent.Title, Order = 3, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Select classification", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "tag", Category = WidgetCategory.NavigationAndSearch)]
     [ViewComponent(Name = "SitefinityClassification")]
     public class ClassificationViewComponent : ViewComponent
     {

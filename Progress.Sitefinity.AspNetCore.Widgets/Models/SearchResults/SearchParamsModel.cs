@@ -44,5 +44,10 @@
         /// Gets or sets the value if search results should be provided for all indexed sites or only for the current site.
         /// </summary>
         public int ShowResultsForAllIndexedSites { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filter parameter.
+        /// </summary>
+        public string Filter { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.ContentBlock;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.Dropdown;
+using Progress.Sitefinity.AspNetCore.FormWidgets.Models.DynamicList;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.FileField;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.FormSection;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.MultipleChoice;
@@ -30,6 +31,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets
             services.AddTransient<IDropdownModel, DropdownModel>();
             services.AddTransient<IFileFieldModel, FileFieldModel>();
             services.AddTransient<IContentBlockModel, ContentBlockModel>();
+            services.AddTransient<IDynamicListModel, DynamicListModel>();
 
             services.AddSingleton<FormWidgetsStyleGenerator>();
         }

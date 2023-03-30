@@ -1,4 +1,5 @@
 ﻿using Progress.Sitefinity.AspNetCore.Configuration;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common

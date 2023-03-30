@@ -108,7 +108,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
                 viewModel.Height = isSvg && hasZeroDimensions ? null : viewModel.Item.Height;
 
                 viewModel.SelectedImageUrl = viewModel.Item.Url;
-                viewModel.ActionLink = GetActionLink(entity, viewModel.Item);
+                viewModel.ActionLinkModel = entity.ActionLink;
                 if (viewModel.Item.Thumbnails != null)
                 {
                     viewModel.Thumbnails = viewModel.Item.Thumbnails.OrderBy(t => t.Width).ToList();
@@ -142,23 +142,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
             }
 
             return Task.FromResult(viewModel);
-        }
-
-        private static string GetActionLink(ImageEntity entity, ImageDto image)
-        {
-            if (entity.ClickAction == ImageClickAction.OpenLink)
-            {
-                if (entity.ActionLink != null)
-                {
-                    return entity.ActionLink.Href;
-                }
-            }
-            else if (entity.ClickAction == ImageClickAction.OpenOriginalSize)
-            {
-                return image.Url;
-            }
-
-            return string.Empty;
         }
 
         private IStyleClassesProvider styles;

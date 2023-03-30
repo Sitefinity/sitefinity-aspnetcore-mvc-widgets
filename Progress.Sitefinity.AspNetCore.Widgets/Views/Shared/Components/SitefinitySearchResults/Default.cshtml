@@ -20,6 +20,7 @@
     @if (!string.IsNullOrEmpty(searchTerm) || renderContext.IsEdit)
     {
         <div class="@Model.CssClass"
+             id="sf-search-result-container"
              data-sf-role='search-results'
              data-sf-search-query='@searchTerm'
              data-sf-search-catalogue='@queryCollection["indexCatalogue"]'
@@ -28,6 +29,7 @@
              data-sf-scoring-info='@queryCollection["scoringInfo"]'
              data-sf-results-all='@queryCollection["resultsForAllSites"]'
              data-sf-sorting='@sorting'
+             data-sf-filter='@queryCollection["filter"]'
              @Html.BuildAttributes(Model.Attributes)>
             <div class="d-flex align-items-center justify-content-between my-3">
                 <h1 role="alert" aria-live="assertive">@Model.ResultsHeader</h1>
@@ -47,7 +49,8 @@
             </div>
             <div>
                 <h4>@Model.TotalCount @Model.ResultsNumberLabel</h4>
-                <p>@Model.LanguagesLabel
+                <p data-sf-hide-while-loading="true">
+                    @Model.LanguagesLabel
                     @{
                     int count = Model.Languages.Count();
                         @for (int i = 0; i < count; i++)
@@ -60,7 +63,7 @@
                     }
                 </p>
             </div>
-            <div class="mt-4">
+            <div class="mt-4" data-sf-hide-while-loading="true">
                 @foreach (var item in Model.SearchResults)
                 {
                     bool hasLink = !string.IsNullOrEmpty(item.Link);
@@ -97,9 +100,17 @@
 
         @if (Model.Pager != null)
         {
-            <div class="mt-4">
+            <div class="mt-4" id="sf-search-result-pager" data-sf-hide-while-loading="true">
                 @await Html.PartialAsync("ContentPager", Model.Pager)
             </div>
         }
+
+        <div id="sf-search-results-loading-indicator" style="display:none">
+            <div class="d-flex justify-content-center my-5">
+                <div class="spinner-border text-primary my-5" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
     }
 }

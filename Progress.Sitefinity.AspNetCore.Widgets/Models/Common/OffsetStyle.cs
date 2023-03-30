@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Progress.Sitefinity.AspNetCore.Configuration;
+using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.Renderer.Designers;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
@@ -55,7 +56,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
         /// <param name="offsetType">The offset type (padding, margin).</param>
         /// <param name="defaultValue">The default value.</param>
         /// <returns>The CSS classes.</returns>
-        protected internal override string GetClasses(StylingConfig stylingConfig, string offsetType, OffsetSize defaultValue = OffsetSize.None)
+        public override string GetClasses(StylingConfig stylingConfig, string offsetType, OffsetSize defaultValue = OffsetSize.None)
         {
             var classes = new StringBuilder(0);
             VerticalOffsetStyle.AddClassesForDirection(stylingConfig, offsetType, "Top", this.Top, defaultValue, classes);
