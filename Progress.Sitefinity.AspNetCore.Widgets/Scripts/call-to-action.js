@@ -14,8 +14,9 @@
                     });
 
                     var href = event.currentTarget.getAttribute("href");
+                    var target = event.currentTarget.getAttribute("target") || "_self";
                     setTimeout(function () {
-                        window.location.href = href;
+                        window.open(href, target);
                     }, 500);
                 }
             });

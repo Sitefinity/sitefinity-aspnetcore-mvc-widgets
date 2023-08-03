@@ -1,0 +1,79 @@
+﻿@using Progress.Sitefinity.AspNetCore.Mvc.Rendering;
+@using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
+
+@model DocumentListViewModel
+@{
+    var wrapperCss = Model.GetFieldCss("Document table");
+    var classAttr = string.IsNullOrEmpty(wrapperCss) ? null : wrapperCss;
+}
+
+<div class="@classAttr @Model.WrapperCssClass" @Html.BuildAttributes(Model.Attributes)>
+    @if (Model.Items.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr class="row g-0">
+				    <th class="col-5 border-secondary"><span class="fw-bold">@Model.TitleColumnLabel</span></th>
+				    <th class="col-2 border-secondary"><span class="fw-bold">@Model.TypeColumnLabel</span></th>
+				    <th class="col-2 border-secondary text-end"><span class="fw-bold">@Model.SizeColumnLabel</span></th>
+				    <th class="col border-secondary"></th>
+                </tr>
+            </thead>
+		    <tbody class="border-top-0">
+			    @foreach (var item in Model.Items)
+			    {
+				    var title = Model.GetFieldValue<string>(item, "Title");
+				    var fileSize = Model.GetFileSize(item);
+				    var extension = Model.GetExtension(item);
+				    var url = Model.GetFieldValue<string>(item, "Url");
+
+                    <tr class="row g-0">
+					    <td class="col-5">
+						    <div class="d-flex gap-4 align-items-center">
+							    <div class="position-relative small">
+								    <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 384 512" fill="#a7acb1">
+									    <path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm160-14.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"></path>
+								    </svg>
+                                    <span style="background-color:var(@DocumentListViewModel.GetFileExtensionCssClass(extension))" class="sc-file-icon-extension text-uppercase ps-1 pe-1 mb-2 text-white small">@extension</span>
+							    </div>
+							    <div class="flex-grow-1">
+								    @if (title != null)
+								    {
+									    var itemUrl = Model.GetItemUrl(this.Context, item);
+
+									    <div class="text-break">
+                                            @if (itemUrl != null && Model.RenderLinks)
+										    {
+											    <a href="@itemUrl.ToString()">@Html.HtmlSanitize(title)</a>
+										    }
+										    else
+										    {
+											    @Html.HtmlSanitize(title)
+										    }
+									    </div>
+								    }
+							    </div>
+						    </div>
+					    </td>
+					    <td class="col-2">
+						    <span>@extension</span>
+					    </td>
+					    <td class="col-2 text-end">
+						    <span>@fileSize</span>
+					    </td>
+					    <td class="col text-end">
+						    <a href="@url" target="_blank">@Model.DownloadLinkLabel</a>
+					    </td>
+				    </tr>
+			    }
+		    </tbody>
+        </table>
+    }
+
+    @if (Model.Pager != null)
+    {
+        <div>
+            @await Html.PartialAsync("ContentPager", Model.Pager)
+        </div>
+    }
+</div>

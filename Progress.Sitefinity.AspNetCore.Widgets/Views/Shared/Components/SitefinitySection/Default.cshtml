@@ -1,4 +1,7 @@
-﻿@using Progress.Sitefinity.AspNetCore.Models
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Progress.Sitefinity.AspNetCore
+
+@using Progress.Sitefinity.AspNetCore.Models
 @model Progress.Sitefinity.AspNetCore.Widgets.Models.Section.SectionViewModel;
 <sf-wrapper style="@this.Model.SectionStyle" tag-name="@Model.TagName" html-attributes="@Model.SectionAttributes" class="row @this.Model.SectionClasses">
     @if (this.Model.ShowVideo && this.Model.VideoUrl != null)

@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
-using Progress.Sitefinity.AspNetCore.Configuration;
-using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
+using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.Clients.LayoutService.Dto;
-using Progress.Sitefinity.Renderer.Entities.Content;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Client;
-using Progress.Sitefinity.RestSdk.Clients.Pages.Dto;
 using Progress.Sitefinity.RestSdk.Dto;
 using Progress.Sitefinity.RestSdk.Filters;
 using Progress.Sitefinity.RestSdk.OData;
@@ -34,28 +26,39 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         /// </summary>
         /// <param name="restService">The HTTP client.</param>
         /// <param name="requestContext">The request context.</param>
-        public ContentListModelForDetail(IODataRestClient restService, IRequestContext requestContext)
+        /// <param name="styles">The style classes provider.</param>
+        public ContentListModelForDetail(IODataRestClient restService, IRequestContext requestContext, IStyleClassesProvider styles)
         {
             this.restService = restService;
             this.requestContext = requestContext;
+            this.styles = styles;
         }
 
-        public async Task<ContentDetailViewModel> HandleDetailItem(ContentListEntity entity, IQueryCollection query)
+        public async Task<ContentDetailViewModel> HandleDetailItem(ContentListEntityBase entity, IQueryCollection query, bool showDetailsViewOnChildDetailsView)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var detailItem = await this.TryHandleDetailItem(entity, query);
+            var detailItem = await this.TryHandleDetailItem(entity, query, showDetailsViewOnChildDetailsView);
             if (detailItem != null)
             {
                 detailItem.CssClass = entity.CssClasses?.FirstOrDefault(x => x.FieldName == "Details view")?.CssClass;
+
+                var documentEntity = entity as DocumentListEntity;
+                if (documentEntity != null)
+                {
+                    var margins = this.styles.GetMarginsClasses(documentEntity);
+                    detailItem.WrapperCssClass = margins.Trim();
+                    detailItem.DownloadLinkLabel = documentEntity.DownloadLinkLabel;
+                }
+
                 return detailItem;
             }
 
             return null;
         }
 
-        private async Task<ContentDetailViewModel> TryHandleDetailItem(ContentListEntity entity, IQueryCollection query)
+        private async Task<ContentDetailViewModel> TryHandleDetailItem(ContentListEntityBase entity, IQueryCollection query, bool showDetailsViewOnChildDetailsView)
         {
             if (entity.SelectedItems != null)
             {
@@ -84,7 +87,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                         return new ContentDetailViewModel(item);
                     }
 
-                    var handled = await this.HandleShowDetailsViewOnChildDetailsView(entity, selectedItemsType, detailItem);
+                    var handled = await this.HandleShowDetailsViewOnChildDetailsView(entity, selectedItemsType, detailItem, showDetailsViewOnChildDetailsView);
                     if (handled != null)
                     {
                         return handled;
@@ -121,9 +124,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             }
         }
 
-        private async Task<ContentDetailViewModel> HandleShowDetailsViewOnChildDetailsView(ContentListEntity entity, string selectedItemsType, ResolvedDetailItem detailItem)
+        private async Task<ContentDetailViewModel> HandleShowDetailsViewOnChildDetailsView(ContentListEntityBase entity, string selectedItemsType, ResolvedDetailItem detailItem, bool showDetailsViewOnChildDetailsView)
         {
-            if (entity.ShowDetailsViewOnChildDetailsView && detailItem != null && entity.ContentViewDisplayMode == ContentViewDisplayMode.Master)
+            if (showDetailsViewOnChildDetailsView && detailItem != null && entity.ContentViewDisplayMode == ContentViewDisplayMode.Master)
             {
                 var childTypes = (this.restService as RestClient).ServiceMetadata.GetChildTypes(selectedItemsType).SelectMany((x, i) => x.Select(y => new KeyValuePair<int, string>(i + 1, y)));
                 var childTypeInDetails = childTypes.FirstOrDefault(x => x.Value == detailItem.ItemType);
@@ -170,5 +173,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
         private IODataRestClient restService;
         private IRequestContext requestContext;
+        private IStyleClassesProvider styles;
     }
 }

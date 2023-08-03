@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.RestSdk.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 {

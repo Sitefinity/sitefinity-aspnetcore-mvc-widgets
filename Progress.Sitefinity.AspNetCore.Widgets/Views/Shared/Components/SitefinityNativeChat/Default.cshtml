@@ -73,6 +73,10 @@
             if (userData !== "") {
                 userData = JSON.parse(userData);
 
+                if (userData.LastName === null) {
+                    userData.LastName = "";
+                }
+
                 if (userData.value.Id == @Guid.Empty.ToString()) {
                     var insightSubject = @Guid.Empty.ToString();
                     if (@httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("sf-data-intell-subject", out string subjectId)) {

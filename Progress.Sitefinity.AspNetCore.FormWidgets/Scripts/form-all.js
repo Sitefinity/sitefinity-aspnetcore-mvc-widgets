@@ -323,9 +323,13 @@ function initSubmit(formContainer) {
                 });
             }
             if (csrfResponse.status === 200) {
-                csrfResponse.json().then(function (jsonCsrfResponse) {
-                    sendSubmitRequest(jsonCsrfResponse.Value);
-                });
+                if (csrfResponse.headers.get('content-type') === 'application/json') {
+                    csrfResponse.json().then(function (jsonCsrfResponse) {
+                        sendSubmitRequest(jsonCsrfResponse.Value);
+                    });
+                } else {
+                    sendSubmitRequest();
+                }
             } else if (csrfResponse.status === 204 || csrfResponse.status === 404) {
                 sendSubmitRequest();
             } else {

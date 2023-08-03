@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Progress.Sitefinity.AspNetCore.Configuration;
@@ -22,16 +23,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
     /// </summary>
     internal sealed class NativeChatClient : INativeChatClient, IDisposable
     {
+        private const string BotChannelsKey = "sf_native_chat_bot_channels_";
+        private static readonly object BotChannelsCacheSync = new object();
         private string nativeChatApiEndpoint = "https://api.nativechat.com/v1/";
 
         private HttpClient HttpClient { get; set; }
+
+        private IMemoryCache MemoryCache { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NativeChatClient"/> class.
         /// </summary>
         /// <param name="httpClientFactory">The httpClientFactory parameter.</param>
         /// <param name="configuration">The configuration parameter.</param>
-        public NativeChatClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        /// <param name="memoryCache">The cache parameter.</param>
+        public NativeChatClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, IMemoryCache memoryCache)
         {
             var config = new NativeChatConfig();
             configuration.Bind("NativeChat", config);
@@ -39,6 +45,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
             this.HttpClient = httpClientFactory.CreateClient();
             this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("api-token", config.ApiKey);
             this.HttpClient.BaseAddress = new Uri(this.nativeChatApiEndpoint);
+            this.MemoryCache = memoryCache;
         }
 
         /// <inheritdoc/>
@@ -88,21 +95,37 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         }
 
         /// <inheritdoc/>
-        public async Task<List<NativeChatChannelDto>> BotChannels(string botId)
+        public Task<List<NativeChatChannelDto>> BotChannels(string botId)
         {
-            var channels = new List<NativeChatChannelDto>();
+            List<NativeChatChannelDto> channels = null;
             if (!string.IsNullOrEmpty(botId))
             {
-                var response = await this.HttpClient.GetAsync($"bots/{botId}/channels");
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                var cacheKey = BotChannelsKey + botId;
+                if (!this.MemoryCache.TryGetValue(cacheKey, out channels))
                 {
-                    var result = await response.Content.ReadAsStringAsync();
-                    channels = JsonConvert.DeserializeObject<List<NativeChatChannelDto>>(result);
+                    lock (BotChannelsCacheSync)
+                    {
+                        if (!this.MemoryCache.TryGetValue(cacheKey, out channels))
+                        {
+                            channels = new List<NativeChatChannelDto>();
+                            var response = this.HttpClient.GetAsync($"bots/{botId}/channels").Result;
+
+                            if (response.StatusCode == HttpStatusCode.OK)
+                            {
+                                var result = response.Content.ReadAsStringAsync().Result;
+                                channels = JsonConvert.DeserializeObject<List<NativeChatChannelDto>>(result);
+
+                                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                                    .SetSlidingExpiration(TimeSpan.FromHours(1));
+
+                                this.MemoryCache.Set(cacheKey, channels, cacheEntryOptions);
+                            }
+                        }
+                    }
                 }
             }
 
-            return channels;
+            return Task.FromResult(channels);
         }
 
         /// <inheritdoc/>

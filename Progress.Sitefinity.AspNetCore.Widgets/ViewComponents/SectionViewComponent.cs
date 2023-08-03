@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Section;
+using Progress.Sitefinity.Renderer.Designers.Attributes;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
 {
@@ -10,6 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// The view compnent for Section widget.
     /// </summary>
     [SitefinityWidget(Category = WidgetCategory.Layout, Title = "Section", Section = WidgetSection.EmptySection)]
+    [InitialValue("SectionPadding", "{\"Top\":\"S\",\"Bottom\":\"S\"}")]
     [ViewComponent(Name = "SitefinitySection")]
     public class SectionViewComponent : ViewComponent
     {
