@@ -1,12 +1,11 @@
-﻿
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Progress.Sitefinity.AspNetCore
 
 @model Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.FormSection.FormSectionViewModel;
-    <section class="row">
-        @for (var i = 0; i < this.Model.ColumnsCount; i++)
-        {
-            <div class="col-md-@this.Model.ColumnProportions[i]" data-sfcontainer container-context="@this.Model.Context.ContainerContext(this.Model.ColumnNames[i], null)">
-            </div>
-        }
-    </section>
+<section class="row">
+    @for (var i = 0; i < this.Model.ColumnsCount; i++)
+    {
+        <div class="col-md-@this.Model.ColumnProportions[i]" data-sfcontainer container-context="@this.Model.Context.ContainerContext(this.Model.ColumnNames[i], null)">
+        </div>
+    }
+</section>
