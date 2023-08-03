@@ -8,23 +8,26 @@ using Progress.Sitefinity.AspNetCore.Preparations;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
 using Progress.Sitefinity.RestSdk;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
 {
     internal class ContentListPreparation : IRequestPreparation
     {
-        public ContentListPreparation(IContentListModel contentListModel)
+        private protected IEnumerable<IContentListModelBase> ContentListBaseModels { get; set; }
+
+        public ContentListPreparation(IEnumerable<IContentListModelBase> models)
         {
-            this.contentListModel = contentListModel;
+            this.ContentListBaseModels = models;
         }
 
         public Task Prepare(PageModel pageModel, IRestClient batchClient, HttpContext httpContext)
         {
             var context = httpContext.RequestServices.GetService<IRequestContext>();
             var contentListWidgets = pageModel.AllViewComponentsFlat
-                .Where(x => typeof(IViewComponentContext<ContentListEntity>).IsAssignableFrom(x.GetType()) && x.Name == "SitefinityContentList")
-                .Select(context => context as IViewComponentContext<ContentListEntity>)
+                .Where(x => typeof(IViewComponentContext<ContentListEntityBase>).IsAssignableFrom(x.GetType()) && (x.Name == "SitefinityContentList" || x.Name == "SitefinityDocumentList"))
+                .Select(context => context as IViewComponentContext<ContentListEntityBase>)
                 .ToList();
 
             if (!contentListWidgets.Any())
@@ -33,14 +36,26 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
             return this.PreparePager(pageModel, httpContext, contentListWidgets);
         }
 
-        private Task PreparePager(PageModel pageModel, HttpContext httpContext, IList<IViewComponentContext<ContentListEntity>> components)
+        private Task PreparePager(PageModel pageModel, HttpContext httpContext, IList<IViewComponentContext<ContentListEntityBase>> components)
         {
             var tasks = new List<Task>();
             var allTasksResolved = true;
             var resolvedSegments = new List<string>();
+            IContentListModelBase contentListmodel = null;
             foreach (var component in components)
             {
-                var resultingTask = this.contentListModel.HandleListView(component.Entity, pageModel.UrlParameters, httpContext).ContinueWith(
+                if (component.Entity is ContentListEntity)
+                {
+                    contentListmodel = this.ContentListBaseModels.FirstOrDefault(x => x is IContentListModel);
+                }
+                else if (component.Entity is DocumentListEntity)
+                {
+                    contentListmodel = this.ContentListBaseModels.FirstOrDefault(x => x is IDocumentListModel);
+                }
+
+                if (contentListmodel != null)
+                {
+                    var task = contentListmodel.HandleListView(component.Entity, pageModel.UrlParameters, httpContext).ContinueWith(
                     (itemsTask) =>
                     {
                         if (itemsTask.IsFaulted)
@@ -49,7 +64,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                             return;
                         }
 
-                        var listViewModel = itemsTask.Result as ContentListViewModel;
+                        var listViewModel = itemsTask.Result as ContentListCommonViewModel;
                         if (listViewModel != null)
                         {
                             if (listViewModel.Pager != null)
@@ -72,7 +87,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                         }
                     }, TaskScheduler.Current);
 
-                tasks.Add(resultingTask);
+                    tasks.Add(task);
+                }
             }
 
             Task.WaitAll(tasks.ToArray());
@@ -94,6 +110,5 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
         }
 
         internal const string PreparedData = nameof(ContentListPreparation.PreparedData);
-        private readonly IContentListModel contentListModel;
     }
 }

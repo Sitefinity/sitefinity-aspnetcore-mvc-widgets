@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Preparations;
+using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Button;
@@ -9,6 +10,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Classification;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Facets;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Form;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Image;
@@ -51,6 +53,9 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<ISearchBoxModel, SearchBoxModel>();
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
             services.AddTransient<INativeChatModel, NativeChatModel>();
+            services.AddTransient<IDocumentListModel, DocumentListModel>();
+            services.AddTransient<IContentListModelBase, ContentListModel>();
+            services.AddTransient<IContentListModelBase, DocumentListModel>();
 
             services.AddTransient<IFormModel, FormModel>();
             services.AddTransient<ISearchResultsModel, SearchResultsModel>();
