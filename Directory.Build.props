@@ -16,4 +16,4 @@
   <ItemGroup>
     <AdditionalFiles Pack="false" Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
-</Project>Directory.Build.props</Project></Project>
+</Project>
