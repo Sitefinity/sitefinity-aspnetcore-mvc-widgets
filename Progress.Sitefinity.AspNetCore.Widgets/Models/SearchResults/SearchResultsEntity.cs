@@ -5,7 +5,6 @@ using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Models.Common;
 using Progress.Sitefinity.AspNetCore.ViewComponents.AttributeConfigurator.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Attributes;
 
@@ -116,6 +115,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         [DisplayName("Languages label")]
         [DefaultValue("Show results in")]
         public string LanguagesLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sort by placeholder.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection("Labels and messages", 0)]
+        [DisplayName("Sort by label")]
+        [DefaultValue("Sort by")]
+        public string SortByLabel { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the search results widget.

@@ -73,12 +73,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                 ResultsHeader = string.Format(CultureInfo.InvariantCulture, entity.NoResultsHeader, searchParamsModel.SearchQuery),
                 LanguagesLabel = entity.LanguagesLabel,
                 ResultsNumberLabel = entity.ResultsNumberLabel,
+                SortByLabel = entity.SortByLabel,
                 Attributes = entity.Attributes,
                 CssClass = cssClass,
                 Languages = languages,
                 AllowUsersToSortResults = entity.AllowUsersToSortResults == 1,
                 Sorting = entity.Sorting,
-                SoryByLabel = this.localizer.GetString("Sort by"),
             };
 
             if (string.IsNullOrEmpty(searchParamsModel.SearchQuery))

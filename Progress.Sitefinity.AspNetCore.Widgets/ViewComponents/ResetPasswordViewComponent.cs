@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the reset password widget.
     /// </summary>
-    [SitefinityWidget(Title = "Reset password", Order = 4, Section = WidgetSection.Login, Category = WidgetCategory.LoginAndUsers)]
+    [SitefinityWidget(Title = "Reset password", Order = 5, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content)]
     [ViewComponent(Name = "SitefinityResetPassword")]
     public class ResetPasswordViewComponent : ViewComponent
     {

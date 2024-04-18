@@ -37,7 +37,7 @@
                 @if (@Model.AllowUsersToSortResults && @Model.TotalCount > 0)
                 {
                         <label for="@sortingSelectId" class="form-label text-nowrap mb-0">
-                            Sort by
+                            @Model.SortByLabel
                         </label>
                         <select class="userSortDropdown form-select" title="SortDropdown" id="@sortingSelectId">
                             <option value="@SearchResultsSorting.MostRelevantOnTop">Relevance</option>

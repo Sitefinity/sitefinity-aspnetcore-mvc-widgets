@@ -1,19 +1,111 @@
 <Project>
-  <!-- Project Meta Information -->
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-  </PropertyGroup>
+    <!-- Project Meta Information -->
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Authors>Progress Software Corporation</Authors>
+        <Company>Progress Software Corporation</Company>
+        <PackageProjectUrl>https://www.progress.com/sitefinity-cms</PackageProjectUrl>
+        <Copyright>Copyright © 2005-2023 Progress Software Corporation and/or one of its subsidiaries or affiliates. All rights reserved.</Copyright>
+        <language>en-US</language>
+        <tags>Sitefinity CMS</tags>
+        <PackageIcon>progresslogo.png</PackageIcon>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\progresslogo.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
+    <!-- Versioning -->
+    <PropertyGroup>
+        <VersionPrefix Condition="'$(VersionPrefix)' == ''">14.0.7700</VersionPrefix>
+        <VersionSuffix Condition="'$(ReleaseBuild)' == ''">DevBuild</VersionSuffix>
+
+        <VersionPrefix Condition="'$(VersionPrefix)' != ''">$(VersionPrefix)</VersionPrefix>
+        <VersionSuffix Condition="'$(ReleaseBuild)' == 'false'">PrBuild</VersionSuffix>
+
+        <VersionSuffix Condition="'$(ReleaseBuild)' == 'true'"></VersionSuffix>
+
+        <VersionSuffix Condition="'$(BetaBuild)' == 'true'">beta</VersionSuffix>
+    </PropertyGroup>
+
+    <!-- Licensing -->
+    <PropertyGroup>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageLicenseFile>LicenseAgreements\License.txt</PackageLicenseFile>
+        <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    </PropertyGroup>
+
+    <Choose>
+        <When Condition="'$(BetaBuild)' == 'true'">
+            <ItemGroup>
+                <None Include="..\LicenseAgreements\Beta\License.txt" Pack="true" PackagePath="LicenseAgreements\License.txt"/>
+                <None Include="..\LicenseAgreements\Beta\License.rtf" Pack="true" PackagePath="LicenseAgreements\License.rtf"/>
+            </ItemGroup>
+        </When>
+        <Otherwise>
+            <ItemGroup>
+                <None Include="..\LicenseAgreements\Official\License.txt" Pack="true" PackagePath="LicenseAgreements\License.txt"/>
+                <None Include="..\LicenseAgreements\Official\License.rtf" Pack="true" PackagePath="LicenseAgreements\License.rtf"/>
+            </ItemGroup>
+        </Otherwise>
+    </Choose>
+
+    <!-- Assembly Signing configuration -->
+    <Choose>
+        <When Condition="'$(ReleaseBuild)' == 'true'">
+            <PropertyGroup>
+                <AssemblyOriginatorKeyFile>..\snk\SignKey.snk</AssemblyOriginatorKeyFile>
+                <SignAssembly>true</SignAssembly>
+            </PropertyGroup>
+        </When>
+        <When Condition="'$(ReleaseBuild)' == 'false'">
+            <PropertyGroup>
+                <AssemblyOriginatorKeyFile>..\snk\PublicKey.snk</AssemblyOriginatorKeyFile>
+                <DelaySign>true</DelaySign>
+                <SignAssembly>true</SignAssembly>
+            </PropertyGroup>
+            <ItemGroup>
+                <None Include="..\snk\PublicKey.snk" Link="PublicKey.snk" />
+            </ItemGroup>
+        </When>
+    </Choose>
+
+    <!-- Package References -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.AzureRepos.Git">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="StyleCop.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
     <!-- StyleCop Analyzers configuration -->
-  <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <CodeAnalysisRuleSet>..\Progress.Sitefinity.AspNetCore.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(LintErrors)' == true">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <CodeAnalysisRuleSet>..\Progress.Sitefinity.AspNetCore.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(LintErrors)' == true">
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <ItemGroup>
+        <AdditionalFiles Pack="false" Include="..\stylecop.json" Link="stylecop.json" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Pack="false" Include="..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
+    <!-- Sourcelink configuration -->
+    <PropertyGroup Condition="'$(ReleaseBuild)' == 'true'">
+        <PublishRepositoryUrl>false</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(ReleaseBuild)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 </Project>

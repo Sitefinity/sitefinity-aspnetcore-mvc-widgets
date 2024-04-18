@@ -50,6 +50,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         public string CssClass { get; set; }
 
         /// <summary>
+        /// Gets or sets the membership provider name.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [DisplayName("Membership Provider")]
+        public string MembershipProviderName { get; set; }
+
+        /// <summary>
         /// Gets or sets the reset password header.
         /// </summary>
         /// <value>

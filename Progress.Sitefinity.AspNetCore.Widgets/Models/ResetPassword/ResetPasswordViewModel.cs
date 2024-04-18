@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Models;
+using Progress.Sitefinity.Renderer.Designers;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
 {
@@ -16,6 +18,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         {
             this.Labels = new ResetPasswordLabelsViewModel();
         }
+
+        /// <summary>
+        /// Gets or sets the membership provider name.
+        /// </summary>
+        public string MembershipProviderName { get; set; }
 
         /// <summary>
         /// Gets or sets the reset user password handler path.

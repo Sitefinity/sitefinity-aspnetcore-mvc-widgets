@@ -51,6 +51,7 @@
 
                         <input type="hidden" name="SecurityToken" value="@Context.Request.QueryString.Value" />
                         <input class="btn btn-primary w-100" type="submit" value="@lbls.SaveButtonLabel" />
+                        <input type="hidden" name="MembershipProviderName" value="@Model.MembershipProviderName" />
                     </form>
                     <input type="hidden" name="ErrorMessage" value="@lbls.ErrorMessage" />
                     <input type="hidden" name="AllFieldsAreRequiredErrorMessage" value="@lbls.AllFieldsAreRequiredErrorMessage" />
@@ -89,6 +90,7 @@
                     </div>
                     <input class="btn btn-primary w-100" type="submit" value="@lbls.SendButtonLabel" />
                     <input type="hidden" name="ResetPasswordUrl" value="@Model.ResetPasswordUrl" />
+                    <input type="hidden" name="MembershipProviderName" value="@Model.MembershipProviderName" />
                 </form>
 
                 <input type="hidden" name="InvalidEmailFormatMessage" value="@lbls.InvalidEmailFormatMessage" />

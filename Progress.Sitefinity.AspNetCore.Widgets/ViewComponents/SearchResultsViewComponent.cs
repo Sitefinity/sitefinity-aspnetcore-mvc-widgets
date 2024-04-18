@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view compnent for Section widget.
     /// </summary>
-    [SitefinityWidget(Title = "Search results", Order = 1, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Search results", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.NavigationAndSearch)]
+    [SitefinityWidget(Title = "Search results", Order = 3, Section = WidgetSection.NavigationAndSearch, EmptyIconText = "Search results", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.Content)]
     [ViewComponent(Name = "SitefinitySearchResults")]
     public class SearchResultsViewComponent : ViewComponent
     {

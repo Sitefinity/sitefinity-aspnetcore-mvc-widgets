@@ -100,14 +100,17 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
 
         private async Task SetChannel(string botId, NativeChatViewModel viewModel)
         {
-            var channels = await this.nativeChatClient.BotChannels(botId);
-
-            // NativeChat specific: web channels have a providerName == "darvin"
-            var webChannel = channels.Find(x => x.ProviderName == "darvin");
-            if (webChannel != null)
+            if (!string.IsNullOrEmpty(botId))
             {
-                viewModel.ChannelId = webChannel.Id;
-                viewModel.ChannelAuthToken = webChannel.Config.AuthToken;
+                var channels = await this.nativeChatClient.BotChannels(botId);
+
+                // NativeChat specific: web channels have a providerName == "darvin"
+                var webChannel = channels.Find(x => x.ProviderName == "darvin");
+                if (webChannel != null)
+                {
+                    viewModel.ChannelId = webChannel.Id;
+                    viewModel.ChannelAuthToken = webChannel.Config.AuthToken;
+                }
             }
         }
 

@@ -331,3 +331,6 @@ ASALocalRun/
 .mfractor/
 
 .vscode/
+
+# Submodule
+sitefinity-e2e-tests/

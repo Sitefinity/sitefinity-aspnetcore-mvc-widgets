@@ -25,30 +25,38 @@
                 return;
             }
 
-            var model = { model: serializeForm(form) };
-            var submitUrl = form.attributes['action'].value;
-            window.fetch(submitUrl, { method: 'POST', body: JSON.stringify(model), headers: { 'Content-Type': 'application/json' } })
-                .then((response) => {
-                    var status = response.status;
-                    if (status === 0 || (status >= 200 && status < 400)) {
-                        form.reset();
-                        postPasswordChangeAction();
-                    } else {
-                        response.json().then((res) => {
-                            var errorMessage = res.error.message;
-                            var element;
+            setAntiforgeryTokens().then(res => {
+                if (validateForm(form)) {
+                    var model = { model: serializeForm(form) };
+                    var submitUrl = form.attributes['action'].value;
+                    window.fetch(submitUrl, { method: 'POST', body: JSON.stringify(model), headers: { 'Content-Type': 'application/json' } })
+                        .then((response) => {
+                            var status = response.status;
+                            if (status === 0 || (status >= 200 && status < 400)) {
+                                form.reset();
+                                postPasswordChangeAction();
+                            } else {
+                                response.json().then((res) => {
+                                    var errorMessage = res.error.message;
+                                    var element;
 
-                            if (status == 400) {
-                                var element = form.querySelector("input[name='NewPassword']");
-                            } else if (status == 403) {
-                                var element = form.querySelector("input[name='OldPassword']");
+                                    if (status == 400) {
+                                        var element = form.querySelector("input[name='NewPassword']");
+                                    } else if (status == 403) {
+                                        var element = form.querySelector("input[name='OldPassword']");
+                                    }
+
+                                    invalidateElement(element);
+                                    showErrorMessage(errorMessage, form);
+                                });
                             }
-
-                            invalidateElement(element);
-                            showErrorMessage(errorMessage, form);
                         });
-                    }
-                });
+                }
+            }, err => {
+                showError("Antiforgery token retrieval failed")
+            })
+
+
         });
 
         var postPasswordChangeAction = function () {
@@ -173,5 +181,32 @@
                 element.style.display = "none";
             }
         };
+
+        function setAntiforgeryTokens() {
+            return new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', '/sitefinity/anticsrf');
+                xhr.setRequestHeader('X-SF-ANTIFORGERY-REQUEST', 'true')
+                xhr.responseType = 'json';
+                xhr.onload = function () {
+                    const response = xhr.response;
+                    if (response != null) {
+                        const token = response.Value;
+                        document.querySelectorAll("input[name = 'sf_antiforgery']").forEach(i => i.value = token);
+                        resolve();
+                    }
+                    else {
+                        resolve();
+                    }
+                };
+                xhr.onerror = function () { reject(); };
+                xhr.send();
+            });
+        }
+
+        function showError(err) {
+            var errorMessageContainer = document.querySelector('[data-sf-role="error-message-container"]');
+            errorMessageContainer.innerText = err;
+        }
     });
 })();
