@@ -26,7 +26,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-
   <ItemGroup>
     <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.1.8321.17" />
     <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.1.8321.17" />
