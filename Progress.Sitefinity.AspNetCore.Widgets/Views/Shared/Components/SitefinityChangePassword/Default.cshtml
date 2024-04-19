@@ -24,9 +24,9 @@ else if (!string.IsNullOrEmpty(Model.ExternalProviderName))
 else
 {
     <div data-sf-role="sf-change-password-container"
-    data-sf-visibility-hidden="@Model.VisibilityClasses[Progress.Sitefinity.AspNetCore.Configuration.VisibilityStyle.Hidden]"
-    data-sf-invalid="@Model.InvalidClass"
-    class="@(string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass)" @Html.BuildAttributes(Model.Attributes)>
+         data-sf-visibility-hidden="@Model.VisibilityClasses[Progress.Sitefinity.AspNetCore.Configuration.VisibilityStyle.Hidden]"
+         data-sf-invalid="@Model.InvalidClass"
+         class="@(string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass)" @Html.BuildAttributes(Model.Attributes)>
         <form action="@Model.ChangePasswordHandlerPath" method="post" role="form">
             <h2 class="mb-3">@lbls.Header</h2>
             <div data-sf-role="error-message-container" class="alert alert-danger my-3 d-none" role="alert" aria-live="assertive"></div>
@@ -44,6 +44,7 @@ else
                 <input type="password" class="form-control" id="@repeatPasswordInputId" name="RepeatPassword" data-sf-role="required">
             </div>
 
+            <input type="hidden" value="" name="sf_antiforgery" />
             <input class="btn btn-primary w-100" type="submit" value="@lbls.SubmitButtonLabel" />
         </form>
 

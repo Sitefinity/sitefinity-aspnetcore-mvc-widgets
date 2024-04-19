@@ -83,6 +83,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
         /// </summary>
         [ViewSelector]
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 2)]
+        [DefaultValue("Horizontal")]
         [DisplayName("View")]
         public string SfViewName { get; set; }
 

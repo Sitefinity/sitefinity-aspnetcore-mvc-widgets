@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the login form widget.
     /// </summary>
-    [SitefinityWidget(Title = "Login form", Order = 2, Section = WidgetSection.Login, Category = WidgetCategory.LoginAndUsers)]
+    [SitefinityWidget(Title = "Login form", Order = 0, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content)]
     [ViewComponent(Name = "SitefinityLoginForm")]
     public class LoginFormViewComponent : ViewComponent
     {

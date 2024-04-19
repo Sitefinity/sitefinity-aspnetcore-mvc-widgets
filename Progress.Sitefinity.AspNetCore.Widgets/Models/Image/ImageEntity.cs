@@ -86,7 +86,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings, 1)]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"ImageSize\",\"operator\":\"Equals\",\"value\":\"Thumbnail\"}]}")]
         [DataType(customDataType: "thumbnail")]
-        public ThumbnailDto Thumnail { get; set; }
+        public ThumbnailEntity Thumnail { get; set; }
 
         /// <summary>
         /// Gets or sets the view name.

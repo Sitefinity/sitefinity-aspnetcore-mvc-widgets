@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the seach box widget.
     /// </summary>
-    [SitefinityWidget(Title = "Search box", Order = 0, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Set where to search", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.NavigationAndSearch)]
+    [SitefinityWidget(Title = "Search box", Order = 2, Section = WidgetSection.NavigationAndSearch, EmptyIconText = "Set where to search", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.Content)]
     [ViewComponent(Name = "SitefinitySearchBox")]
     public class SeachBoxViewComponent : ViewComponent
     {

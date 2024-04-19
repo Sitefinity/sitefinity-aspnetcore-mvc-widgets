@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Dropdown;
@@ -90,24 +91,31 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.DynamicList
             return returnVal;
         }
 
-        private static OrderBy GetOrderByExpressionForContent(DynamicListEntity entity)
+        private static IList<OrderBy> GetOrderByExpressionForContent(DynamicListEntity entity)
         {
-            if (entity.OrderByContent == "Manually")
-                return null;
+            var result = new List<OrderBy>();
 
-            var sortExpression = entity.OrderByContent == "Custom" ? entity.SortExpression : entity.OrderByContent;
+            if (entity.OrderByContent != "Manually")
+            {
+                var sortExpression = entity.OrderByContent == "Custom" ? entity.SortExpression : entity.OrderByContent;
 
-            if (string.IsNullOrEmpty(sortExpression))
-                return null;
+                if (!string.IsNullOrEmpty(sortExpression))
+                {
+                    var sortExpressions = sortExpression.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var expression in sortExpressions)
+                    {
+                        var sortExpressionParts = expression.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                        if (sortExpressionParts.Length != 2)
+                            continue;
 
-            var sortExpressionParts = sortExpression.Split(" ");
-            if (sortExpressionParts.Length != 2)
-                return null;
+                        var sortOrder = sortExpressionParts[1].ToUpperInvariant() == "ASC" ? OrderType.Ascending : OrderType.Descending;
+                        var orderBy = new OrderBy() { Name = sortExpressionParts[0], Type = sortOrder };
+                        result.Add(orderBy);
+                    }
+                }
+            }
 
-            var sortOrder = sortExpressionParts[1].ToUpperInvariant() == "ASC" ? OrderType.Ascending : OrderType.Descending;
-            var orderBy = new OrderBy() { Name = sortExpressionParts[0], Type = sortOrder };
-
-            return orderBy;
+            return result;
         }
 
         private static List<TaxonDto> MapTaxonProperties(TaxonDto taxon)
@@ -162,13 +170,10 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.DynamicList
             {
                 var itemType = entity.SelectedContent.Content[0].Type;
                 var defaultFieldName = (this.restClient as RestClient).ServiceMetadata.GetDefaultFieldName(itemType);
-                var getAllArgs = new GetAllArgs();
-
-                OrderBy orderBy = DynamicListModel.GetOrderByExpressionForContent(entity);
-                if (orderBy != null)
+                var getAllArgs = new GetAllArgs
                 {
-                    getAllArgs.OrderBy.Add(orderBy);
-                }
+                    OrderBy = GetOrderByExpressionForContent(entity)
+                };
 
                 var items = (await this.restClient.GetItems<SdkItem>(entity.SelectedContent, getAllArgs)).Items;
 

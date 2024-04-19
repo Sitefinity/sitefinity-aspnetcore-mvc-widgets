@@ -57,6 +57,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
                 throw new ArgumentNullException(nameof(entity));
 
             var viewModel = new ResetPasswordViewModel();
+            viewModel.MembershipProviderName = entity.MembershipProviderName;
             viewModel.ResetUserPasswordHandlerPath = $"/{this.config.WebServicePath}/ResetUserPassword";
             viewModel.Attributes = entity.Attributes;
             viewModel.Labels.ResetPasswordHeader = entity.ResetPasswordHeader;

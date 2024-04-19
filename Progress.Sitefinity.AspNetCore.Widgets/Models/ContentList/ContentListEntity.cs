@@ -55,7 +55,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         public override LogicalOperator SelectionGroupLogicalOperator { get; set; }
 
         /// <summary>
-        /// Gets or sets the select expression.
+        /// Gets or sets the list items select expression.
         /// </summary>
         [Category(PropertyCategory.Advanced)]
         [ContentSection("", 5)]
@@ -63,6 +63,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         [DefaultValue("*")]
         [Description("Custom expression for selecting the fields of the content type. By default '*' (asterisk) selects all. Use ';' (semicolon) when listing specific fields. Example: Id; Title; Thumbnail(Id, Title)")]
         public string SelectExpression { get; set; }
+
+        /// <summary>
+        /// Gets or sets the detail item select expression.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection("", 6)]
+        [DisplayName("Detail item select expression")]
+        [DefaultValue("*")]
+        [Description("Custom expression for selecting the fields of the content type. By default '*' (asterisk) selects all. Use ';' (semicolon) when listing specific fields. Example: Id; Title; Thumbnail(Id, Title)")]
+        public string DetailItemSelectExpression { get; set; }
 
         /// <inheritdoc />
         [CssFieldMappings(true)]

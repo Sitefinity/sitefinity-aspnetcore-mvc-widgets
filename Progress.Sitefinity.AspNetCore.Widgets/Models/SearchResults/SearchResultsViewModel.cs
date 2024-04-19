@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Extensions.Localization;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
 using static Progress.Sitefinity.RestSdk.Clients.Sites.Dto.SiteDto;
@@ -79,8 +78,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         public IDictionary<string, IList<AttributeModel>> Attributes { get; set; }
 
         /// <summary>
-        /// Gets or seta the Sory by localized label.
+        /// Gets or sets the Sort by label.
         /// </summary>
-        public LocalizedString SoryByLabel { get; internal set; }
+        public string SortByLabel { get; set; }
     }
 }

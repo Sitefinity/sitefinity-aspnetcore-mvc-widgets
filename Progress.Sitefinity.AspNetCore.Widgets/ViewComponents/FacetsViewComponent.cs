@@ -14,7 +14,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the facets widget.
     /// </summary>
-    [SitefinityWidget(Title = "Search facets", Order = 2, Section = WidgetSection.SearchAndClassification, EmptyIconText = "Select search facets", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.NavigationAndSearch)]
+    [SitefinityWidget(Title = "Search facets", Order = 4, Section = WidgetSection.NavigationAndSearch, EmptyIconText = "Select search facets", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "search", Category = WidgetCategory.Content)]
     [ViewComponent(Name = "SitefinityFacets")]
     public class FacetsViewComponent : ViewComponent
     {

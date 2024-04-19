@@ -174,8 +174,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     }
                     else
                     {
-                        // in case there is no such field in the selected type
-                        filter.ChildFilters = new List<object> { new FilterClause { FieldValue = Guid.Empty, FieldName = "Id", Operator = FilterClause.Operators.Equal } };
+                        // in case there is no such field in the selected type - do not filter the widget by this classification
                         break;
                     }
                 }
@@ -259,7 +258,18 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     {
                         if (complexFilter != null)
                         {
-                            (complexFilter as CombinedFilter).ChildFilters.Add(classificationFilter);
+                            if (complexFilter is CombinedFilter)
+                            {
+                                (complexFilter as CombinedFilter).ChildFilters.Add(classificationFilter);
+                            }
+                            else
+                            {
+                                complexFilter = new CombinedFilter
+                                {
+                                    Operator = logicalOperator == LogicalOperator.AND ? CombinedFilter.LogicalOperators.And : CombinedFilter.LogicalOperators.Or,
+                                    ChildFilters = new[] { complexFilter, classificationFilter }
+                                };
+                            }
                         }
 
                         complexFilter = complexFilter ?? new CombinedFilter { ChildFilters = { classificationFilter }, Operator = CombinedFilter.LogicalOperators.And };
@@ -286,13 +296,17 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             if (string.IsNullOrEmpty(sortExpression))
                 return;
 
-            var sortExpressionParts = sortExpression.Split(" ");
-            if (sortExpressionParts.Length != 2)
-                return;
+            var sortExpressions = sortExpression.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            foreach (var expression in sortExpressions)
+            {
+                var sortExpressionParts = expression.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                if (sortExpressionParts.Length != 2)
+                    continue;
 
-            var sortOrder = sortExpressionParts[1].ToUpperInvariant() == "ASC" ? OrderType.Ascending : OrderType.Descending;
-            var orderBy = new OrderBy() { Name = sortExpressionParts[0], Type = sortOrder };
-            getAllArgs.OrderBy.Add(orderBy);
+                var sortOrder = sortExpressionParts[1].ToUpperInvariant() == "ASC" ? OrderType.Ascending : OrderType.Descending;
+                var orderBy = new OrderBy() { Name = sortExpressionParts[0], Type = sortOrder };
+                getAllArgs.OrderBy.Add(orderBy);
+            }
         }
 
         private protected static void AddSkipTake(ContentListEntityBase entity, GetAllArgs getAllArgs, ref int currentPage, int pageNumber)
@@ -334,7 +348,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
             var pageNumber = GetPageValue(entity, urlParameters, httpContext, out IList<string> processedUrlSegments);
             var (classificationFilter, processedClassificationSegments) = await GetClassificationFilter(typename, urlParameters, this.RestService);
-            var viewModel = await this.InitializeViewModel(entity, httpContext.Request.Query, pageNumber, classificationFilter, itemsNotSelected);
+            var viewModel = await this.InitializeViewModel(entity, pageNumber, classificationFilter, itemsNotSelected);
             var listViewModel = viewModel as ContentListCommonViewModel;
 
             if (listViewModel != null)
@@ -353,7 +367,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
         private protected virtual void ModifyParentFilter(ContentListEntityBase entity)
         {
-            return;
         }
 
         private protected virtual void AddSelectExpression(ContentListEntityBase entity, GetAllArgs getAllArgs)
@@ -381,7 +394,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             return new ContentListCommonViewModel();
         }
 
-        private protected async Task<object> InitializeViewModel(ContentListEntityBase entity, IQueryCollection query, int pageNumber, CombinedFilter classificationFilter, bool? itemsNotSelected = null)
+        private protected async Task<object> InitializeViewModel(ContentListEntityBase entity, int pageNumber, CombinedFilter classificationFilter, bool? itemsNotSelected = null)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -397,15 +410,20 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             var selectedItemsType = hasSelectedItemsType ? entity.SelectedItems.Content[0].Type : string.Empty;
             string filterByParentExpressionSerialized = null;
 
+            var viewModel = this.PopulateViewModel(entity);
+            var currentPage = 1;
+
             if (this.HideListView(entity, selectedItemsType))
                 return new ContentListViewModel();
 
-            var detailItemResult = await new ContentListModelForDetail(this.RestService, this.RequestContext, this.StylesProvider).HandleDetailItem(entity, query, this.ShowDetailsViewOnChildDetailsView(entity));
+            var getAllArgs = new GetAllArgs();
+            if (entity.ContentViewDisplayMode == ContentViewDisplayMode.Detail)
+                getAllArgs = this.ConstructGetAllArgs(entity, ref currentPage, pageNumber, filterByParentExpressionSerialized, classificationFilter);
+            var contentListModelForDetail = new ContentListModelForDetail(this.RestService, this.RequestContext, this.StylesProvider);
+            contentListModelForDetail.GetAllArgs = getAllArgs;
+            var detailItemResult = await contentListModelForDetail.HandleDetailItem(entity, this.ShowDetailsViewOnChildDetailsView(entity));
             if (detailItemResult != null)
                 return detailItemResult;
-
-            var viewModel = this.PopulateViewModel(entity);
-            var currentPage = 1;
 
             // handle parent filtering
             var hasSelectedDynamicParentFiltering = IsSelectedDynamicParentFiltering(variation);
@@ -433,18 +451,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
             if (hasSelectedItemsType || hasSelectedDynamicParentFiltering)
             {
-                var getAllArgs = new GetAllArgs();
-
-                ContentListModelBase.AddOrderByExpression(entity, getAllArgs);
-
-                ContentListModelBase.AddSkipTake(entity, getAllArgs, ref currentPage, pageNumber);
-
-                this.AddSelectExpression(entity, getAllArgs);
-
-                ContentListModelBase.ChangeLogicalOperator(entity, filterByParentExpressionSerialized, classificationFilter);
-
-                this.ModifyParentFilter(entity);
-
+                getAllArgs = this.ConstructGetAllArgs(entity, ref currentPage, pageNumber, filterByParentExpressionSerialized, classificationFilter);
                 var result = await this.RestService.GetItems<SdkItem>(entity.SelectedItems, getAllArgs).ConfigureAwait(false);
                 viewModel.Items = result.Items;
 
@@ -478,6 +485,23 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 return false;
 
             return true;
+        }
+
+        private GetAllArgs ConstructGetAllArgs(ContentListEntityBase entity, ref int currentPage, int pageNumber, string filterByParentExpressionSerialized, CombinedFilter classificationFilter)
+        {
+            var getAllArgs = new GetAllArgs();
+
+            ContentListModelBase.AddOrderByExpression(entity, getAllArgs);
+
+            ContentListModelBase.AddSkipTake(entity, getAllArgs, ref currentPage, pageNumber);
+
+            this.AddSelectExpression(entity, getAllArgs);
+
+            ContentListModelBase.ChangeLogicalOperator(entity, filterByParentExpressionSerialized, classificationFilter);
+
+            this.ModifyParentFilter(entity);
+
+            return getAllArgs;
         }
     }
 }

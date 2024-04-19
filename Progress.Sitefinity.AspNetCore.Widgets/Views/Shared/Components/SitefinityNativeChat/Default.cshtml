@@ -6,147 +6,50 @@
 @inject IRenderContext renderContext
 @inject ISitefinityConfig sitefinityConfig
 @inject IHttpContextAccessor httpContextAccessor;
-<script src="https://web-chat.nativechat.com/3.4.1/sdk/nativechat.js"></script>
-<link href="https://web-chat.nativechat.com/3.4.1/sdk/nativechat.css" rel="stylesheet" type="text/css">
 
-<script>
-    var chatWindowId = "kcChatWindow";
-    document.addEventListener('DOMContentLoaded', function () {
-        var chatSettings = {
-            bot: {
-                id: "@Model.BotId",
-                name: "@Model.Nickname",
-                avatarUrl: "@Model.BotAvatarUrl"
-            },
-            channel: {
-                id: "@Model.ChannelId",
-                token: "@Model.ChannelAuthToken"
-            },
-            session: {
-                clear: true,
-                userMessage: "@Model.UserMessage"
-            },
-            placeholder: "@Model.Placeholder",
-            showFilePicker: @Model.ShowFilePicker,
-            showLocationPicker: @Model.ShowLocationPicker,
-            submitLocationText: "@Model.LocationPickerLabel",
-            googleApiKey: "@Model.GoogleApiKey",
-            locale: "@Model.Locale",
-            css: "@Model.CustomCss",
-            defaultLocation: @(Model.Latitude != null && Model.Longitude != null ? string.Format("{{ latitude: {0}, longitude: {1} }}", Model.Latitude, Model.Longitude) : "undefined")
-                    };
+<environment include="Development">
+    <script src="Scripts/NativeChat/native-chat.js" section-name="Bottom"
+            assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+</environment>
+<environment exclude="Development">
+    <script src="Scripts/NativeChat/native-chat.min.js" section-name="Bottom"
+            assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+</environment>
 
-        var display = {
-            id: chatWindowId,
-            origin: "",
-            display: {
-                mode: "@Model.ChatMode",
-                launcher: {
-                    openIconUrl: "@Model.OpeningChatIconUrl",
-                    closeIconUrl: "@Model.ClosingChatIconUrl"
-                },
-                containerId: "@Model.ContainerId"
-            },
-            chat: chatSettings
-        };
-        if (window.DataIntelligenceSubmitScript) {
-            initChat(chatSettings, display);
-        }
-        else if (document.getElementById('sf-insight-settings')) {
-            if (window.addEventListener) {
-                window.addEventListener('decclientready', initChat.bind(this, chatSettings, display), false);
-            }
-            else if (window.attachEvent) {
-                window.attachEvent('decclientready', initChat.bind(this, chatSettings, display));
-            }
-        }
-        else {
-            initChat(chatSettings, display);
-        }
-    });
-
-    function initChat(chatSettings, display) {
-        var canTrack = typeof TrackingConsentManager === "undefined" ? true : TrackingConsentManager.canTrackCurrentUser();
-        var userData = {};
-        if (canTrack) {
-            var userData = getUserData();
-            if (userData !== "") {
-                userData = JSON.parse(userData);
-
-                if (userData.LastName === null) {
-                    userData.LastName = "";
-                }
-
-                if (userData.value.Id == @Guid.Empty.ToString()) {
-                    var insightSubject = @Guid.Empty.ToString();
-                    if (@httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("sf-data-intell-subject", out string subjectId)) {
-                        insightSubject = subjectId;
-                    }
-                    userData.value = {
-                        FirstName: "Anonymous",
-                        LastName: "Anonymous",
-                        Id: insightSubject,
-                        ProviderType: "Sitefinity Insight",
-                    };
-                }
-
-                chatSettings.user = {
-                    firstName: userData.value.FirstName,
-                    lastName: userData.value.LastName,
-                    id: userData.value.Id,
-                    providerType: "Sitefinity",
-                    hideName: true
-                };
-            }
-        }
-
-        var proactive = "@Model.Proactive";
-        var chatMode = "@Model.ChatMode";
-        var isEdit = "@renderContext.IsEdit";
-        var nativeChatLaunched = "nativechat-launched";
-
-        if (proactive === "True" && chatMode !== 'inline') {
-            if (isEdit === "False") {
-                if (!sessionStorage[nativeChatLaunched]) {
-                    display.display.launcher.popupDelayInMs = 3000;
-                    sessionStorage[nativeChatLaunched] = true;
-                }
-            }
-
-            chatSettings.session.hideUserMessage = true;
-        }
-
-        if (chatSettings.bot.avatarUrl !== "") {
-            chatSettings.bot.avatarUrl = window.location.origin + chatSettings.bot.avatarUrl;
-        }
-
-        if (window.DataIntelligenceSubmitScript) {
-            chatSettings.session.context = {
-                insight: {
-                    apiKey: window.DataIntelligenceSubmitScript._client.apiKey,
-                    dataSource: window.DataIntelligenceSubmitScript._client.source,
-                    subject: window.DataIntelligenceSubmitScript._client.sentenceClient.subjectKey,
-                    apiServerUrl: window.DataIntelligenceSubmitScript._client.apiServerUrl
-                }
-            };
-        }
-
-        window.NativeChat.load(display);
-
-        var nativeChatLauncher = document.getElementById(`nativechat-launcher-${chatWindowId}`);
-        var nativeChatContainer = document.getElementById("nativechat-container");
-        nativeChatLauncher.remove();
-        nativeChatContainer.appendChild(nativeChatLauncher);
-    }
-
-    function getUserData() {
-        var url = window.location.origin + "/" + "@sitefinityConfig.WebServicePath.Trim('/')" + "/currentuser";
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, false);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send();
-
-        return xhr.response;
-    }
+<script src="https://web-chat.nativechat.com/3.12.1/sdk/nativechat.js" section-name="Bottom"></script>
+<link href="https://web-chat.nativechat.com/3.12.1/sdk/nativechat.css" rel="stylesheet" type="text/css">
+<script type="application/json" id="native-chat-data">
+{
+    "bot":{
+        "id":"@Model.BotId",
+        "name":"@Model.Nickname",
+        "avatarUrl":"@Model.BotAvatarUrl"
+    },
+    "channel":{
+        "id":"@Model.ChannelId",
+        "token":"@Model.ChannelAuthToken"
+    },
+    "session":{
+        "clear":true,
+        "userMessage":"@Model.UserMessage"
+    },
+    "placeholder":"@Model.Placeholder",
+    "showFilePicker":"@Model.ShowFilePicker",
+    "showLocationPicker":"@Model.ShowLocationPicker",
+    "locationPickerLabel":"@Model.LocationPickerLabel",
+    "googleApiKey":"@Model.GoogleApiKey",
+    "locale":"@Model.Locale",
+    "customCss":"@Model.CustomCss",
+    "defaultLocation":"@(Model.Latitude != null && Model.Longitude != null ? string.Format("{{ latitude: {0}, longitude: {1} }}", Model.Latitude, Model.Longitude) : "undefined")",
+    "chatMode":"@Model.ChatMode",
+    "openIconUrl":"@Model.OpeningChatIconUrl",
+    "closeIconUrl":"@Model.ClosingChatIconUrl",
+    "containerId":"@Model.ContainerId",
+    "proactive":"@Model.Proactive.ToString()",
+    "emptyGuid":"@Guid.Empty.ToString()",
+    "isEdit":"@renderContext.IsEdit.ToString()",
+    "webServicePath":"@sitefinityConfig.WebServicePath.Trim('/')",
+    "insightSubject":"@(httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("sf-data-intell-subject", out string subjectId) ? subjectId : Guid.Empty.ToString())"
+}
 </script>
 <div id="nativechat-container" @Html.BuildAttributes(@Model.Attributes) class="@Model.CssClass"></div>

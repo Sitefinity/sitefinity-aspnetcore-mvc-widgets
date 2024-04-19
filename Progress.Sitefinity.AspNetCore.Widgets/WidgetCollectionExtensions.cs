@@ -17,6 +17,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.Image;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Profile;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Registration;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Search;
@@ -44,6 +45,7 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<ILoginFormModel, LoginFormModel>();
             services.AddTransient<IResetPasswordModel, ResetPasswordModel>();
             services.AddTransient<IRegistrationModel, RegistrationModel>();
+            services.AddTransient<IProfileModel, ProfileModel>();
             services.AddTransient<INavigationModel, NavigationModel>();
             services.AddTransient<IImageModel, ImageModel>();
             services.AddTransient<ISectionModel, SectionModel>();
@@ -52,6 +54,7 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<IClassificationModel, ClassificationModel>();
             services.AddTransient<ISearchBoxModel, SearchBoxModel>();
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
+            services.AddTransient<IRequestPreparation, DocumentListPreparation>();
             services.AddTransient<INativeChatModel, NativeChatModel>();
             services.AddTransient<IDocumentListModel, DocumentListModel>();
             services.AddTransient<IContentListModelBase, ContentListModel>();

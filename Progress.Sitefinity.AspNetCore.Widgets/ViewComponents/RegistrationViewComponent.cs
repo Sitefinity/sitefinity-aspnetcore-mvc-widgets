@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the registration widget.
     /// </summary>
-    [SitefinityWidget(Title = "Registration", Order = 2, Section = WidgetSection.Registration, Category = WidgetCategory.LoginAndUsers)]
+    [SitefinityWidget(Title = "Registration form", Order = 1, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content)]
     [ViewComponent(Name = "SitefinityRegistration")]
     public class RegistrationViewComponent : ViewComponent
     {

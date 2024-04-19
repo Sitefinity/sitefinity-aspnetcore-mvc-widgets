@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
@@ -21,6 +22,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
     /// </summary>
     internal class ContentListModelForDetail
     {
+        public GetAllArgs GetAllArgs { get; set; } = new GetAllArgs();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentListModelForDetail"/> class.
         /// </summary>
@@ -34,12 +37,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             this.styles = styles;
         }
 
-        public async Task<ContentDetailViewModel> HandleDetailItem(ContentListEntityBase entity, IQueryCollection query, bool showDetailsViewOnChildDetailsView)
+        public async Task<ContentDetailViewModel> HandleDetailItem(ContentListEntityBase entity, bool showDetailsViewOnChildDetailsView)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var detailItem = await this.TryHandleDetailItem(entity, query, showDetailsViewOnChildDetailsView);
+            var detailItem = await this.TryHandleDetailItem(entity, showDetailsViewOnChildDetailsView);
             if (detailItem != null)
             {
                 detailItem.CssClass = entity.CssClasses?.FirstOrDefault(x => x.FieldName == "Details view")?.CssClass;
@@ -58,7 +61,22 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             return null;
         }
 
-        private async Task<ContentDetailViewModel> TryHandleDetailItem(ContentListEntityBase entity, IQueryCollection query, bool showDetailsViewOnChildDetailsView)
+        private static IList<string> ExtractFieldsFromExpression(string selectExpression)
+        {
+            var fields = new List<string>();
+            if (!string.IsNullOrEmpty(selectExpression))
+            {
+                var split = selectExpression.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var field in split)
+                {
+                    fields.Add(field.Trim());
+                }
+            }
+
+            return fields.Count > 0 ? fields : new List<string> { "*" };
+        }
+
+        private async Task<ContentDetailViewModel> TryHandleDetailItem(ContentListEntityBase entity, bool showDetailsViewOnChildDetailsView)
         {
             if (entity.SelectedItems != null)
             {
@@ -72,7 +90,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                         entity.ContentViewDisplayMode == ContentViewDisplayMode.Automatic &&
                         entity.DetailPageMode == DetailPageSelectionMode.SamePage)
                     {
-                        var item = await this.LoadItem(detailItem.Id, detailItem.ProviderName, detailItem.ItemType, query);
+                        var item = this.requestContext.ResolvedDetailItem;
                         return new ContentDetailViewModel(item);
                     }
 
@@ -83,7 +101,28 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
                     if (entity.ContentViewDisplayMode == ContentViewDisplayMode.Detail)
                     {
-                        var item = await this.LoadItem(entity.SelectedItems.ItemIdsOrdered[0], entity.SelectedItems.Content[0].Variations[0].Source, selectedItemsType, query);
+                        var item = new SdkItem();
+                        if (entity.SelectedItems.ItemIdsOrdered.Length == 0)
+                        {
+                            this.GetAllArgs.Take = 1;
+                            this.GetAllArgs.Skip = 0;
+                            this.GetAllArgs.Fields = ExtractFieldsFromExpression((entity as ContentListEntity)?.DetailItemSelectExpression);
+                            var detailItemCollection = await this.restService.GetItems<SdkItem>(entity.SelectedItems, this.GetAllArgs);
+                            if (detailItemCollection.Items.Count == 0)
+                                return null;
+                            item = detailItemCollection.Items[0];
+                        }
+                        else
+                        {
+                            item = await this.restService.GetItem<SdkItem>(new GetItemArgs()
+                            {
+                                Id = entity.SelectedItems.ItemIdsOrdered[0],
+                                Type = selectedItemsType,
+                                Provider = entity.SelectedItems.Content[0].Variations[0].Source,
+                                Fields = ExtractFieldsFromExpression((entity as ContentListEntity)?.DetailItemSelectExpression),
+                            });
+                        }
+
                         return new ContentDetailViewModel(item);
                     }
 
@@ -96,32 +135,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             }
 
             return null;
-        }
-
-        private Task<SdkItem> LoadItem(string itemId, string itemProvider, string itemType, IQueryCollection query)
-        {
-            if (query.ContainsKey("sf-content-action"))
-            {
-                var queryParams = query.ToDictionary(x => x.Key, y => HttpUtility.UrlEncode(y.Value.ToString()));
-                return this.restService.ExecuteBoundFunction<SdkItem>(new BoundFunctionArgs()
-                {
-                    Id = itemId,
-                    Name = "Default.GetItemWithStatus()",
-                    AdditionalQueryParams = queryParams,
-                    Type = itemType,
-                    Provider = itemProvider,
-                });
-            }
-            else
-            {
-                return this.restService.GetItem<SdkItem>(new GetItemArgs()
-                {
-                    Id = itemId,
-                    Type = itemType,
-                    Provider = itemProvider,
-                    Fields = new[] { "*" },
-                });
-            }
         }
 
         private async Task<ContentDetailViewModel> HandleShowDetailsViewOnChildDetailsView(ContentListEntityBase entity, string selectedItemsType, ResolvedDetailItem detailItem, bool showDetailsViewOnChildDetailsView)
@@ -152,7 +165,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     {
                         Type = selectedItemsType,
                         Provider = detailItem.ProviderName,
-                        Fields = new[] { "*" },
+                        Fields = ExtractFieldsFromExpression((entity as ContentListEntity)?.DetailItemSelectExpression),
                         Filter = new FilterClause()
                         {
                             FieldName = "UrlName",

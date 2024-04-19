@@ -82,6 +82,7 @@ else
                     <input class="btn btn-primary w-100" type="submit" value="@lbls.RegisterButtonLabel" />
 
                     <input type="hidden" name="ActivationPageUrl" value="@Model.ActivationPageUrl" />
+                    <input type="hidden" value="" name="sf_antiforgery" />
                 </form>
 
                 @if (!string.IsNullOrEmpty(Model.LoginPageUrl))

@@ -18,7 +18,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// Language selector widget.
     /// </summary>
-    [SitefinityWidget(Title = "Breadcrumb", Category = WidgetCategory.NavigationAndSearch, Section = WidgetSection.MainNavigation)]
+    [SitefinityWidget(Title = "Breadcrumb", Category = WidgetCategory.Content, Section = WidgetSection.NavigationAndSearch, Order = 1)]
     [ViewComponent(Name = "SitefinityBreadcrumb")]
     public class BreadcrumbViewComponent : ViewComponent
     {
