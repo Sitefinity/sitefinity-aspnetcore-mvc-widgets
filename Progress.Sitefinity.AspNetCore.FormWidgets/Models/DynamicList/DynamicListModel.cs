@@ -66,29 +66,52 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.DynamicList
             if (items == null)
                 return new List<ChoiceOption>();
 
-            var returnVal = items.Select(x =>
+            var returnVal = new List<ChoiceOption>();
+            var taxa = items as IList<TaxonDto>;
+            if (entity.ClassificationSettings.SelectionMode == TaxonSelectionMode.All && taxa != null)
             {
-                var option = new ChoiceOption()
+                GetAllTaxa(taxa, defaultFieldName, entity, ref returnVal);
+            }
+            else
+            {
+                returnVal = items.Select(x =>
                 {
-                    Name = x.GetValue<string>(defaultFieldName),
-                };
-
-                if (!string.IsNullOrEmpty(entity.ValueFieldName) && x.TryGetValue(entity.ValueFieldName, out string value))
-                {
-                    option.Value = value;
-                }
-                else
-                {
-                    option.Value = option.Name;
-                }
-
-                return option;
-            }).ToList();
+                    return GetOption(defaultFieldName, entity, x);
+                }).ToList();
+            }
 
             if (entity.SfViewName == "Dropdown" && returnVal.Count > 0)
                 returnVal.Insert(0, new ChoiceOption() { Name = "Select", Selected = true });
 
             return returnVal;
+        }
+
+        private static ChoiceOption GetOption(string defaultFieldName, DynamicListEntity entity, SdkItem item)
+        {
+            var option = new ChoiceOption()
+            {
+                Name = item.GetValue<string>(defaultFieldName),
+            };
+
+            if (!string.IsNullOrEmpty(entity.ValueFieldName) && item.TryGetValue(entity.ValueFieldName, out string value))
+            {
+                option.Value = value;
+            }
+            else
+            {
+                option.Value = option.Name;
+            }
+
+            return option;
+        }
+
+        private static void GetAllTaxa(IList<TaxonDto> taxa, string defaultFieldName, DynamicListEntity entity, ref List<ChoiceOption> taxaChoices)
+        {
+            foreach (var item in taxa)
+            {
+                taxaChoices.Add(GetOption(defaultFieldName, entity, item));
+                GetAllTaxa(item.SubTaxa, defaultFieldName, entity, ref taxaChoices);
+            }
         }
 
         private static IList<OrderBy> GetOrderByExpressionForContent(DynamicListEntity entity)

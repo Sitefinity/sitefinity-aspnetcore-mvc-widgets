@@ -246,7 +246,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         [DisplayName("Change email label")]
         [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
         [Category(PropertyCategory.Advanced)]
-        [DefaultValue("To complete the change of your email address, you are required to enter your password.")]
+        [DefaultValue("To change your email address, you are required to enter your password.")]
         public string ChangeEmailLabel { get; set; }
 
         /// <summary>
@@ -272,6 +272,126 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         [Category(PropertyCategory.Advanced)]
         [DefaultValue("Your changes are saved.")]
         public string SuccessNotification { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change title label.
+        /// </summary>
+        /// <value>
+        /// Confirm email change title label.
+        /// </value>
+        [DisplayName("Confirm email change title")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("Confirm email change")]
+        public string ConfirmEmailChangeTitleLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change description label.
+        /// </summary>
+        /// <value>
+        /// Confirm email change description label.
+        /// </value>
+        [DisplayName("Confirm email change message")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("To confirm email change for your account a message has been sent to your new email")]
+        public string ConfirmEmailChangeDescriptionLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change title label.
+        /// </summary>
+        /// <value>
+        /// Confirm email change title label.
+        /// </value>
+        [DisplayName("Expired activation link title")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("Activation link has expired")]
+        public string ConfirmEmailChangeTitleExpiredLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change description label.
+        /// </summary>
+        /// <value>
+        /// Confirm email change description label.
+        /// </value>
+        [DisplayName("Expired activation link message")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("To access your account resend activation link to {0}.")]
+        public string ConfirmEmailChangeDescriptionExpiredLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Send activation link label.
+        /// </summary>
+        /// <value>
+        /// Send activation link description label.
+        /// </value>
+        [DisplayName("Send activation link")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("Send activation link")]
+        public string SendActivationLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Send again activation link label.
+        /// </summary>
+        /// <value>
+        /// Send again activation link description label.
+        /// </value>
+        [DisplayName("Send activation link label")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("Send again")]
+        public string SendAgainActivationLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Send activation link success title.
+        /// </summary>
+        /// <value>
+        /// Send activation link success title.
+        /// </value>
+        [DisplayName("Activation link header")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("Please check your email")]
+        public string SendConfirmationLinkSuccessTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Send activation link success message.
+        /// </summary>
+        /// <value>
+        /// Send activation link description success message.
+        /// </value>
+        [DisplayName("Activation link label")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("An activation link has been sent to {0}")]
+        public string SendConfirmationLinkSuccessMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change title error label.
+        /// </summary>
+        /// <value>
+        /// Confirm email change title error label.
+        /// </value>
+        [DisplayName("Activation error title")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("Error has occured")]
+        public string ConfirmEmailChangeTitleErrorLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change description label.
+        /// </summary>
+        /// <value>
+        /// Confirm email change description label.
+        /// </value>
+        [DisplayName("Activation error message")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue("We could not change your email")]
+        public string ConfirmEmailChangeDescriptionErrorLabel { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the widget.

@@ -11,7 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
     /// <summary>
     /// The view component for the checkboxes field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.Checkboxes, Title = "Checkboxes", Order = 2, Section = WidgetSection.Choices)]
+    [SitefinityFormWidget(FormFieldType.Checkboxes, Title = "Checkboxes", Order = 2, Section = WidgetSection.Choices, IconName = "checkboxes")]
     [ViewComponent(Name = "SitefinityCheckboxes")]
     public class CheckboxesViewComponent : ViewComponent
     {

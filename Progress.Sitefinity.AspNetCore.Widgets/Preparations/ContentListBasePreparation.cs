@@ -73,6 +73,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                                 allTasksResolved = false;
                             }
                         }
+                        else
+                        {
+                            component.State.Add(ContentListPreparation.PreparedData, listViewModel);
+                        }
 
                         pageModel.MarkUrlParametersResolved(listViewModel.ResolvedUrlSegments);
                     }

@@ -12,7 +12,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Image widget.
     /// </summary>
-    [SitefinityWidget(EmptyIcon = "picture-o", EmptyIconText = "Select image", Title = "Image", Order = 2, Section = WidgetSection.Basic)]
+    [SitefinityWidget(EmptyIcon = "picture-o", EmptyIconText = "Select image", Title = "Image", Order = 2, Section = WidgetSection.Basic, IconName = "image")]
     [ViewComponent(Name = "SitefinityImage")]
     public class ImageViewComponent : ViewComponent
     {

@@ -33,7 +33,7 @@
            data-sf-role="paragraph-text-field-textarea"
            @(Model.Readonly ? "readonly" : "")
            aria-describedby="@ariaDescribedByAttribute"
-           @Model.ValidationAttributes>@Model.PredefinedValue</textarea>
+           @Html.Raw(@Model.ValidationAttributes)>@Model.PredefinedValue</textarea>
 
     @if (Model.HasDescription)
     {

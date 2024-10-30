@@ -40,11 +40,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList
         public string TypeColumnLabel { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to render links for the items.
-        /// </summary>
-        public bool RenderLinks { get; set; }
-
-        /// <summary>
         /// Gets the file extension css class.
         /// </summary>
         /// <param name="extension">File extension.</param>

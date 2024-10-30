@@ -11,7 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
     /// <summary>
     /// The view component for the text field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.SubmitButton, Title = "Submit button", Order = 3, Section = WidgetSection.Basic)]
+    [SitefinityFormWidget(FormFieldType.SubmitButton, Title = "Submit button", Order = 3, Section = WidgetSection.Basic, IconName = "button")]
     [ViewComponent(Name = "SitefinitySubmitButton")]
     public class SubmitButtonViewComponent : ViewComponent
     {

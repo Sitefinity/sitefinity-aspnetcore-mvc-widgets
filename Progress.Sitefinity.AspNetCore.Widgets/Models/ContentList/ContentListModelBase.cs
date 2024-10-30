@@ -470,6 +470,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                     var items = pageNodes.Items;
                     if (items.Count == 1)
                         viewModel.DetailItemUrl = new Uri(items[0].ViewUrl, UriKind.RelativeOrAbsolute);
+                    else
+                        viewModel.RenderLinks = false;
                 }
             }
 

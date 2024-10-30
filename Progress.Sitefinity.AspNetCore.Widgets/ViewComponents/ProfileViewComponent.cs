@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Profile widget.
     /// </summary>
-    [SitefinityWidget(Title = "Profile", Order = 5, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content)]
+    [SitefinityWidget(Title = "Profile", Order = 5, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content, IconName = "profile", NotPersonalizable = true)]
     [ViewComponent(Name = "SitefinityProfile")]
     public class ProfileViewComponent : ViewComponent
     {
@@ -35,6 +35,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
                 throw new ArgumentNullException(nameof(context));
 
             var viewModel = await this.model.InitializeViewModel(context.Entity);
+            if (!string.IsNullOrEmpty(viewModel.Warning))
+            {
+                context.SetWarning(viewModel.Warning);
+            }
+
             return this.View(context.Entity.SfViewName, viewModel);
         }
     }

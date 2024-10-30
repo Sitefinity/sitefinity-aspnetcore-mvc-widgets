@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Classification;
-using Progress.Sitefinity.RestSdk;
-using Progress.Sitefinity.RestSdk.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
 {
     /// <summary>
     /// The view component for the classification widget.
     /// </summary>
-    [SitefinityWidget(Title = ClassificationViewComponent.Title, Order = 5, Section = WidgetSection.NavigationAndSearch, EmptyIconText = "Select classification", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "tag", Category = WidgetCategory.Content)]
+    [SitefinityWidget(Title = ClassificationViewComponent.Title, Order = 5, Section = WidgetSection.NavigationAndSearch, EmptyIconText = "Select classification", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "tag", Category = WidgetCategory.Content, IconName = "classification", NotPersonalizable = true)]
     [ViewComponent(Name = "SitefinityClassification")]
     public class ClassificationViewComponent : ViewComponent
     {

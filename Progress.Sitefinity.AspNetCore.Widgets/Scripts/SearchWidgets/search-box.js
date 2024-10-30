@@ -139,15 +139,15 @@
 
         function navigateToResults(input) {
             if (window.DataIntelligenceSubmitScript) {
-                DataIntelligenceSubmitScript._client.sentenceClient.writeSentence({
-                    predicate: "Search for",
-                    object: input.value.trim(),
-                    objectMetadata: [{
-                        'K': 'PageUrl',
-                        'V': location.href
-                    }]
+                DataIntelligenceSubmitScript._client.fetchClient.sendInteraction({
+                    P: "Search for",
+                    O: input.value.trim(),
+                    OM: {
+                        PageUrl: location.href
+                    }
                 });
             }
+
             var url = getSearchUrl(input);
             window.location = url;
         }

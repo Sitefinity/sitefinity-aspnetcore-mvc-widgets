@@ -8,6 +8,7 @@
     var returnErrorUrl = Model.GetDefaultReturnUrl(Context, true, false);
     var usernameInputId = Html.GetUniqueId("sf-username-");
     var passwordInputId = Html.GetUniqueId("sf-password-");
+    var rememberMeInputId = Html.GetUniqueId("sf-remember-");
 }
 
 <environment include="Development">
@@ -17,12 +18,11 @@
     <script src="Scripts/LoginWidgets/login-form.min.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
 </environment>
 
-<div
-data-sf-role="sf-login-form-container"
-data-sf-visibility-hidden="@Model.VisibilityClasses[Progress.Sitefinity.AspNetCore.Configuration.VisibilityStyle.Hidden]"
-data-sf-invalid="@Model.InvalidClass"
-class="@(string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass)"
-@Html.BuildAttributes(Model.Attributes)>
+<div data-sf-role="sf-login-form-container"
+    data-sf-visibility-hidden="@Model.VisibilityClasses[Progress.Sitefinity.AspNetCore.Configuration.VisibilityStyle.Hidden]"
+    data-sf-invalid="@Model.InvalidClass"
+    class="@(string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass)"
+    @Html.BuildAttributes(Model.Attributes)>
     <div data-sf-role="form-container">
         <h2 class="mb-3">@lbls.Header</h2>
         <div id="errorContainer" class="alert alert-danger my-3 @(Model.IsError(Context) ? "d-block" : "d-none")" role="alert" aria-live="assertive" data-sf-role="error-message-container">
@@ -45,8 +45,14 @@ class="@(string.IsNullOrEmpty(Model.CssClass) ? null : Model.CssClass)"
                     {
                         <div class="checkbox col-md-6 m-0">
                             <label>
-                                @Html.CheckBoxFor(x => x.RememberMe)
-                                @Html.LabelFor(x => x.RememberMe, lbls.RememberMeLabel)
+                                @Html.CheckBoxFor(x => x.RememberMe, new
+                                    {
+                                        @id = rememberMeInputId
+                                    })
+                                @Html.LabelFor(x => x.RememberMe, lbls.RememberMeLabel, new
+                                    {
+                                        @for = rememberMeInputId
+                                    })
                             </label>
                         </div>
                     }

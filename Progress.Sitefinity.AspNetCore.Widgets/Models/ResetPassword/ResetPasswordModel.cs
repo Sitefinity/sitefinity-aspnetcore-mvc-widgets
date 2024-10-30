@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.Localization;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Registration.Dto;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword.Dto;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
@@ -26,6 +26,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         private readonly IStyleClassesProvider styles;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IRenderContext renderContext;
+        private readonly IStringLocalizer<ResetPasswordModel> localizer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResetPasswordModel"/> class.
@@ -35,18 +36,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         /// <param name="restService">The client for Sitefinity web services.</param>
         /// <param name="httpContextAccessor">The http context accessor.</param>
         /// <param name="styles">The html classes for styling provider.</param>
+        /// <param name="localizer">The localizer.</param>
         public ResetPasswordModel(
             ISitefinityConfig config,
             IRenderContext renderContext,
             IODataRestClient restService,
             IHttpContextAccessor httpContextAccessor,
-            IStyleClassesProvider styles)
+            IStyleClassesProvider styles,
+            IStringLocalizer<ResetPasswordModel> localizer)
         {
             this.config = config;
             this.renderContext = renderContext;
             this.restService = restService;
             this.httpContextAccessor = httpContextAccessor;
             this.styles = styles;
+            this.localizer = localizer;
         }
 
         /// <inheritdoc/>
@@ -58,7 +62,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
 
             var viewModel = new ResetPasswordViewModel();
             viewModel.MembershipProviderName = entity.MembershipProviderName;
-            viewModel.ResetUserPasswordHandlerPath = $"/{this.config.WebServicePath}/ResetUserPassword";
+            viewModel.ResetUserPasswordHandlerPath = $"/{this.config.WebServicePath}/ResetUserPassword?sf_culture={CultureInfo.CurrentCulture.IetfLanguageTag}";
             viewModel.Attributes = entity.Attributes;
             viewModel.Labels.ResetPasswordHeader = entity.ResetPasswordHeader;
             viewModel.Labels.NewPasswordLabel = entity.NewPasswordLabel;
@@ -71,7 +75,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
             viewModel.Labels.AllFieldsAreRequiredErrorMessage = entity.AllFieldsAreRequiredErrorMessage;
             viewModel.Labels.PasswordsMismatchErrorMessage = entity.PasswordsMismatchErrorMessage;
 
-            viewModel.SendResetPasswordEmailHandlerPath = $"/{this.config.WebServicePath}/SendResetPasswordEmail";
+            viewModel.SendResetPasswordEmailHandlerPath = $"/{this.config.WebServicePath}/SendResetPasswordEmail?sf_culture={CultureInfo.CurrentCulture.IetfLanguageTag}";
             viewModel.Labels.ForgottenPasswordHeader = entity.ForgottenPasswordHeader;
             viewModel.Labels.EmailLabel = entity.EmailLabel;
             viewModel.Labels.ForgottenPasswordLinkMessage = entity.ForgottenPasswordLinkMessage;
@@ -90,6 +94,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
                 var items = pageNodes.Items;
                 if (items.Count == 1)
                     viewModel.LoginPageLink = items[0].ViewUrl;
+            }
+
+            if (entity.RegistrationPage?.Content?[0]?.Variations?.Length != 0)
+            {
+                var pageNodes = await this.restService.GetItems<PageNodeDto>(entity.RegistrationPage, new GetAllArgs() { Fields = new[] { nameof(PageNodeDto.ViewUrl) } });
+                var items = pageNodes.Items;
+                if (items.Count == 1)
+                    viewModel.RegistrationPageUrl = items[0].ViewUrl;
             }
 
             this.httpContextAccessor.HttpContext.AddVaryByQueryParams(PasswordRecoveryQueryStringKey);
@@ -120,6 +132,18 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
             }
             else
             {
+                var requestArgs = new BoundActionArgs()
+                {
+                    Name = "Default.RegistrationSettings",
+                };
+
+                var result = await this.restService.ExecuteUnboundAction<RegistrationSettingsDto>(requestArgs);
+
+                if (!result.SmtpConfigured)
+                {
+                    viewModel.Warning = this.localizer.GetString("Confirmation email cannot be sent because the system has not been configured to send emails. Configure SMTP settings or contact your administrator for assistance.");
+                }
+
                 if (this.renderContext.IsLive)
                 {
                     var request = this.httpContextAccessor.HttpContext.Request;

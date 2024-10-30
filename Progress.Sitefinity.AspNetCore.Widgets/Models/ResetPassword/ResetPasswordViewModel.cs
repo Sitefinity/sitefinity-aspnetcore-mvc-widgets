@@ -58,6 +58,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         public string LoginPageLink { get; set; }
 
         /// <summary>
+        /// Gets or sets the registration page link.
+        /// </summary>
+        public string RegistrationPageUrl { get; set; }
+
+        /// <summary>
         /// Gets or sets the labels.
         /// </summary>
         /// <value>
@@ -85,6 +90,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         /// Gets or sets the invalid class.
         /// </summary>
         public string InvalidClass { get; set; }
+
+        /// <summary>
+        /// Gets or sets the warning.
+        /// </summary>
+        public string Warning { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the widget.

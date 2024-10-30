@@ -53,12 +53,17 @@
         /// <summary>
         /// Gets or sets the activation link header.
         /// </summary>
-        public string ActivationLinkHeader { get; set; }
+        public string PleaseCheckYourEmailHeader { get; set; }
 
         /// <summary>
         /// Gets or sets the activation link label.
         /// </summary>
-        public string ActivationLinkLabel { get; set; }
+        public string PleaseCheckYourEmailMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send activation link.
+        /// </summary>
+        public string ActivateAccountLink { get; set; }
 
         /// <summary>
         /// Gets or sets the send again link.
@@ -68,7 +73,17 @@
         /// <summary>
         /// Gets or sets the send again label.
         /// </summary>
-        public string SendAgainLabel { get; set; }
+        public string PleaseCheckYourEmailAnotherMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send link of an existing user title.
+        /// </summary>
+        public string ActivateAccountTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send link of an existing user label.
+        /// </summary>
+        public string ActivateAccountMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the success header.

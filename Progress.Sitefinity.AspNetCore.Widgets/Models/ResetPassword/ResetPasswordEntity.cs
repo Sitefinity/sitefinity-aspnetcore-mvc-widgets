@@ -27,6 +27,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         public MixedContentContext LoginPage { get; set; }
 
         /// <summary>
+        /// Gets or sets the registration page.
+        /// </summary>
+        [ContentSection(SelectPages, 1)]
+        [DisplayName("Registration page")]
+        [Description("This is the page where you have dropped registration form widget.")]
+        [Content(Type = KnownContentTypes.Pages, AllowMultipleItemsSelection = false)]
+        public MixedContentContext RegistrationPage { get; set; }
+
+        /// <summary>
         /// Gets or sets the view name.
         /// </summary>
         [ViewSelector]
@@ -233,7 +242,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
         [DisplayName("Forgotten password submit message")]
         [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
         [Category(PropertyCategory.Advanced)]
-        [DefaultValue("You sent a request to reset your password to")]
+        [DefaultValue("You sent a request to reset your password to {0}")]
         public string ForgottenPasswordSubmitMessage { get; set; }
 
         /// <summary>

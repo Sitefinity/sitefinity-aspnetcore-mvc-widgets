@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Progress.Sitefinity.Renderer.Designers.Attributes;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
 {
@@ -10,6 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         /// <summary>
         /// Displays a message.
         /// </summary>
+        [EnumDisplayName("View a message")]
         [Description("View a message")]
         ViewMessage = 0,
 
@@ -17,6 +19,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         /// Redirects to specific Sitefinity page.
         /// </summary>
         [Description("Redirect to page...")]
+        [EnumDisplayName("Redirect to page...")]
         RedirectToPage = 1,
     }
 }

@@ -13,7 +13,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// Test widget with different kind of restrictions for its properties.
     /// </summary>
-    [SitefinityWidget(Title = "Native chat", EmptyIconText = "Select a chatbot", EmptyIcon = "pencil", Order = 1, Section = WidgetSection.Marketing)]
+    [SitefinityWidget(Title = "Native chat", EmptyIconText = "Select a chatbot", EmptyIcon = "pencil", Order = 1, Section = WidgetSection.Marketing, IconName = "chat")]
     [ViewComponent(Name = "SitefinityNativeChat")]
     public class NativeChatViewComponent : ViewComponent
     {

@@ -15,7 +15,6 @@
     <!-- Excluding file from publish -->
     <Content Remove="package.json" />
     <Content Remove="package-lock.json" />
-    <Content Remove="Scripts\SitefinityDropdown\choices-predefined-lists.json" />
     <!-- Excluding file from publish -->
 
     <EmbeddedResource Include="Scripts\form-all.js" />
@@ -27,8 +26,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.1.8321.17" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.1.8321.17" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.1.8321.17" />
+    <None Include="Views\Shared\Components\SitefinityCheckboxes\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityDropdown\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityDynamicList\Checkboxes.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityDynamicList\Dropdown.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityFileField\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityFormContentBlock\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityFormSection\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityMultipleChoice\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityParagraph\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinitySubmitButton\Default.cshtml" />
+    <None Include="Views\Shared\Components\SitefinityTextField\Default.cshtml" />
+    <None Include="Views\Shared\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.2.8400.355" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.2.8400.355" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.2.8400.355" />
   </ItemGroup>
 </Project>

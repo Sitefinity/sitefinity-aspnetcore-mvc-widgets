@@ -24,7 +24,7 @@
            data-sf-role="text-field-input"
            @(Model.Readonly ? "readonly" : "")
            aria-describedby="@ariaDescribedByAttribute"
-           @Model.ValidationAttributes />
+           @Html.Raw(@Model.ValidationAttributes) />
 
     @if (Model.HasDescription)
     {

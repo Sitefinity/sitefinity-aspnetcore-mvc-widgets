@@ -11,7 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
     /// <summary>
     /// The view component for the dropdown field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.Dropdown, Title = "Dropdown", Order = 3, Section = WidgetSection.Choices)]
+    [SitefinityFormWidget(FormFieldType.Dropdown, Title = "Dropdown", Order = 3, Section = WidgetSection.Choices, IconName = "dropdown")]
     [ViewComponent(Name = "SitefinityDropdown")]
     public class DropdownViewComponent : ViewComponent
     {

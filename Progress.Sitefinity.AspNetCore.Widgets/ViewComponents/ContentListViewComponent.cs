@@ -13,7 +13,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Content list widget.
     /// </summary>
-    [SitefinityWidget(Title = ContentListViewComponent.Title, EmptyIconText = "Select content", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "plus-circle", Section = WidgetSection.ContentLists, Order = 1)]
+    [SitefinityWidget(IsContentLocation = true, Title = ContentListViewComponent.Title, EmptyIconText = "Select content", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "plus-circle", Section = WidgetSection.ContentLists, Order = 1, IconName = "content-list")]
     [ViewComponent(Name = "SitefinityContentList")]
     public class ContentListViewComponent : ViewComponent
     {

@@ -12,11 +12,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
     public class ContentListViewModel : ContentListCommonViewModel
     {
         /// <summary>
-        /// Gets or sets a value indicating whether to render links for the items.
-        /// </summary>
-        public bool RenderLinks { get; set; }
-
-        /// <summary>
         /// Gets or sets the field mappings for the list view.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "By design")]

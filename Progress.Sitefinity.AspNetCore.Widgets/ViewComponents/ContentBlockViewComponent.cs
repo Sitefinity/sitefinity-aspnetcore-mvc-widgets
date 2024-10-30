@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Content block widget.
     /// </summary>
-    [SitefinityWidget(Title = "Content block", Order = 1, Section = WidgetSection.Basic)]
+    [SitefinityWidget(Title = "Content block", Order = 1, Section = WidgetSection.Basic, IconName = "content-block")]
     [ViewComponent(Name = "SitefinityContentBlock")]
     public class ContentBlockViewComponent : ViewComponent
     {

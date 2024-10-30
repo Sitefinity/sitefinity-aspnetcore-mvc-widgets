@@ -8,7 +8,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Button (CTA) widget.
     /// </summary>
-    [SitefinityWidget(Title = "Call to action", EmptyIconText = "Create call to action", Order = 3, Section = WidgetSection.Basic)]
+    [SitefinityWidget(Title = "Call to action", EmptyIconText = "Create call to action", Order = 3, Section = WidgetSection.Basic, IconName = "call-to-action")]
     [ViewComponent(Name = "SitefinityButton")]
     public class ButtonViewComponent : ViewComponent
     {

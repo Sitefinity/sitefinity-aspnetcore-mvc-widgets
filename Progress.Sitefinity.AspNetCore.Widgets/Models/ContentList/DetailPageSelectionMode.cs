@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Progress.Sitefinity.Renderer.Designers.Attributes;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 {
@@ -15,12 +16,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         /// <summary>
         /// Option for opening the detail item in the same page.
         /// </summary>
+        [EnumDisplayName("Auto-generated page - same layout as the list page")]
         [Description("Auto-generated page - same layout as the list page")]
         SamePage,
 
         /// <summary>
         /// Option for opening the detail item in another existing page.
         /// </summary>
+        [EnumDisplayName("Select existing page")]
         [Description("Select existing page")]
         ExistingPage,
     }
