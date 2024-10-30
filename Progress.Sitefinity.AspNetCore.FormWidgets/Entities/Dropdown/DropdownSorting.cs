@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Progress.Sitefinity.Renderer.Designers.Attributes;
 
 namespace Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Dropdown
 {
@@ -10,12 +11,14 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Dropdown
         /// <summary>
         /// As set manually.
         /// </summary>
+        [EnumDisplayName("As set manually")]
         [Description("As set manually")]
         Manual,
 
         /// <summary>
         /// Alphabetical.
         /// </summary>
+        [EnumDisplayName("Alphabetically")]
         [Description("Alphabetically")]
         Alphabetical,
     }

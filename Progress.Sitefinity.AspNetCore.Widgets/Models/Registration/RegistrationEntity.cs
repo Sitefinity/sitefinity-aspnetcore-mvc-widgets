@@ -194,8 +194,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         [DisplayName("Activation link header")]
         [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
         [Category(PropertyCategory.Advanced)]
-        [DefaultValue(DefaultActivationLinkHeader)]
-        public string ActivationLinkHeader { get; set; }
+        [DefaultValue(DefaultPleaseCheckYourEmailHeader)]
+        public string PleaseCheckYourEmailHeader { get; set; }
 
         /// <summary>
         /// Gets or sets the activation link label.
@@ -206,8 +206,20 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         [DisplayName("Activation link label")]
         [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
         [Category(PropertyCategory.Advanced)]
-        [DefaultValue(DefaultActivationLinkLabel)]
-        public string ActivationLinkLabel { get; set; }
+        [DefaultValue(DefaultPleaseCheckYourEmailMessage)]
+        public string PleaseCheckYourEmailMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send again label.
+        /// </summary>
+        /// <value>
+        /// The send again label.
+        /// </value>
+        [DisplayName("Send again label")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue(DefaultPleaseCheckYourEmailAnotherMessage)]
+        public string PleaseCheckYourEmailAnotherMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the send again link.
@@ -220,18 +232,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         [Category(PropertyCategory.Advanced)]
         [DefaultValue(DefaultSendAgainLink)]
         public string SendAgainLink { get; set; }
-
-        /// <summary>
-        /// Gets or sets the send again label.
-        /// </summary>
-        /// <value>
-        /// The send again label.
-        /// </value>
-        [DisplayName("Send again label")]
-        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
-        [Category(PropertyCategory.Advanced)]
-        [DefaultValue(DefaultSendAgainLabel)]
-        public string SendAgainLabel { get; set; }
 
         /// <summary>
         /// Gets or sets the success header.
@@ -342,16 +342,64 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         public string ActivationMessage { get; set; }
 
         /// <summary>
+        /// Gets or sets the Activation error title.
+        /// </summary>
+        /// <value>
+        /// The Activation error title.
+        /// </value>
+        [DisplayName("Activation error title")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue(DefaultActivationFailTitle)]
+        public string ActivationFailTitle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Activation error message.
+        /// </summary>
+        /// <value>
+        /// The Activation error message.
+        /// </value>
+        [DisplayName("Activation error message")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue(DefaultActivationFailMessage)]
+        public string ActivationFailMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the activation expired link title.
+        /// </summary>
+        /// <value>
+        /// The activation expired link title.
+        /// </value>
+        [DisplayName("Expired activation link title")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue(DefaultActivationLinkExpiredTitle)]
+        public string ActivationLinkExpiredTitle { get; set; }
+
+        /// <summary>
         /// Gets or sets the activation fail message.
         /// </summary>
         /// <value>
         /// The activation fail message.
         /// </value>
-        [DisplayName("Activation fail message")]
+        [DisplayName("Expired activation link message")]
         [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
         [Category(PropertyCategory.Advanced)]
-        [DefaultValue(DefaultActivationFailMessage)]
-        public string ActivationFailMessage { get; set; }
+        [DefaultValue(DefaultActivationLinkExpiredDescription)]
+        public string ActivationLinkExpiredMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send activation link label.
+        /// </summary>
+        /// <value>
+        /// The send again link label.
+        /// </value>
+        [DisplayName("Send activation link")]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages)]
+        [Category(PropertyCategory.Advanced)]
+        [DefaultValue(DefaultActivateAccountLink)]
+        public string ActivateAccountLink { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the widget.
@@ -377,10 +425,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         private const string DefaultSecretQuestion = "Secret question";
         private const string DefaultSecretAnswer = "Secret answer";
         private const string DefaultRegisterButtonLabel = "Register";
-        private const string DefaultActivationLinkHeader = "Please check your email";
-        private const string DefaultActivationLinkLabel = "An activation link has been sent to";
+        private const string DefaultPleaseCheckYourEmailHeader = "Please check your email";
+        private const string DefaultPleaseCheckYourEmailMessage = "An activation link has been sent to";
+        private const string DefaultPleaseCheckYourEmailAnotherMessage = "Another activation link has been sent to {0}. If you have not received an email please check your spam box.";
         private const string DefaultSendAgainLink = "Send again";
-        private const string DefaultSendAgainLabel = "Another activation link has been sent to {0}. If you have not received an email please check your spam box.";
+        private const string DefaultActivateAccountLink = "Send activation link";
         private const string DefaultSuccessHeader = "Thank you!";
         private const string DefaultSuccessLabel = "You are successfully registered.";
         private const string DefaultLoginLabel = "Already registered?";
@@ -390,6 +439,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         private const string DefaultValidationMismatchMessage = "Password and repeat password don't match.";
         private const string DefaultValidationInvalidEmailMessage = "Invalid email format.";
         private const string DefaultActivationMessage = "Your account is activated";
-        private const string DefaultActivationFailMessage = "Your account could not be activated";
+        private const string DefaultActivationFailTitle = "Error has occured";
+        private const string DefaultActivationFailMessage = "We could not activate your account.";
+        private const string DefaultTryAgainMessage = "Try again";
+        private const string DefaultActivationLinkExpiredTitle = "Activation link has expired";
+        private const string DefaultActivationLinkExpiredDescription = "To access your account resend activation link to {0}";
     }
 }

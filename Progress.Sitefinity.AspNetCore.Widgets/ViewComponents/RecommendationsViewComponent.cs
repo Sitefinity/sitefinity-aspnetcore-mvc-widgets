@@ -16,7 +16,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Recommendations widget.
     /// </summary>
-    [SitefinityWidget(Title = RecommendationsViewComponent.Title, EmptyIconText = "Configure recommendations", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "pencil", Order = 0, Section = WidgetSection.Marketing)]
+    [SitefinityWidget(Title = RecommendationsViewComponent.Title, EmptyIconText = "Configure recommendations", EmptyIconAction = EmptyLinkAction.Edit, EmptyIcon = "pencil", Order = 0, Section = WidgetSection.Marketing, IconName = "recommendation", NotPersonalizable = true)]
     [ViewComponent(Name = "SitefinityRecommendations")]
     public class RecommendationsViewComponent : ViewComponent
     {

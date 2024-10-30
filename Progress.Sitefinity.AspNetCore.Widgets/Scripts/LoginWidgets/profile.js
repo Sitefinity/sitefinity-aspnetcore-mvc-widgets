@@ -9,7 +9,8 @@
         var successMessageContainer = document.querySelector('[data-sf-role="success-message-container"]');
         var invalidPhotoErrorMessage = formContainer.querySelector("input[name='InvalidPhotoErrorMessage']").value;
         var invalidPasswordErrorMessage = formContainer.querySelector("input[name='InvalidPasswordErrorMessage']").value;
-        var initialLoad = true;
+        var confirmEmailChangeRequest = formContainer.querySelector("input[name='ConfirmEmailChangeRequest']").value.toLowerCase() === 'true';
+        var confirmEmailChangeError = formContainer.querySelector("input[name='ConfirmEmailChangeError']").value.toLowerCase() === 'true';
 
         var showElement = function (element) {
             if (element) {
@@ -37,27 +38,6 @@
             window.location = redirectUrl;
         };
 
-        switch (viewMode) {
-            case "Edit":
-                initEdit(viewMode);
-                showElement(formContainer);
-                hideElement(readContainer);
-                break;
-            case "Read":
-                initRead(viewMode);
-                showElement(readContainer);
-                hideElement(formContainer);
-                break;
-            case "ReadEdit":
-                initRead(viewMode);
-                initEdit(viewMode);
-                showElement(readContainer);
-                hideElement(formContainer);
-                break;
-            default:
-                break;
-        }
-
         var showSuccessMessage = function () {
             hideElement(errorMessageContainer);
             showElement(successMessageContainer);
@@ -83,6 +63,27 @@
             }
         };
 
+        switch (viewMode) {
+            case "Edit":
+                initEdit(viewMode);
+                showElement(formContainer);
+                hideElement(readContainer);
+                break;
+            case "Read":
+                initRead(viewMode);
+                showElement(readContainer);
+                hideElement(formContainer);
+                break;
+            case "ReadEdit":
+                initRead(viewMode);
+                initEdit(viewMode);
+                showElement(readContainer);
+                hideElement(formContainer);
+                break;
+            default:
+                break;
+        }
+
         function initEdit(viewMode) {
             var formContainer = document.querySelector('[data-sf-role="form-container"]');
             var form = formContainer.querySelector("form");
@@ -93,8 +94,13 @@
             var classInvalid = classInvalidValue ? processCssClass(classInvalidValue) : null;
             var invalidDataAttr = "data-sf-invalid";
             var showPasswordPrompt = false;
+            var showConfirmEmailChanges = false;
             var invalidEmailErrorMessage = formContainer.querySelector("input[name='InvalidEmailErrorMessage']").value;
             var validationRequiredErrorMessage = formContainer.querySelector("input[name='ValidationRequiredMessage']").value;
+            var activationMethod = formContainer.querySelector("input[name='ActivationMethod']").value;
+            var confirmChangeContainer = document.querySelector('[data-sf-role="confirm-email-change-container"]');
+            var showSendAgainActivationLink = confirmChangeContainer.querySelector('[data-sf-role="show-send-again-activation-link"]').value.toLowerCase() === 'true';
+            var confirmationForm = confirmChangeContainer.querySelector('form');
 
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
@@ -115,6 +121,7 @@
                     hideElement(document.querySelector('[data-sf-role="edit-profile-container"]'));
                     showElement(document.querySelector('[data-sf-role="password-container"]'));
                     showPasswordPrompt = true;
+                    showConfirmEmailChanges = true;
                     return;
                 }
 
@@ -124,7 +131,7 @@
                     }
                 }, err => {
                     showErrorMessage("Antiforgery token retrieval failed");
-                })
+                });
             });
 
             fileUploadInput.addEventListener('change', function (event) {
@@ -264,25 +271,30 @@
             }
 
             var postSubmitAction = function (response) {
-                var action = formContainer.querySelector("input[name='PostUpdateAction']").value;
+                if (showConfirmEmailChanges && activationMethod == "AfterConfirmation") {
+                    hideElement(document.querySelector('[data-sf-role="profile-container"]'));
+                    showElement(document.querySelector('[data-sf-role="confirm-email-change-container"]'));
+                } else {
+                    var action = formContainer.querySelector("input[name='PostUpdateAction']").value;
 
-                switch (action) {
-                    case "ViewMessage":
-                        bind(response);
-                        hideElement(errorMessageContainer);
-                        showSuccessMessage();
-                        break;
-                    case "RedirectToPage":
-                        var redirectUrl = formContainer.querySelector("input[name='RedirectUrl']").value;
-                        redirect(redirectUrl);
-                        break;
-                    case "SwitchToReadMode":
-                        hideElement(formContainer);
-                        showElement(readContainer);
-                        redirect(window.location);
-                        break;
-                    default:
-                        break;
+                    switch (action) {
+                        case "ViewMessage":
+                            bind(response);
+                            hideElement(errorMessageContainer);
+                            showSuccessMessage();
+                            break;
+                        case "RedirectToPage":
+                            var redirectUrl = formContainer.querySelector("input[name='RedirectUrl']").value;
+                            redirect(redirectUrl);
+                            break;
+                        case "SwitchToReadMode":
+                            hideElement(formContainer);
+                            showElement(readContainer);
+                            redirect(window.location);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             };
 
@@ -300,7 +312,7 @@
                 // Profile fields invalidation
                 if (responseFieldsErrors) {
                     Object.keys(responseFieldsErrors).forEach(key => {
-                        var inputElement = formContainer.querySelector("input[name='" + key + "']") ?? formContainer.querySelector("img[name='" + key + "']");
+                        var inputElement = formContainer.querySelector("input[name='" + key + "']") ?? formContainer.querySelector("textarea[name='" + key + "']") ?? formContainer.querySelector("img[name='" + key + "']");
                         if (inputElement) {
                             invalidateElement(inputElement);
 
@@ -310,12 +322,41 @@
                             } else {
                                 fieldErrors.push(responseFieldsErrors[key]);
                             }
-                        } 
+                        }
                     });
                 }
 
                 showErrorMessage(fieldErrors.join('<br />'), true);
             };
+
+            var confirmationSuccess = function () {
+                confirmChangeContainer.querySelector('[data-sf-role="confirm-email-change-title"] h2').innerText = confirmChangeContainer.querySelector('[data-sf-role="confirm-email-change-success-title"]').value;
+                confirmChangeContainer.querySelector('[data-sf-role="confirm-email-change-message"]').innerText = confirmChangeContainer.querySelector('[data-sf-role="confirm-email-change-success-message"]').value;
+                confirmationForm.querySelector('[type="submit"]').value = confirmChangeContainer.querySelector('[data-sf-role="send-again-label"]').value;
+            }
+
+            if (confirmEmailChangeRequest && activationMethod == "AfterConfirmation") {
+                if (confirmEmailChangeError) {
+                    hideElement(document.querySelector('[data-sf-role="profile-container"]'));
+                    showElement(confirmChangeContainer);
+
+                    if (showSendAgainActivationLink) {
+                        confirmationForm.addEventListener('submit', function (event) {
+                            event.preventDefault();
+
+                            setAntiforgeryTokens().then(res => {
+                                submitFormHandler(confirmationForm, null, confirmationSuccess);
+                            }, err => {
+                                showErrorMessage("Antiforgery token retrieval failed");
+                            });
+                        });
+                        showElement(confirmationForm.querySelector('[type="submit"]'));
+                    }
+                    return;
+                } else {
+                    showSuccessMessage();
+                }
+            }
         }
 
         function initRead(viewMode) {

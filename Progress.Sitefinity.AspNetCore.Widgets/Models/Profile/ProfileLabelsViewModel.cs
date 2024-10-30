@@ -99,23 +99,53 @@
         public string ValidationRequiredMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets the InvalidEmailErrorMessage.
+        /// Gets or sets the Invalid email error message.
         /// </summary>
         public string InvalidEmailErrorMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets the InvalidPhotoErrorMessage.
+        /// Gets or sets the Invalid photo error message.
         /// </summary>
         public string InvalidPhotoErrorMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets the InvalidPasswordErrorMessage.
+        /// Gets or sets the Invalid password error message.
         /// </summary>
         public string InvalidPasswordErrorMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets the ChangeEmailLabel.
+        /// Gets or sets the Change email label.
         /// </summary>
         public string ChangeEmailLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change title label.
+        /// </summary>
+        public string ConfirmEmailChangeTitleLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Confirm email change description label.
+        /// </summary>
+        public string ConfirmEmailChangeDescriptionLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send activation link label.
+        /// </summary>
+        public string SendActivationLinkLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send again activation link label.
+        /// </summary>
+        public string SendAgainActivationLinkLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send activation link success title.
+        /// </summary>
+        public string SendConfirmationLinkSuccessTitleLabel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send activation link success message.
+        /// </summary>
+        public string SendConfirmationLinkSuccessDescriptionLabel { get; set; }
     }
 }

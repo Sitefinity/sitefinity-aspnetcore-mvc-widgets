@@ -75,6 +75,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         [DisplayName("")]
         [Content(Type = KnownContentTypes.Pages, AllowMultipleItemsSelection = false)]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"DetailPageMode\",\"operator\":\"Equals\",\"value\":\"ExistingPage\"}],\"inline\":\"true\"}")]
+        [Required(ErrorMessage = "Please select a details page.")]
         public MixedContentContext DetailPage { get; set; }
 
         /// <summary>

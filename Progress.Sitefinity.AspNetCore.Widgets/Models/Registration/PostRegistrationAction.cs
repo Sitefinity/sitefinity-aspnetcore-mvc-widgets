@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Progress.Sitefinity.Renderer.Designers.Attributes;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
 {
@@ -10,12 +11,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         /// <summary>
         /// Displays a message.
         /// </summary>
+        [EnumDisplayName("View a message")]
         [Description("View a message")]
         ViewMessage = 0,
 
         /// <summary>
         /// Redirects to specific Sitefinity page.
         /// </summary>
+        [EnumDisplayName("Redirect to page...")]
         [Description("Redirect to page...")]
         RedirectToPage = 1,
     }

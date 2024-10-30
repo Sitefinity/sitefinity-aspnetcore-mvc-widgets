@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
+using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
-using Progress.Sitefinity.RestSdk;
-using Progress.Sitefinity.RestSdk.OData;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
 {
@@ -21,7 +19,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
     /// </summary>
     public class SearchResultsModel : ISearchResultsModel
     {
-        private readonly IODataRestClient restClient;
+        private readonly ISearchClient searchClient;
         private readonly IRequestContext requestContext;
         private readonly IStyleClassesProvider styles;
         private IStringLocalizer<SearchResultsModel> localizer;
@@ -35,12 +33,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         /// <param name="styles">The styles provider.</param>
         public SearchResultsModel(
             IRequestContext requestContext,
-            IODataRestClient restClient,
+            ISearchClient restClient,
             IStringLocalizer<SearchResultsModel> localizer,
             IStyleClassesProvider styles)
         {
             this.requestContext = requestContext;
-            this.restClient = restClient;
+            this.searchClient = restClient;
             this.localizer = localizer;
             this.styles = styles;
         }
@@ -143,27 +141,24 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                 take = int.MaxValue;
             }
 
-            var response = await this.restClient.ExecuteUnboundFunction<JObject>(new BoundFunctionArgs()
+            var response = await this.searchClient.Search<JObject>(new SearchArgs()
             {
-                Name = "Default.PerformSearch",
-                AdditionalQueryParams = new Dictionary<string, string>()
-                {
-                    ["indexCatalogue"] = searchParamsModel.IndexCatalogue,
-                    ["searchQuery"] = HttpUtility.UrlEncode(searchParamsModel.SearchQuery),
-                    ["wordsMode"] = searchParamsModel.WordsMode,
-                    ["$orderBy"] = orderByClause,
-                    ["sf_culture"] = searchParamsModel.Culture,
-                    ["$skip"] = skip.ToString(CultureInfo.InvariantCulture),
-                    ["$top"] = take.ToString(CultureInfo.InvariantCulture),
-                    ["searchFields"] = entity.SearchFields,
-                    ["highlightedFields"] = entity.HighlightedFields,
-                    ["scoringInfo"] = searchParamsModel.ScroingInfo,
-                    ["resultsForAllSites"] = searchParamsModel.ShowResultsForAllIndexedSites.ToString("F0", CultureInfo.InvariantCulture),
-                    ["filter"] = searchParamsModel.Filter,
-                },
+                IndexName = searchParamsModel.IndexCatalogue,
+                SearchQuery = searchParamsModel.SearchQuery,
+                WordsMode = searchParamsModel.WordsMode,
+                OrderByClause = orderByClause,
+                Culture = searchParamsModel.Culture,
+                Skip = skip,
+                Take = take,
+                SearchFields = entity.SearchFields,
+                HighlightedFields = entity.HighlightedFields,
+                ScroingInfo = searchParamsModel.ScroingInfo,
+                ShowResultsForAllIndexedSites = searchParamsModel.ShowResultsForAllIndexedSites,
+                Filter = searchParamsModel.Filter,
+                AdditionalResultFields = entity.AdditionalResultFields,
             });
 
             return response;
         }
-    }
+}
 }

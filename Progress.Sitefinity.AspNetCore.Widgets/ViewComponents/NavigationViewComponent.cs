@@ -11,7 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Navigation widget.
     /// </summary>
-    [SitefinityWidget(Title = "Navigation", Category = WidgetCategory.Content, Section = WidgetSection.NavigationAndSearch, Order = 0, EmptyIconText = "No pages have been published", EmptyIconAction = EmptyLinkAction.None, EmptyIcon = "file-text-o")]
+    [SitefinityWidget(Title = "Navigation", Category = WidgetCategory.Content, Section = WidgetSection.NavigationAndSearch, Order = 0, EmptyIconText = "No pages have been published", EmptyIconAction = EmptyLinkAction.None, EmptyIcon = "file-text-o", IconName = "navigation")]
     [ViewComponent(Name = "SitefinityNavigation")]
     public class NavigationViewComponent : ViewComponent
     {

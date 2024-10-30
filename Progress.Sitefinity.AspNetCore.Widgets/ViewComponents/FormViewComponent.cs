@@ -11,7 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Form widget.
     /// </summary>
-    [SitefinityWidget(Title = Title, Section = WidgetSection.Basic, Order = 5, EmptyIconText = "Select a form", EmptyIcon = "plus-circle")]
+    [SitefinityWidget(Title = Title, Section = WidgetSection.Basic, Order = 5, EmptyIconText = "Select a form", EmptyIcon = "plus-circle", IconName = "form")]
     [InitialValue("ContentViewDisplayMode", "Detail")]
     [ViewComponent(Name = "SitefinityForm")]
     public class FormViewComponent : ViewComponent

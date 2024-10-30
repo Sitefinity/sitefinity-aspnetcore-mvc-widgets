@@ -283,6 +283,7 @@ function initSubmit(formContainer) {
             return false;
         }
 
+        var genericFormError = "Form could not be submitted";
         var headerName = "X-SF-ANTIFORGERY-REQUEST";
         var headers = {};
         headers[headerName] = "";
@@ -316,10 +317,20 @@ function initSubmit(formContainer) {
                             showErrorMessage(jsonFormSubmitResponse.error);
                         }
                     }, function (error) {
-                        showErrorMessage("Form submit response was not in json format and could not be parsed");
+                        if (formSubmitResponse.status === 413) {
+                            showErrorMessage("Request was too large");
+                        } else {
+                            showErrorMessage(genericFormError);
+                        }
                     });
                 }, function (error) {
-                    showErrorMessage(JSON.stringify(error));
+                    var serializedError = JSON.stringify(error);
+
+                    if (serializedError === "{}") {
+                        showErrorMessage(genericFormError);
+                    } else {
+                        showErrorMessage(serializedError);
+                    }
                 });
             }
             if (csrfResponse.status === 200) {
@@ -630,7 +641,7 @@ function handleFileValidation(source) {
             var fileSizeViolationMessageContainer = fileInputs[i].closest('[data-sf-role="single-file-input-wrapper"]').querySelector('[data-sf-role="filesize-violation-message"]');
             var fileTypeViolationMessageContainer = fileInputs[i].closest('[data-sf-role="single-file-input-wrapper"]').querySelector('[data-sf-role="filetype-violation-message"]');
             if (fileSizeViolationMessageContainer)
-            toggleShowStyles(fileSizeViolationMessageContainer, false);
+                toggleShowStyles(fileSizeViolationMessageContainer, false);
 
             if (fileTypeViolationMessageContainer)
                 toggleShowStyles(fileTypeViolationMessageContainer, false);
@@ -670,7 +681,7 @@ function handleFileValidation(source) {
             if (fileInputs[i].files.length > 0) {
                 var file = fileInputs[i].files[0];
                 var fileSizeViolationMessageContainer = fileInputs[i].closest('[data-sf-role="single-file-input-wrapper"]').querySelector('[data-sf-role="filesize-violation-message"]');
-                if ((minSize > 0 && file.size < minSize) || (maxSize > 0 && file.size > maxSize)) {;
+                if ((minSize > 0 && file.size < minSize) || (maxSize > 0 && file.size > maxSize)) {
                     toggleShowStyles(fileSizeViolationMessageContainer);
                     hasViolations = true;
                     fileInputs[i].focus();

@@ -121,6 +121,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Dropdown
         [DefaultValue("Title ASC")]
         [DataType(customDataType: KnownFieldTypes.Choices)]
         [Choice(ServiceUrl = "{0}/Default.Sorters()?frontend=True", ServiceCallParameters = "[{ \"taxaUrl\" : \"{0}\"}]")]
+        [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"ListType\",\"operator\":\"Equals\",\"value\":\"Classification\"}]}")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2243:Attribute string literals should parse correctly", Justification = "By design")]
         public string OrderBy { get; set; }
 

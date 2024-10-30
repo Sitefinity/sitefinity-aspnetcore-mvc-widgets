@@ -33,6 +33,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
         [DataType(customDataType: KnownFieldTypes.ChipChoice)]
         [DefaultValue(1)]
         [Choice("[{\"Title\":\"1 level\",\"Name\":\"1\",\"Value\":1,\"Icon\":null},{\"Title\":\"2 levels\",\"Name\":\"2\",\"Value\":2,\"Icon\":null},{\"Title\":\"3 levels\",\"Name\":\"3\",\"Value\":3,\"Icon\":null},{\"Title\":\"4 levels\",\"Name\":\"4\",\"Value\":4,\"Icon\":null},{\"Title\":\"5 levels\",\"Name\":\"5\",\"Value\":5,\"Icon\":null},{\"Title\":\"All levels\",\"Name\":\"All\",\"Value\":null,\"Icon\":null}]", NotResponsive = true)]
+        [IsNullable(true)]
         public int? LevelsToInclude { get; set; }
 
         /// <summary>

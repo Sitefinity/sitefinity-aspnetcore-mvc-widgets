@@ -86,6 +86,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         public string Email { get; set; }
 
         /// <summary>
+        /// Gets or sets the Provider name.
+        /// </summary>
+        /// <value>
+        /// The Provider name.
+        /// </value>
+        public string ProviderName { get; set; }
+
+        /// <summary>
         /// Gets or sets the Nickname field.
         /// </summary>
         /// <value>
@@ -127,6 +135,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         public IEnumerable<string> ReadOnlyFields { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the current request is for email change confirmation.
+        /// </summary>
+        public bool ConfirmEmailChangeRequest { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the current request is for email change confirmation.
+        /// </summary>
+        public bool ConfirmEmailChangeError { get; set; }
+
+        /// <summary>
+        /// Gets or sets the account activation method.
+        /// </summary>
+        public string ActivationMethod { get; set; }
+
+        /// <summary>
         /// Gets or sets the attributes for the widget.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]
@@ -143,5 +166,20 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in the model.")]
         public IEnumerable<string> AllowedAvatarFormat { get; set; }
+
+        /// <summary>
+        /// Gets or sets the send again activation link url.
+        /// </summary>
+        public string SendAgainActivationLinkUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the activation link will be shown.
+        /// </summary>
+        public bool ShowSendAgainActivationLink { get; set; }
+
+        /// <summary>
+        /// Gets or sets a warning.
+        /// </summary>
+        public string Warning { get; set; }
     }
 }

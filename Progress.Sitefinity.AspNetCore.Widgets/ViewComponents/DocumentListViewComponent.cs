@@ -13,7 +13,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the Document list widget.
     /// </summary>
-    [SitefinityWidget(EmptyIcon = "plus-circle", EmptyIconText = "Select documents", Title = "Document list", Order = 2, Section = WidgetSection.ContentLists)]
+    [SitefinityWidget(IsContentLocation = true, EmptyIcon = "plus-circle", EmptyIconText = "Select documents", Title = "Document list", Order = 2, Section = WidgetSection.ContentLists, IconName = "document")]
     [ViewComponent(Name = "SitefinityDocumentList")]
     public class DocumentListViewComponent : ViewComponent
     {

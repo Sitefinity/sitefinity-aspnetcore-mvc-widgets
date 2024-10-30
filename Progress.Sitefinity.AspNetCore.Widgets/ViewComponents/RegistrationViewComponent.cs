@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the registration widget.
     /// </summary>
-    [SitefinityWidget(Title = "Registration form", Order = 1, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content)]
+    [SitefinityWidget(Title = "Registration form", Order = 1, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content, IconName = "registration", NotPersonalizable = true)]
     [ViewComponent(Name = "SitefinityRegistration")]
     public class RegistrationViewComponent : ViewComponent
     {
@@ -35,6 +35,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
                 throw new ArgumentNullException(nameof(context));
 
             var viewModel = await this.model.InitializeViewModel(context.Entity);
+
+            if (!string.IsNullOrEmpty(viewModel.Warning))
+            {
+                context.SetWarning(viewModel.Warning);
+            }
+
             return this.View(context.Entity.SfViewName, viewModel);
         }
     }

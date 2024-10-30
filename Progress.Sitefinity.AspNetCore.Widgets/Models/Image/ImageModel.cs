@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using Microsoft.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.Configuration;
+using Progress.Sitefinity.AspNetCore.Http;
+using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Content;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
@@ -24,10 +28,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// </summary>
         /// <param name="service">The rest service.</param>
         /// <param name="styles">The style classes provider.</param>
-        public ImageModel(IODataRestClient service, IStyleClassesProvider styles)
+        /// <param name="requestContext">The current request context.</param>
+        /// <param name="renderContext">The render context.</param>
+        public ImageModel(IODataRestClient service, IStyleClassesProvider styles, IRequestContext requestContext, IRenderContext renderContext)
         {
             this.styles = styles;
             this.restClient = service;
+            this.requestContext = requestContext;
+            this.renderContext = renderContext;
         }
 
         /// <summary>
@@ -107,8 +115,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
                 viewModel.Width = isSvg && hasZeroDimensions ? null : viewModel.Item.Width;
                 viewModel.Height = isSvg && hasZeroDimensions ? null : viewModel.Item.Height;
 
-                viewModel.SelectedImageUrl = viewModel.Item.Url;
+                viewModel.SelectedImageUrl = this.AppendSfSiteToImageUrl(viewModel.Item.Url);
+
                 viewModel.ActionLinkModel = entity.ActionLink;
+
                 if (viewModel.Item.Thumbnails != null)
                 {
                     viewModel.Thumbnails = viewModel.Item.Thumbnails.OrderBy(t => t.Width).ToList();
@@ -144,6 +154,28 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
             return Task.FromResult(viewModel);
         }
 
+        private string AppendSfSiteToImageUrl(string sourceUrl)
+        {
+            var relativeUrlParts = sourceUrl.Split('?');
+
+            if (Uri.IsWellFormedUriString(sourceUrl, UriKind.Absolute))
+                relativeUrlParts = new Uri(sourceUrl).PathAndQuery.Split('?');
+
+            var itemUri = new UriBuilder();
+
+            itemUri.Path = relativeUrlParts.FirstOrDefault();
+            var query = HttpUtility.ParseQueryString(relativeUrlParts.LastOrDefault());
+
+            if (!this.renderContext.IsLive)
+                query[QueryParamNames.Site] = this.requestContext.Site.Id;
+
+            itemUri.Query = query.ToString();
+
+            return HttpUtility.HtmlDecode(itemUri.Uri.PathAndQuery);
+        }
+
         private IStyleClassesProvider styles;
+        private IRequestContext requestContext;
+        private IRenderContext renderContext;
     }
 }

@@ -12,7 +12,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents.DynamicList
     /// <summary>
     /// The view component for the dropdown field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.Checkboxes, Title = "Dynamic list", Section = WidgetSection.Choices)]
+    [SitefinityFormWidget(FormFieldType.DynamicList, Title = "Dynamic list", Section = WidgetSection.Choices, IconName = "dropdown")]
     [ViewComponent(Name = "SitefinityDynamicList")]
     public class DynamicListViewComponent : ViewComponent
     {
@@ -21,14 +21,14 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents.DynamicList
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicListViewComponent"/> class.
         /// </summary>
-        /// <param name="model">The checkboxes field model.</param>
+        /// <param name="model">The dynamic list field model.</param>
         public DynamicListViewComponent(IDynamicListModel model)
         {
             this.model = model;
         }
 
         /// <summary>
-        /// Invokes the Checkboxes widget creation.
+        /// Invokes the DynamicList widget creation.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>A <see cref="IViewComponentResult"/> representing the result of the operation.</returns>

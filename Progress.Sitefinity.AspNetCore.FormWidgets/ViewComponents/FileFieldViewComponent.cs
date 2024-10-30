@@ -12,7 +12,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
     /// <summary>
     /// The view component for the text field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.File, Title = "File upload", Order = 1, Section = WidgetSection.Other)]
+    [SitefinityFormWidget(FormFieldType.File, Title = "File upload", Order = 1, Section = WidgetSection.Other, IconName = "file-upload")]
     [ViewComponent(Name = "SitefinityFileField")]
     public class FileFieldViewComponent : ViewComponent
     {

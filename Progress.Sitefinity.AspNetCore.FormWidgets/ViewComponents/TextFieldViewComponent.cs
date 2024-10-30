@@ -12,7 +12,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
     /// <summary>
     /// The view component for the text field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.ShortText, Title = "Textbox", Order = 1, Section = WidgetSection.Basic)]
+    [SitefinityFormWidget(FormFieldType.ShortText, Title = "Textbox", Order = 1, Section = WidgetSection.Basic, IconName = "textbox")]
     [ViewComponent(Name = "SitefinityTextField")]
     public class TextFieldViewComponent : ViewComponent
     {

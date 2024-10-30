@@ -34,7 +34,7 @@
             var submitUrl = form.attributes['action'].value;
             window.fetch(submitUrl, { method: 'POST', body: JSON.stringify(model), headers: { 'Content-Type': 'application/json' } })
                 .then((response) => {
-                    sentEmailLabel.innerText = emailInput.value;
+                    sentEmailLabel.innerText = sentEmailLabel.innerText.replace("{0}", emailInput.value);
                     hideElement(formContainer);
                     showElement(successMessageContainer);
                 });

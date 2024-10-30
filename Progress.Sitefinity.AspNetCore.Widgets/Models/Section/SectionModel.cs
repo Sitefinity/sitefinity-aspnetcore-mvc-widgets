@@ -71,7 +71,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
                 case BackgroundBase.None:
                     return string.Empty;
                 case BackgroundBase.Color:
-                    return "--sf-backgrоund-color: " + backgroundStyle.Color;
+                    return "--sf-background-color: " + backgroundStyle.Color;
                 default:
                     return string.Empty;
             }
@@ -242,7 +242,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
                 case Background.None:
                     return string.Empty;
                 case Background.Color:
-                    return "--sf-backgrоund-color: " + backgroundStyle.Color;
+                    return "--sf-background-color: " + backgroundStyle.Color;
                 case Background.Image:
                     if (backgroundStyle.ImageItem == null && backgroundStyle.ImageItem.Id != null)
                         return string.Empty;
@@ -265,7 +265,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
                             break;
                     }
 
-                    return $"--sf-backgrоund-image: url({imageUrl});{imagePosition}";
+                    return $"--sf-background-image: url({imageUrl});{imagePosition}";
                 default:
                     return string.Empty;
             }

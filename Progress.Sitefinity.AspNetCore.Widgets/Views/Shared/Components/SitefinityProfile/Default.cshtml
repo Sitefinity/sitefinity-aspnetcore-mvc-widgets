@@ -52,7 +52,7 @@
             var allowedAvatarFormats = string.Join(", ", Model.AllowedAvatarFormat);
 
             <div data-sf-role="form-container" class="@(Model.ViewMode == ProfileViewMode.Edit ? "" : "d-none")">
-                <input type=hidden id="@allowedAvatarFormatsId" data-sf-role="sf-allowed-avatar-formats" value="@allowedAvatarFormats"/>
+                <input type=hidden id="@allowedAvatarFormatsId" data-sf-role="sf-allowed-avatar-formats" value="@allowedAvatarFormats" />
                 <div data-sf-role="error-message-container" class="alert alert-danger d-none my-3" role="alert" aria-live="assertive"></div>
                 <div data-sf-role="success-message-container"
                      class="alert alert-success my-3 d-none"
@@ -169,8 +169,35 @@
                 <input type="hidden" name="InvalidEmailErrorMessage" value="@lbls.InvalidEmailErrorMessage" />
                 <input type="hidden" name="InvalidPhotoErrorMessage" value="@lbls.InvalidPhotoErrorMessage" />
                 <input type="hidden" name="InvalidPasswordErrorMessage" value="@lbls.InvalidPasswordErrorMessage" />
+                <input type="hidden" name="ConfirmEmailChangeRequest" value="@Model.ConfirmEmailChangeRequest.ToString()" />
+                <input type="hidden" name="ConfirmEmailChangeError" value="@Model.ConfirmEmailChangeError.ToString()" />
+                <input type="hidden" name="ActivationMethod" value="@Model.ActivationMethod" />
             </div>
         }
 
     </div>
+
+    @if (Model.ViewMode != ProfileViewMode.Read)
+    {
+        <div data-sf-role="confirm-email-change-container" class="d-none">
+            <div class="mb-3" data-sf-role="confirm-email-change-title">
+                <h2>
+                    @lbls.ConfirmEmailChangeTitleLabel
+                </h2>
+            </div>
+            <div class="mb-3" data-sf-role="confirm-email-change-message">
+                @string.Format(lbls.ConfirmEmailChangeDescriptionLabel, Model.Email)
+            </div>
+            <form method="post" action="@Model.SendAgainActivationLinkUrl" role="form">
+                <input type="hidden" name="Email" value="@Model.Email" />
+                <input type="hidden" name="Id" value="@Model.Id" />
+                <input type="hidden" name="ProviderName" value="@Model.ProviderName" />
+                <input class="btn btn-primary d-none" type="submit" value="@lbls.SendActivationLinkLabel" />
+            </form>
+            <input type="hidden" data-sf-role="show-send-again-activation-link" value="@Model.ShowSendAgainActivationLink.ToString()" />
+            <input type="hidden" data-sf-role="send-again-label" value="@lbls.SendAgainActivationLinkLabel" />
+            <input type="hidden" data-sf-role="confirm-email-change-success-title" value="@lbls.SendConfirmationLinkSuccessTitleLabel" />
+            <input type="hidden" data-sf-role="confirm-email-change-success-message" value="@string.Format(lbls.SendConfirmationLinkSuccessDescriptionLabel, Model.Email)" />
+        </div>
+    }
 }

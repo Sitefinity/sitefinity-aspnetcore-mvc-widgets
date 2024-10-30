@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the change password widget.
     /// </summary>
-    [SitefinityWidget(Title = "Change password", Order = 6, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content)]
+    [SitefinityWidget(Title = "Change password", Order = 6, Section = WidgetSection.LoginAndUsers, Category = WidgetCategory.Content, IconName = "password", NotPersonalizable = true)]
     [ViewComponent(Name = "SitefinityChangePassword")]
     public class ChangePasswordViewComponent : ViewComponent
     {

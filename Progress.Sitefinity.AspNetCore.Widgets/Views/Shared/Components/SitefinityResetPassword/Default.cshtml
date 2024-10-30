@@ -91,13 +91,14 @@
                     <input class="btn btn-primary w-100" type="submit" value="@lbls.SendButtonLabel" />
                     <input type="hidden" name="ResetPasswordUrl" value="@Model.ResetPasswordUrl" />
                     <input type="hidden" name="MembershipProviderName" value="@Model.MembershipProviderName" />
+                    <input type="hidden" name="RegistrationPageUrl" value="@Model.RegistrationPageUrl" />
                 </form>
 
                 <input type="hidden" name="InvalidEmailFormatMessage" value="@lbls.InvalidEmailFormatMessage" />
                 <input type="hidden" name="FieldIsRequiredMessage" value="@lbls.FieldIsRequiredMessage" />
             </div>
             <div data-sf-role="success-message-container" class="d-none mt-3">
-                <p>@lbls.ForgottenPasswordSubmitMessage <strong data-sf-role="sent-email-label"></strong></p>
+                <p data-sf-role="sent-email-label">@lbls.ForgottenPasswordSubmitMessage</p>
                 <p>@lbls.ForgottenPasswordLinkMessage</p>
             </div>
             @if (!string.IsNullOrEmpty(Model.LoginPageLink))

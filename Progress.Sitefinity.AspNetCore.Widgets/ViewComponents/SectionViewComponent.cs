@@ -10,7 +10,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view compnent for Section widget.
     /// </summary>
-    [SitefinityWidget(Category = WidgetCategory.Layout, Title = "Section", Section = WidgetSection.EmptySection)]
+    [SitefinityWidget(Category = WidgetCategory.Layout, Title = "Section", Section = WidgetSection.EmptySection, IconName = "section", NotPersonalizable = true)]
     [InitialValue("SectionPadding", "{\"Top\":\"S\",\"Bottom\":\"S\"}")]
     [ViewComponent(Name = "SitefinitySection")]
     public class SectionViewComponent : ViewComponent

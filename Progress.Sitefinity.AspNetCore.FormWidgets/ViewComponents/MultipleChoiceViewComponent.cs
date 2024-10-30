@@ -11,7 +11,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents
     /// <summary>
     /// The view component for the multiple choice field widget.
     /// </summary>
-    [SitefinityFormWidget(FormFieldType.MultipleChoice, Title = "Multiple choice", Order = 1, Section = WidgetSection.Choices)]
+    [SitefinityFormWidget(FormFieldType.MultipleChoice, Title = "Multiple choice", Order = 1, Section = WidgetSection.Choices, IconName = "multiple-choice")]
     [ViewComponent(Name = "SitefinityMultipleChoice")]
     public class MultipleChoiceViewComponent : ViewComponent
     {

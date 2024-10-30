@@ -21,6 +21,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
         public Uri DetailItemUrl { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to render links for the items.
+        /// </summary>
+        public bool RenderLinks { get; set; }
+
+        /// <summary>
         /// Gets or sets the list of items.
         /// </summary>
         /// <value>

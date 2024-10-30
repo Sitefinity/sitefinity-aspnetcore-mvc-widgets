@@ -71,7 +71,10 @@
             hideElement(formContainer);
             showElement(confirmRegistrationMessageContainer);
 
-            var activationLinkLabel = confirmRegistrationMessageContainer.querySelector("input[name='ActivationLinkLabel']").value;
+            var header = confirmRegistrationMessageContainer.querySelector('[data-sf-role="activation-link-header');
+            header.innerText = confirmRegistrationMessageContainer.querySelector('[name="PleaseCheckYourEmailHeader"]').value;
+
+            var activationLinkLabel = confirmRegistrationMessageContainer.querySelector("input[name='PleaseCheckYourEmailMessage']").value;
 
             var activationLinkMessageContainer = confirmRegistrationMessageContainer.querySelector('[data-sf-role="activation-link-message-container"]');
 
@@ -81,12 +84,46 @@
             activationLinkMessageContainer.innerText = activationLinkLabel + " " + email;
 
             var sendAgainBtn = confirmRegistrationMessageContainer.querySelector('[data-sf-role="sendAgainLink"]');
+            sendAgainBtn.replaceWith(sendAgainBtn.cloneNode(true));
+            sendAgainBtn = confirmRegistrationMessageContainer.querySelector('[data-sf-role="sendAgainLink"]');
+
+            sendAgainBtn.innerText = confirmRegistrationMessageContainer.querySelector('input[name="SendAgainLink"]').value;
+
             var resendUrl = confirmRegistrationMessageContainer.querySelector("input[name='ResendConfirmationEmailUrl']").value;
 
             sendAgainBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 submitFormHandler(form, resendUrl, postResendAction);
             });
+        };
+
+        var showErrorMessage = function () {
+            hideElement(formContainer);
+            showElement(confirmRegistrationMessageContainer);
+
+            var header = confirmRegistrationMessageContainer.querySelector('[data-sf-role="activation-link-header');
+            header.innerText = confirmRegistrationMessageContainer.querySelector('[name="ActivateAccountTitle"]').value;
+
+            var activationLinkMessageContainer = confirmRegistrationMessageContainer.querySelector('[data-sf-role="activation-link-message-container"]');
+            var email = confirmRegistrationMessageContainer.querySelector('input[name="ExistingEmail"]').value;
+            var activationLabel = confirmRegistrationMessageContainer.querySelector('input[name="ActivateAccountMessage"]').value.replace("{0}", email);
+            activationLinkMessageContainer.innerText = activationLabel;
+            form.querySelector("input[name='Email']").value = email;
+            var userExists = Boolean(widgetContainer.querySelector("input[name='ExistingEmail']").value);
+
+            var sendAgainBtn = confirmRegistrationMessageContainer.querySelector('[data-sf-role="sendAgainLink"]');
+
+            if (userExists) {
+                sendAgainBtn.innerText = confirmRegistrationMessageContainer.querySelector('input[name="ActivateAccountLink"]').value;
+
+                var resendUrl = confirmRegistrationMessageContainer.querySelector("input[name='ResendConfirmationEmailUrl']").value;
+                sendAgainBtn.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    submitFormHandler(form, resendUrl, showSuccessAndConfirmationSentMessage);
+                });
+            } else {
+                hideElement(sendAgainBtn);
+            }
         };
 
         var submitFormHandler = function (form, url, onSuccess, onError) {
@@ -115,8 +152,11 @@
         };
 
         var postResendAction = function () {
+            var header = confirmRegistrationMessageContainer.querySelector('[data-sf-role="activation-link-header');
+            header.innerText = confirmRegistrationMessageContainer.querySelector('[name="PleaseCheckYourEmailHeader"]').value;
+
             var activationLinkMessageContainer = confirmRegistrationMessageContainer.querySelector('[data-sf-role="activation-link-message-container"]');
-            var sendAgainLabel = confirmRegistrationMessageContainer.querySelector("input[name='SendAgainLabel']").value;
+            var sendAgainLabel = confirmRegistrationMessageContainer.querySelector("input[name='PleaseCheckYourEmailAnotherMessage']").value;
             var formData = new FormData(form);
             var email = formData.get("Email");
             activationLinkMessageContainer.innerText = sendAgainLabel.replace("{0}", email);
@@ -251,6 +291,13 @@
         function showError(err) {
             var errorMessageContainer = document.querySelector('[data-sf-role="error-message-container"]');
             errorMessageContainer.innerText = err;
+        }
+
+        var userExists = Boolean(widgetContainer.querySelector("input[name='ExistingEmail']").value);
+        var activationFailed = Boolean(widgetContainer.querySelector("input[name='ActivationFailed']").value);
+
+        if (activationFailed || userExists) {
+            showErrorMessage();
         }
     });
 })();

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Primitives;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.RestSdk;
@@ -31,18 +34,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         /// <param name="styles">The html classes for styling provider.</param>
         /// <param name="renderContext">The render context.</param>
         /// <param name="httpContextAccessor">The http context accessor.</param>
+        /// <param name="localizer">The localizer.</param>
         public RegistrationModel(
             ISitefinityConfig config,
             IODataRestClient restService,
             IStyleClassesProvider styles,
             IRenderContext renderContext,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IStringLocalizer<RegistrationModel> localizer)
         {
             this.config = config;
             this.restService = restService;
             this.styles = styles;
             this.renderContext = renderContext;
             this.httpContextAccessor = httpContextAccessor;
+            this.localizer = localizer;
         }
 
         /// <inheritdoc/>
@@ -51,10 +57,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
+            var currentCulture = CultureInfo.CurrentCulture;
+
             var viewModel = new RegistrationViewModel()
             {
-                RegistrationHandlerPath = $"/{this.config.WebServicePath}/Registration",
-                ResendConfirmationEmailHandlerPath = $"/{this.config.WebServicePath}/ResendConfirmationEmail",
+                RegistrationHandlerPath = $"/{this.config.WebServicePath}/Registration?sf_culture={currentCulture.IetfLanguageTag}",
+                ResendConfirmationEmailHandlerPath = $"/{this.config.WebServicePath}/ResendConfirmationEmail?sf_culture={currentCulture.IetfLanguageTag}",
                 ExternalLoginHandlerPath = "/sitefinity/external-login-handler",
                 Attributes = entity.Attributes,
             };
@@ -77,10 +85,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
             viewModel.Labels.SecretQuestionLabel = entity.SecretQuestionLabel;
             viewModel.Labels.SecretAnswerLabel = entity.SecretAnswerLabel;
             viewModel.Labels.RegisterButtonLabel = entity.RegisterButtonLabel;
-            viewModel.Labels.ActivationLinkHeader = entity.ActivationLinkHeader;
-            viewModel.Labels.ActivationLinkLabel = entity.ActivationLinkLabel;
+            viewModel.Labels.PleaseCheckYourEmailHeader = entity.PleaseCheckYourEmailHeader;
+            viewModel.Labels.PleaseCheckYourEmailMessage = entity.PleaseCheckYourEmailMessage;
+            viewModel.Labels.ActivateAccountLink = entity.ActivateAccountLink;
             viewModel.Labels.SendAgainLink = entity.SendAgainLink;
-            viewModel.Labels.SendAgainLabel = entity.SendAgainLabel;
+            viewModel.Labels.PleaseCheckYourEmailAnotherMessage = entity.PleaseCheckYourEmailAnotherMessage;
             viewModel.Labels.SuccessHeader = entity.SuccessHeader;
             viewModel.Labels.SuccessLabel = entity.SuccessLabel;
             viewModel.Labels.LoginLabel = entity.LoginLabel;
@@ -93,8 +102,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
             viewModel.InvalidClass = this.styles.StylingConfig.InvalidClass;
 
             viewModel.LoginPageUrl = this.GetPageNodeUrl(entity.LoginPage);
+            if (this.renderContext.IsLive)
+            {
+                var request = this.httpContextAccessor.HttpContext.Request;
+                viewModel.ActivationPageUrl = $"{request.Scheme}://{request.Host}{request.Path}";
+            }
 
-            if (this.IsAccountActivationRequest(out string encryptedParam))
+            if (this.IsAccountActivationRequest(out string encryptedEmail))
             {
                 this.httpContextAccessor.HttpContext.DisableCache();
                 viewModel.IsAccountActivationRequest = true;
@@ -107,13 +121,26 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
                         Name = "Default.AccountActivation",
                     };
 
-                    requestArgs.AdditionalQueryParams.Add(EncryptedParam, HttpUtility.UrlEncode(encryptedParam));
+                    requestArgs.AdditionalQueryParams.Add(EncryptedParam, HttpUtility.UrlEncode(encryptedEmail));
 
                     await this.restService.ExecuteUnboundAction(requestArgs);
                 }
-                catch (ErrorCodeException)
+                catch (ErrorCodeException ex)
                 {
-                    viewModel.Labels.ActivationMessage = entity.ActivationFailMessage;
+                    viewModel.ActivationFailed = true;
+
+                    if (ex.Code.Contains(Enum.GetName(typeof(HttpStatusCode), HttpStatusCode.Gone), StringComparison.OrdinalIgnoreCase))
+                    {
+                        viewModel.Email = ex.Message;
+
+                        viewModel.Labels.ActivateAccountTitle = entity.ActivationLinkExpiredTitle;
+                        viewModel.Labels.ActivateAccountMessage = entity.ActivationLinkExpiredMessage;
+                    }
+                    else
+                    {
+                        viewModel.Labels.ActivateAccountTitle = entity.ActivationFailTitle;
+                        viewModel.Labels.ActivateAccountMessage = entity.ActivationFailMessage;
+                    }
                 }
             }
             else
@@ -131,14 +158,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
 
                 var result = await this.restService.ExecuteUnboundAction<RegistrationSettingsDto>(requestArgs);
 
+                if (result.ActivationMethod == "AfterConfirmation" && !result.SmtpConfigured)
+                {
+                    viewModel.Warning = this.localizer.GetString("Confirmation email cannot be sent because the system has not been configured to send emails. Configure SMTP settings or contact your administrator for assistance.");
+                }
+
                 viewModel.RequiresQuestionAndAnswer = result.RequiresQuestionAndAnswer;
                 viewModel.ActivationMethod = result.ActivationMethod;
-
-                if (this.renderContext.IsLive)
-                {
-                    var request = this.httpContextAccessor.HttpContext.Request;
-                    viewModel.ActivationPageUrl = $"{request.Scheme}://{request.Host}{request.Path}";
-                }
             }
 
             var margins = this.styles.GetMarginsClasses(entity);
@@ -187,5 +213,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         private readonly IStyleClassesProvider styles;
         private readonly IRenderContext renderContext;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IStringLocalizer<RegistrationModel> localizer;
     }
 }

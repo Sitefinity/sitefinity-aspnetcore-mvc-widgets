@@ -73,6 +73,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         public string SearchFields { get; set; }
 
         /// <summary>
+        /// Gets or sets the additional results fields.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [DisplayName("Additional results fields")]
+        [Description("List of additional fields to be used in the search results, besides the default ones. These fields must be included in the search index. Use asterisk (*) to include all fields from the index.")]
+        public string AdditionalResultFields { get; set; }
+
+        /// <summary>
         /// Gets or sets the highlighted fields.
         /// </summary>
         [Category(PropertyCategory.Advanced)]
