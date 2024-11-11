@@ -75,7 +75,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// </summary>
         /// <param name="entity">The navigation entity.</param>
         /// <returns>The view model of the widget.</returns>
-        public async Task<ImageViewModel> InitializeViewModel(ImageEntity entity)
+        public virtual async Task<ImageViewModel> InitializeViewModel(ImageEntity entity)
         {
             var image = await this.GetImage(entity, this.restClient);
             return await this.InitializeViewModel(entity, image);

@@ -25,7 +25,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.Dropdown
         }
 
         /// <inheritdoc/>
-        public Task<ChoiceViewModelBase> InitializeViewModel(DropdownEntity entity)
+        public virtual Task<ChoiceViewModelBase> InitializeViewModel(DropdownEntity entity)
         {
             var viewModel = this.InitializeViewModel<ChoiceViewModelBase>(entity);
             if (entity.Sorting == DropdownSorting.Alphabetical)

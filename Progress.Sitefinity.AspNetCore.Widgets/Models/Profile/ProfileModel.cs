@@ -44,7 +44,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
         }
 
         /// <inheritdoc/>
-        public async Task<ProfileViewModel> InitializeViewModel(ProfileEntity entity)
+        public virtual async Task<ProfileViewModel> InitializeViewModel(ProfileEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

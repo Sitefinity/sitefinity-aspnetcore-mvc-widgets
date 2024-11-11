@@ -18,8 +18,6 @@
     <EmbeddedResource Include="Scripts\recommendations.js" />
     <EmbeddedResource Include="Scripts\accordion.js" />
     <EmbeddedResource Include="Scripts\accordion.min.js" />
-    <EmbeddedResource Include="Scripts\call-to-action.min.js" />
-    <EmbeddedResource Include="Scripts\call-to-action.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\change-password.min.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\forgotten-password.min.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\login-form.js" />
@@ -44,6 +42,8 @@
     <!-- Excluding file from publish -->
     <Content Remove="package.json" />
     <Content Remove="package-lock.json" />
+    <Content Remove="Views\Shared\Components\SitefinityContentList\ViewsMetaData.json" />
+    <Content Remove="Views\Shared\Components\SitefinityDocumentList\ViewsMetaData.json" />
     <!-- Excluding file from publish -->
 
   </ItemGroup>
@@ -53,43 +53,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Shared\Components\SitefinityBreadcrumb\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityButton\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityChangePassword\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityClassification\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentBlock\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\CardsList.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\Details.BlogPosts.Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\Details.Dynamic.Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\Details.Events.Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\Details.ListItems.Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\Details.News.Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\ListWithImage.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityContentList\ListWithSummary.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityDocumentList\Details.DocumentDetails.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityDocumentList\DocumentList.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityDocumentList\DocumentTable.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityFacets\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityForm\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityImage\Image.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityLoginForm\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityNativeChat\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityNavigation\Accordion.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityNavigation\Horizontal.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityNavigation\Tabs.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityNavigation\Vertical.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityProfile\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityRecommendations\Recommendations.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityRecommendations\Sample.Index.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityRegistration\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinityResetPassword\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinitySearchBox\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinitySearchResults\Default.cshtml" />
-    <None Include="Views\Shared\Components\SitefinitySection\Default.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.2.8400.355" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.2.8400.355" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.2.8400.355" />
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.2.8421.79-PrBuild" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.2.8421.79-PrBuild" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.2.8421.79-PrBuild" />
   </ItemGroup>
 </Project>

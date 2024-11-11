@@ -39,7 +39,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.DynamicList
         }
 
         /// <inheritdoc/>
-        public async Task<DynamicListViewModel> InitializeViewModel(DynamicListEntity entity)
+        public virtual async Task<DynamicListViewModel> InitializeViewModel(DynamicListEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

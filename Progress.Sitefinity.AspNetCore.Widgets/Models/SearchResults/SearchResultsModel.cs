@@ -44,7 +44,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         }
 
         /// <inheritdoc/>
-        public async Task<SearchResultsViewModel> InitializeViewModel(SearchResultsEntity entity, SearchParamsModel searchParamsModel, HttpContext httpContext)
+        public virtual async Task<SearchResultsViewModel> InitializeViewModel(SearchResultsEntity entity, SearchParamsModel searchParamsModel, HttpContext httpContext)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

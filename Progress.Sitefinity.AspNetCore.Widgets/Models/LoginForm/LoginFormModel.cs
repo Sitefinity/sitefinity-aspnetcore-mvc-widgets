@@ -35,7 +35,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm
         }
 
         /// <inheritdoc/>
-        public async Task<LoginFormViewModel> InitializeViewModel(LoginFormEntity entity)
+        public virtual async Task<LoginFormViewModel> InitializeViewModel(LoginFormEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

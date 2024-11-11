@@ -44,7 +44,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb
         }
 
         /// <inheritdoc/>
-        public async Task<BreadcrumbViewModel> InitializeViewModel(BreadcrumbEntity entity)
+        public virtual async Task<BreadcrumbViewModel> InitializeViewModel(BreadcrumbEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

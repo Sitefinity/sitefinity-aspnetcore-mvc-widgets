@@ -39,7 +39,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         }
 
         /// <inheritdoc/>
-        public async Task<NativeChatViewModel> GetViewModel(NativeChatEntity entity)
+        public virtual async Task<NativeChatViewModel> GetViewModel(NativeChatEntity entity)
         {
             var viewModel = new NativeChatViewModel
             {

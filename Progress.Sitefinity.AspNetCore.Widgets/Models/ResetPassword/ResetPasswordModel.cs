@@ -55,7 +55,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Intended. Security reasons.")]
-        public async Task<ResetPasswordViewModel> InitializeViewModel(ResetPasswordEntity entity)
+        public virtual async Task<ResetPasswordViewModel> InitializeViewModel(ResetPasswordEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
