@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
-using Progress.Sitefinity.Renderer.Entities.Content;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.RestSdk;
-using Progress.Sitefinity.RestSdk.Clients.Users;
-using Progress.Sitefinity.RestSdk.Dto;
-using Progress.Sitefinity.RestSdk.OData;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
 {
@@ -39,7 +31,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         }
 
         /// <inheritdoc/>
-        public async Task<NativeChatViewModel> GetViewModel(NativeChatEntity entity)
+        public virtual async Task<NativeChatViewModel> GetViewModel(NativeChatEntity entity)
         {
             var viewModel = new NativeChatViewModel
             {
@@ -48,7 +40,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
 
             await this.SetChannel(entity.BotId, viewModel);
             viewModel.Nickname = entity.Nickname;
-            viewModel.BotAvatarUrl = await this.GetImageUrl(entity.BotAvatar);
+            viewModel.BotAvatarUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.BotAvatar);
 
             viewModel.Proactive = entity.Proactive;
             viewModel.UserMessage = entity.UserMessage;
@@ -56,8 +48,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
             viewModel.Placeholder = entity.Placeholder;
             SetChatPickers(entity.ShowPickers, viewModel);
 
-            viewModel.OpeningChatIconUrl = await this.GetImageUrl(entity.OpeningChatIcon);
-            viewModel.ClosingChatIconUrl = await this.GetImageUrl(entity.ClosingChatIcon);
+            viewModel.OpeningChatIconUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.OpeningChatIcon);
+            viewModel.ClosingChatIconUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.ClosingChatIcon);
 
             viewModel.ContainerId = entity.ContainerId;
             viewModel.LocationPickerLabel = entity.LocationPickerLabel;
@@ -122,20 +114,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
                 if (conversation != null)
                     viewModel.UserMessage = conversation.Expressions.FirstOrDefault();
             }
-        }
-
-        private async Task<string> GetImageUrl(MixedContentContext image)
-        {
-            if (image.ItemIdsOrdered != null && image.ItemIdsOrdered.Length == 1)
-            {
-                var getAllArgsDictionary = image.Content.ToDictionary(x => x.Type, y => new GetAllArgs());
-
-                var images = await this.restClient.GetItems<ImageDto>(image, getAllArgsDictionary);
-                if (images.Items.Count == 1 && images.Items[0].Id == image.ItemIdsOrdered[0])
-                    return images.Items[0].Url;
-            }
-
-            return null;
         }
     }
 }

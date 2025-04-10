@@ -11,7 +11,7 @@ using static System.Collections.Specialized.BitVector32;
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
 {
     /// <summary>
-    /// Test widget with different kind of restrictions for its properties.
+    /// The view component for the NativeChat widget.
     /// </summary>
     [SitefinityWidget(Title = "Native chat", EmptyIconText = "Select a chatbot", EmptyIcon = "pencil", Order = 1, Section = WidgetSection.Marketing, IconName = "chat")]
     [ViewComponent(Name = "SitefinityNativeChat")]

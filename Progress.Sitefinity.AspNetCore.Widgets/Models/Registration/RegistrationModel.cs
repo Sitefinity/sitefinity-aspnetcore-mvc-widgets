@@ -52,7 +52,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
         }
 
         /// <inheritdoc/>
-        public async Task<RegistrationViewModel> InitializeViewModel(RegistrationEntity entity)
+        public virtual async Task<RegistrationViewModel> InitializeViewModel(RegistrationEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

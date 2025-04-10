@@ -14,7 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Web;
+using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat.Dto;
+using Progress.Sitefinity.Renderer.Designers.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
 {
@@ -26,6 +28,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         private const string BotChannelsKey = "sf_native_chat_bot_channels_";
         private static readonly object BotChannelsCacheSync = new object();
         private string nativeChatApiEndpoint = "https://api.nativechat.com/v1/";
+
+        string IExternalChoicesProvider.Name => ExternalChoicesProviderNames.NativeChatClient;
 
         private HttpClient HttpClient { get; set; }
 
@@ -135,6 +139,19 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
             this.HttpClient?.Dispose();
 
             GC.SuppressFinalize(this);
+        }
+
+        async Task<IEnumerable<ChoiceValueDto>> IExternalChoicesProvider.FetchChoicesAsync()
+        {
+            var choices = new List<ChoiceValueDto>();
+            var bots = await this.Bots();
+
+            foreach (var bot in bots)
+            {
+                choices.Add(new ChoiceValueDto(bot.DisplayName ?? bot.Name, bot.Id));
+            }
+
+            return choices;
         }
 
         private static void ValidateBotId(string botId)

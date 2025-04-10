@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using Microsoft.AspNetCore.Mvc;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Dropdown;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.Dropdown;
@@ -38,8 +39,10 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents.DynamicList
                 throw new ArgumentNullException(nameof(context));
 
             var viewModel = await this.model.InitializeViewModel(context.Entity);
+            var hasContent = context.Entity.ListType == Selection.Content && context.Entity.SelectedContent != null && context.Entity.SelectedContent.Content != null && context.Entity.SelectedContent.Content[0].Type != null;
+            var hasClassifications = context.Entity.ListType == Selection.Classification && context.Entity.ClassificationSettings != null && context.Entity.ClassificationSettings.SelectedTaxonomyName != null;
 
-            if (context.Entity.SelectedContent == null || context.Entity.SelectedContent.Content[0].Type == null)
+            if (!hasContent && !hasClassifications)
             {
                 context.SetWarning("No list type have been selected.");
             }

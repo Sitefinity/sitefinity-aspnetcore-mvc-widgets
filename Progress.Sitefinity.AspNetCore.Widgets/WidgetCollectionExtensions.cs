@@ -23,6 +23,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Search;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Section;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant;
 using Progress.Sitefinity.AspNetCore.Widgets.Preparations;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.Renderer.Designers;
@@ -56,6 +57,7 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
             services.AddTransient<IRequestPreparation, DocumentListPreparation>();
             services.AddTransient<INativeChatModel, NativeChatModel>();
+            services.AddTransient<ISitefinityAssistantModel, SitefinityAssistantModel>();
             services.AddTransient<IDocumentListModel, DocumentListModel>();
             services.AddTransient<IContentListModelBase, ContentListModel>();
             services.AddTransient<IContentListModelBase, DocumentListModel>();
@@ -70,6 +72,10 @@ namespace Progress.Sitefinity.AspNetCore
                 return new StyleGenerator(serviceProvider.GetRequiredService<IWidgetConfig>(), httpContextAccessor);
             });
             services.AddSingleton<INativeChatClient, NativeChatClient>();
+            services.AddSingleton<ISitefinityAssistantClient, SitefinityAssistantClient>();
+            services.AddSingleton<ISitefinityAssistantCDN, SitefinityAssistantCDN>();
+            services.AddSingleton<IExternalChoicesProvider>(provider => provider.GetRequiredService<INativeChatClient>());
+            services.AddSingleton<IExternalChoicesProvider>(provider => provider.GetRequiredService<ISitefinityAssistantClient>());
             services.AddSingleton<IPropertyConfigurator, ExternalPropertyConfigurator>();
         }
     }

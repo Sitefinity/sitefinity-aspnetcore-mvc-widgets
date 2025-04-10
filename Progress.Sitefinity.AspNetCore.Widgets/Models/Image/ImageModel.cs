@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.AspNetCore.Http;
-using Progress.Sitefinity.AspNetCore.Configuration;
-using Progress.Sitefinity.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.Web;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.Content;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Dto;
@@ -75,7 +70,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
         /// </summary>
         /// <param name="entity">The navigation entity.</param>
         /// <returns>The view model of the widget.</returns>
-        public async Task<ImageViewModel> InitializeViewModel(ImageEntity entity)
+        public virtual async Task<ImageViewModel> InitializeViewModel(ImageEntity entity)
         {
             var image = await this.GetImage(entity, this.restClient);
             return await this.InitializeViewModel(entity, image);
@@ -156,13 +151,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
 
         private string AppendSfSiteToImageUrl(string sourceUrl)
         {
-            var relativeUrlParts = sourceUrl.Split('?');
+            string[] relativeUrlParts = default;
+            string origin = string.Empty;
 
             if (Uri.IsWellFormedUriString(sourceUrl, UriKind.Absolute))
-                relativeUrlParts = new Uri(sourceUrl).PathAndQuery.Split('?');
+            {
+                var sourceUri = new Uri(sourceUrl);
+                origin = sourceUri.GetLeftPart(UriPartial.Authority).TrimEnd('/');
+                relativeUrlParts = sourceUri.PathAndQuery.Split('?');
+            }
+            else
+            {
+                relativeUrlParts = sourceUrl.Split('?');
+            }
 
             var itemUri = new UriBuilder();
-
             itemUri.Path = relativeUrlParts.FirstOrDefault();
             var query = HttpUtility.ParseQueryString(relativeUrlParts.LastOrDefault());
 
@@ -171,7 +174,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
 
             itemUri.Query = query.ToString();
 
-            return HttpUtility.HtmlDecode(itemUri.Uri.PathAndQuery);
+            var pathAndQuery = HttpUtility.HtmlDecode(itemUri.Uri.PathAndQuery).TrimStart('/');
+            var imageUrl = $"{origin}/{pathAndQuery}";
+
+            return imageUrl;
         }
 
         private IStyleClassesProvider styles;

@@ -14,7 +14,7 @@ using Progress.Sitefinity.Renderer.Entities.Content;
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
 {
     /// <summary>
-    /// The test model for the load tests widget.
+    /// The entity for the NativeChat widget.
     /// </summary>
     public class NativeChatEntity
     {
@@ -24,7 +24,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         [Progress.Sitefinity.Renderer.Designers.Attributes.ContentSection("Chatbot", 0)]
         [DisplayName("Select a chatbot")]
         [DataType(customDataType: "choices")]
-        [ExternalDataChoice]
+        [ExternalDataChoice(ExternalChoicesProviderNames.NativeChatClient)]
         [DefaultValue("")]
         public string BotId { get; set; }
 
@@ -184,7 +184,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         public string Locale { get; set; }
 
         /// <summary>
-        /// Gets or sets the attributes for the recommendations widget.
+        /// Gets or sets the attributes for the NativeChat widget.
         /// </summary>
         [Category(PropertyCategory.Advanced)]
         [ContentSection(Constants.ContentSectionTitles.Attributes, 0)]

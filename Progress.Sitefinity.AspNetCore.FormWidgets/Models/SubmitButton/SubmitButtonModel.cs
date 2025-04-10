@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.SubmitButton
     public class SubmitButtonModel : ISubmitButtonModel
     {
         /// <inheritdoc/>
-        Task<SubmitButtonViewModel> ISubmitButtonModel.InitializeViewModel(SubmitButtonEntity entity)
+        public virtual Task<SubmitButtonViewModel> InitializeViewModel(SubmitButtonEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

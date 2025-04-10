@@ -26,7 +26,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.TextField
         }
 
         /// <inheritdoc/>
-        public Task<TextFieldViewModel> InitializeViewModel(TextFieldEntity entity)
+        public virtual Task<TextFieldViewModel> InitializeViewModel(TextFieldEntity entity)
         {
             var model = this.InitializeViewModel<TextFieldViewModel>(entity);
 #pragma warning disable CA1308

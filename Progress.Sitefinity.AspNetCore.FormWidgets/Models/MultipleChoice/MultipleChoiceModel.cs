@@ -12,7 +12,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.MultipleChoice
     public class MultipleChoiceModel : ChoiceModelBase<MultipleChoiceEntity>, IMultipleChoiceModel
     {
         /// <inheritdoc/>
-        public Task<MultipleChoiceViewModel> InitializeViewModel(MultipleChoiceEntity entity)
+        public virtual Task<MultipleChoiceViewModel> InitializeViewModel(MultipleChoiceEntity entity)
         {
             var viewModel = this.InitializeViewModel<MultipleChoiceViewModel>(entity);
             viewModel.HasAdditionalChoice = entity.HasAdditionalChoice;

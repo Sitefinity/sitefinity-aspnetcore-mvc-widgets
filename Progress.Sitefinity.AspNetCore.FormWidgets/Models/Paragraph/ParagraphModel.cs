@@ -22,7 +22,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.Paragraph
         }
 
         /// <inheritdoc/>
-        public Task<TextViewModelBase> InitializeViewModel(TextEntityBase entity)
+        public virtual Task<TextViewModelBase> InitializeViewModel(TextEntityBase entity)
         {
             var model = this.InitializeViewModel<TextViewModelBase>(entity);
             return Task.FromResult<TextViewModelBase>(model);

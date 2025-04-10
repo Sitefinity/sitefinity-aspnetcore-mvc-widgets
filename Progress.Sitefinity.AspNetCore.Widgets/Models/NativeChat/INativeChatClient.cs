@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
@@ -8,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
     /// <summary>
     /// The INativeChatClient interface.
     /// </summary>
-    internal interface INativeChatClient : IDisposable
+    internal interface INativeChatClient : IExternalChoicesProvider, IDisposable
     {
         /// <summary>
         /// The HealthCheck method.

@@ -31,7 +31,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
         }
 
         /// <inheritdoc/>
-        public async Task<FacetsViewModel> InitializeViewModel(FacetsEntity entity, HttpContext httpContext)
+        public virtual async Task<FacetsViewModel> InitializeViewModel(FacetsEntity entity, HttpContext httpContext)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

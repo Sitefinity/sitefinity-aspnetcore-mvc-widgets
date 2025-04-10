@@ -16,9 +16,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Attributes
         /// <summary>
         /// Initializes a new instance of the <see cref="ExternalDataChoiceAttribute"/> class.
         /// </summary>
-        public ExternalDataChoiceAttribute()
+        public ExternalDataChoiceAttribute(string choicedProviderName)
             : base(null)
         {
+            this.ChoicesProviderName = choicedProviderName;
         }
+
+        public string ChoicesProviderName { get; }
     }
 }

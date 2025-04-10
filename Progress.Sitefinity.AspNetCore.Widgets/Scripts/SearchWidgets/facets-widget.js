@@ -53,7 +53,7 @@
 
                         var ulFacetListId = "facets-group-list-" + facetKey;
                         var facetList = Array.from(document.querySelectorAll("#" + ulFacetListId + ">li"));
-                        addOrRemoveHiddenAttributeInCollection(facetList, ev, showLessText, showMoreText);
+                        toggleFacetVisibility(facetList, ev, showLessText, showMoreText);
                     }
 
                     var customRangeButton = ev.target.id.startsWith("custom-range-btn") ?
@@ -188,6 +188,9 @@
                             if (generatedFacetCheckBox) {
                                 isCustomFacetRange = false;
                                 generatedFacetCheckBox.checked = true;
+                            }
+                            else {
+                                facetChipValue = encodeURIComponent(facetChipValue);
                             }
 
                             appendAppliedFilterElement(facetFieldName, facetChipValue, facetChipLabel, isCustomFacetRange);
@@ -500,22 +503,22 @@
             return filterObject;
         }
 
-        function addOrRemoveHiddenAttributeInCollection(facetList, ev, showLessText, showMoreText) {
-            var isListHasHiddenAttributes = facetList.some(function (listElement) {
-                return listElement.hasAttribute("hidden");
-            });
+        function toggleFacetVisibility(facetList, ev, showLessText, showMoreText) {
+            var hiddenFacets = facetList.filter(item => item.classList.contains("d-none"));
 
-            if (isListHasHiddenAttributes) {
-                facetList.forEach(function (listElement) {
-                    listElement.removeAttribute('hidden');
+            if (hiddenFacets.length > 0) {
+                hiddenFacets.forEach(item => {
+                    item.classList.remove("d-none");
+                    item.classList.add("d-flex");
                 });
-
                 ev.target.innerText = showLessText;
             } else {
-                facetList.slice(defaultFacetsCollapseCount).forEach(function (listElement) {
-                    listElement.setAttribute('hidden', "true");
+                facetList.forEach((item, index) => {
+                    if (index > defaultFacetsCollapseCount - 1) {
+                        item.classList.remove("d-flex");
+                        item.classList.add("d-none");
+                    }
                 });
-
                 ev.target.innerText = showMoreText;
             }
         }

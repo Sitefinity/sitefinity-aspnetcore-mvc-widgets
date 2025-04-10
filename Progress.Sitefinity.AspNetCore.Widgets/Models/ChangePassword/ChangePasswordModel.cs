@@ -31,7 +31,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword
         }
 
         /// <inheritdoc/>
-        public async Task<ChangePasswordViewModel> InitializeViewModel(ChangePasswordEntity entity)
+        public virtual async Task<ChangePasswordViewModel> InitializeViewModel(ChangePasswordEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

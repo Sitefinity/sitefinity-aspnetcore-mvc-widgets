@@ -25,7 +25,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.TextField
         };
 
         /// <inheritdoc/>
-        public Task<FileFieldViewModel> InitializeViewModel(FileFieldEntity entity)
+        public virtual Task<FileFieldViewModel> InitializeViewModel(FileFieldEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

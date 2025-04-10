@@ -43,18 +43,19 @@
                     {
                         value++;
                         bool hideElement = (value > defaultFacetsCollapseCount) && Model.IsShowMoreLessButtonActive;
-                        <li @(hideElement ? "hidden" : string.Empty)>
+                        string displayClass = hideElement ? "d-none" : "d-flex";
+                        <li class="@displayClass">
                             <input type="checkbox"
                                    id="facet-checkbox-@facet.FacetFieldName-@facetElement.FacetValue"
                                    data-facet-key="@facet.FacetFieldName"
                                    data-facet-value="@facetElement.FacetValue" />
 
 
-                            <label for="facet-checkbox-@facet.FacetFieldName-@facetElement.FacetValue" id="facet-@facet.FacetFieldName-@facetElement.FacetValue">@facetElement.FacetLabel</label>
+                            <label class="ps-1" for="facet-checkbox-@facet.FacetFieldName-@facetElement.FacetValue" id="facet-@facet.FacetFieldName-@facetElement.FacetValue">@facetElement.FacetLabel</label>
 
                             @if (Model.DisplayItemCount)
                             {
-                                <span class="small text-muted">(@facetElement.FacetCount)</span>
+                                <span class="small text-muted ps-1">(@facetElement.FacetCount)</span>
                             }
                         </li>
                     }
