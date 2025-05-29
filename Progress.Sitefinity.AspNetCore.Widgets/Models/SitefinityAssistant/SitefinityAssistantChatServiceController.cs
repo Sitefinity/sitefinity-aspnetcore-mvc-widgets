@@ -43,6 +43,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             return this.ProxyResendRequestAsync(AssistantApiConstants.ChatEndpoint);
         }
 
+        private static bool IsAssistantServiceRelatedHeader(string headerKey)
+        {
+            return headerKey.Equals(AssistantApiConstants.AssistantThreadHeaderKey, StringComparison.OrdinalIgnoreCase) ||
+                   headerKey.Equals(AssistantApiConstants.AssistantApiKeyHeaderKey, StringComparison.OrdinalIgnoreCase) ||
+                   headerKey.StartsWith(AssistantApiConstants.AssistantCustomHeaderKeyPrefix, StringComparison.OrdinalIgnoreCase);
+        }
+
         private async Task<IActionResult> ProxyResendRequestAsync(string endpoint)
         {
             var request = new SitefinityAssistantClientRequest();
@@ -51,7 +58,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
 
             foreach (var pair in this.Request.Headers)
             {
-                request.Headers[pair.Key] = pair.Value;
+                if (IsAssistantServiceRelatedHeader(pair.Key))
+                {
+                    request.Headers[pair.Key] = pair.Value;
+                }
             }
 
             var response = await this.assistantClient.SendAssistantRequestAsync(request).ConfigureAwait(false);

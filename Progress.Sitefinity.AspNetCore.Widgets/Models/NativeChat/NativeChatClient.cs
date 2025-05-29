@@ -39,13 +39,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat
         /// Initializes a new instance of the <see cref="NativeChatClient"/> class.
         /// </summary>
         /// <param name="httpClientFactory">The httpClientFactory parameter.</param>
-        /// <param name="configuration">The configuration parameter.</param>
+        /// <param name="config">The configuration parameter.</param>
         /// <param name="memoryCache">The cache parameter.</param>
-        public NativeChatClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, IMemoryCache memoryCache)
+        public NativeChatClient(IHttpClientFactory httpClientFactory, NativeChatConfig config, IMemoryCache memoryCache)
         {
-            var config = new NativeChatConfig();
-            configuration.Bind("NativeChat", config);
-
             this.HttpClient = httpClientFactory.CreateClient();
             this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("api-token", config.ApiKey);
             this.HttpClient.BaseAddress = new Uri(this.nativeChatApiEndpoint);

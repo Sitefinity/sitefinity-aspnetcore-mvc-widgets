@@ -158,7 +158,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Registration
 
                 var result = await this.restService.ExecuteUnboundAction<RegistrationSettingsDto>(requestArgs);
 
-                if (result.ActivationMethod == "AfterConfirmation" && !result.SmtpConfigured)
+                if (!result.RegistrationEnabled)
+                {
+                    viewModel.Warning = this.localizer.GetString("Registration is disabled. To enable registration on your site go to Administration > Advanced settings > Security > User registration settings, or contact your administrator for assistance.");
+                }
+                else if (result.ActivationMethod == "AfterConfirmation" && !result.SmtpConfigured)
                 {
                     viewModel.Warning = this.localizer.GetString("Confirmation email cannot be sent because the system has not been configured to send emails. Configure SMTP settings or contact your administrator for assistance.");
                 }

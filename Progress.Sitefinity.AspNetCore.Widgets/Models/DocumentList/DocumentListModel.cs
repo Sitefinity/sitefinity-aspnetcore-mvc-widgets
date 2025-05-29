@@ -48,6 +48,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList
             viewModel.CssClasses = entityBase.CssClasses;
             viewModel.DetailItemUrl = new Uri(this.RequestContext.PageNode?.ViewUrl ?? string.Empty, UriKind.RelativeOrAbsolute);
             viewModel.RenderLinks = !(entityBase.ContentViewDisplayMode == ContentViewDisplayMode.Master && entityBase.DetailPageMode == DetailPageSelectionMode.SamePage);
+            viewModel.Type = entityBase.SelectedItems?.Content?[0].Type;
 
             var documentEntity = entityBase as DocumentListEntity;
             if (documentEntity != null)

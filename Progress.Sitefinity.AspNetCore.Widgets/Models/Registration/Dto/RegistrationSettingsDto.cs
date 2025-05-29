@@ -25,5 +25,13 @@
         /// <c>true</c> if the SMTP settings are configured properly; otherwise, <c>false</c>.
         /// </value>
         public bool SmtpConfigured { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the registration is enabled.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the registration is enabled; otherwise, <c>false</c>.
+        /// </value>
+        public bool RegistrationEnabled { get; set; }
     }
 }

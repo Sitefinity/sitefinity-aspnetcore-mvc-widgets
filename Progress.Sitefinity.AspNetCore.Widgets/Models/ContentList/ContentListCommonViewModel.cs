@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
+using Progress.Sitefinity.Renderer.Designers.Attributes;
 using Progress.Sitefinity.RestSdk.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
@@ -125,15 +126,23 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             if (currentUrl.EndsWith("/", StringComparison.OrdinalIgnoreCase))
                 currentUrl = currentUrl.Substring(0, currentUrl.Length - 1);
 
+            if (!currentUrl.StartsWith("/", StringComparison.OrdinalIgnoreCase))
+                currentUrl = "/" + currentUrl;
+
             if (item.TryGetValue<string>("ItemDefaultUrl", out string defaultUrl))
             {
                 if (!defaultUrl.StartsWith("/", StringComparison.OrdinalIgnoreCase))
                     defaultUrl = "/" + defaultUrl;
 
-                if (!currentUrl.StartsWith("/", StringComparison.OrdinalIgnoreCase))
-                    currentUrl = "/" + currentUrl;
-
                 currentUrl += defaultUrl;
+                return new Uri(currentUrl + httpContext.Request.QueryString.ToString(), UriKind.Relative);
+            }
+
+            if (this.Type == KnownContentTypes.ListItems && item.TryGetValue<ListDto>("Parent", out ListDto parent))
+            {
+                var listItemUrlName = item.GetValue<string>("UrlName");
+                var parentUrlName = parent.GetValue<string>("UrlName");
+                currentUrl += $"/lists/{parentUrlName}/{listItemUrlName}";
                 return new Uri(currentUrl + httpContext.Request.QueryString.ToString(), UriKind.Relative);
             }
 

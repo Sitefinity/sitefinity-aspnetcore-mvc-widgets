@@ -78,6 +78,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             viewModel.ListFieldMapping = entity.ListFieldMapping;
             viewModel.CssClasses = entity.CssClasses;
             viewModel.DetailItemUrl = new Uri(this.RequestContext.PageNode?.ViewUrl ?? string.Empty, UriKind.RelativeOrAbsolute);
+            viewModel.Type = entityBase.SelectedItems?.Content?[0].Type;
 
             return viewModel;
         }
