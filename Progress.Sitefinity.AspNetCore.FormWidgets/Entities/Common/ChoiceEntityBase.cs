@@ -34,7 +34,8 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Common
         [ContentSection(ContentSectionTitles.LabelsAndContent, 3)]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Entity")]
         [TableView(Selectable = true, Reorderable = true)]
-        public virtual IList<ChoiceOption> Choices { get; set; } = new List<ChoiceOption>() { new ChoiceOption { Name = "First choice", Value = "1" }, new ChoiceOption { Name = "Second choice", Value = "2" }, new ChoiceOption { Name = "Third choice", Value = "3" } };
+        [DefaultValue("[{\"Name\":\"First choice\",\"Value\":\"1\"},{\"Name\":\"Second choice\",\"Value\":\"2\"},{\"Name\":\"Third choice\",\"Value\":\"3\"}]")]
+        public virtual IList<ChoiceOption> Choices { get; set; }
 
         /// <inheritdoc/>
         [ContentSection(ContentSectionTitles.LabelsAndContent, 5)]

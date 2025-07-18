@@ -99,6 +99,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
                     args.AdditionalQueryParams.Add(QueryParamNames.Site, siteId);
                 }
 
+                var sitefinityConfig = httpContext.RequestServices.GetRequiredService<ISitefinityConfig>();
+                if (!string.IsNullOrEmpty(sitefinityConfig.WebServiceApiKey))
+                {
+                    args.AdditionalHeaders.Remove(Constants.Headers.WebServiceApiKey);
+                    args.AdditionalHeaders.Add(Constants.Headers.WebServiceApiKey, sitefinityConfig.WebServiceApiKey);
+                }
+
                 await restClient.Init(args);
 
                 var response = await restClient.ExecuteUnboundFunction<ODataWrapper<List<AssistantDto>>>(new BoundFunctionArgs()

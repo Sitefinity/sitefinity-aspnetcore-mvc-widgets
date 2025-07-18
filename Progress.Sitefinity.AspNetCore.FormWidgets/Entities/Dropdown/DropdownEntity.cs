@@ -23,7 +23,8 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Entities.Dropdown
         /// <inheritdoc/>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Entity")]
         [TableView(Selectable = true, Reorderable = true, AddManyFileName = "choices-predefined-lists.json")]
-        public override IList<ChoiceOption> Choices { get; set; } = new List<ChoiceOption>() { new ChoiceOption { Name = "Select" }, new ChoiceOption { Name = "First choice", Value = "1" }, new ChoiceOption { Name = "Second choice", Value = "2" } };
+        [DefaultValue("[{\"Name\":\"Select\"},{\"Name\":\"First choice\",\"Value\":\"1\"},{\"Name\":\"Second choice\",\"Value\":\"2\"}]")]
+        public override IList<ChoiceOption> Choices { get; set; }
 
         /// <summary>
         /// Gets or sets the sorting applied for the options.

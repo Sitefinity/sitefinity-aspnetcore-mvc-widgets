@@ -54,6 +54,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Button
         [ContentSection(Constants.ContentSectionTitles.DisplaySettings)]
         [LengthDependsOn(null, "", "", ExtraRecords = "[{\"Name\": \"Primary\", \"Title\": \"Primary\"}, {\"Name\": \"Secondary\", \"Title\": \"Secondary\"}]")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]
+        [DefaultValue("{\"Primary\":{\"DisplayStyle\":\"Primary\"},\"Secondary\":{\"DisplayStyle\":\"Secondary\"}}")]
         public IDictionary<string, ButtonStyle> Style { get; set; }
 
         /// <inheritdoc/>
