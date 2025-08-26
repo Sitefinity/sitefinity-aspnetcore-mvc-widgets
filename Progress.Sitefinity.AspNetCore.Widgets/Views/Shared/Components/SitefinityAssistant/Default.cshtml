@@ -3,8 +3,14 @@
 @using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
 @model Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant.SitefinityAssistantViewModel
 @inject ISitefinityAssistantCDN cdn
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
 
 <link rel="stylesheet" type="text/css" href="@cdn.GetUrl("sf-assistant-chat-widget.min.css", Model.ProductVersion)" />
+
+@if (renderContext.IsEdit && !string.IsNullOrEmpty(Model.AssistantApiKey) && Model.DisplayMode == DisplayMode.Modal)
+{
+    <div style="border: 1px dashed #ccc; height: 10px; width: 100%; font-size: 0px;">###placeholder###</div>
+}
 
 @if (!string.IsNullOrEmpty(Model.CustomCss))
 {

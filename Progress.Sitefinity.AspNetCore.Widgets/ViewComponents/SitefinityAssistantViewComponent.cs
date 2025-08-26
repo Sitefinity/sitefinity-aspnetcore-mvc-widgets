@@ -9,7 +9,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// The view component for the NativeChat widget.
     /// </summary>
-    [SitefinityWidget(Title = "AI Assistant", EmptyIconText = "Select an assistant", EmptyIcon = "pencil", Order = 1, Section = WidgetSection.Marketing, IconName = "chat")]
+    [SitefinityWidget(Title = "AI assistant", EmptyIconText = "Select an AI assistant", EmptyIcon = "pencil", Order = 1, Section = WidgetSection.Marketing, IconName = "chat")]
     [ViewComponent(Name = "SitefinityAssistant")]
     public class SitefinityAssistantViewComponent : ViewComponent
     {

@@ -17,9 +17,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// <summary>
         /// Gets or sets Assistant identifier.
         /// </summary>
-        [ContentSection("AI Assistant", 0)]
+        [ContentSection("AI assistant", 0)]
         [DisplayName("Select an AI assistant")]
-        [Description("AI assitants are created and managed in\r\n\r\nMarketing > AI assistants")]
+        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"AI assitants are created and managed in\",\"Presentation\":[]},{\"Value\":\"Administration > AI assistants\",\"Presentation\":[2]}]}]")]
         [DataType(customDataType: "choices")]
         [ExternalDataChoice(ExternalChoicesProviderNames.SitefinityAssistantClient)]
         [DefaultValue("")]
@@ -28,16 +28,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// <summary>
         /// Gets or sets the Nickname property.
         /// </summary>
-        [ContentSection("AI Assistant", 1)]
+        [ContentSection("AI assistant", 1)]
         [DisplayName("Nickname of the assistant")]
         [Description("Name displayed before assistant's messages in the chat.")]
-        [DefaultValue("AI Assistant")]
+        [DefaultValue("AI assistant")]
         public string Nickname { get; set; }
 
         /// <summary>
         /// Gets or sets the GreetingMessage property.
         /// </summary>
-        [ContentSection("AI Assistant", 2)]
+        [ContentSection("AI assistant", 2)]
         [DisplayName("Greeting message")]
         [Description("You can customize the bot's initial words by adding a phrase that triggers conversation on a specific topic.")]
         [DataType(customDataType: "textArea")]
@@ -46,7 +46,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// <summary>
         /// Gets or sets the AssistantAvatar property.
         /// </summary>
-        [ContentSection("AI Assistant", 3)]
+        [ContentSection("AI assistant", 3)]
         [DisplayName("Avatar of the assistant")]
         [Content(Type = "Telerik.Sitefinity.Libraries.Model.Image", AllowMultipleItemsSelection = false)]
         public MixedContentContext AssistantAvatar { get; set; }
@@ -56,7 +56,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// </summary>
         [ContentSection("Chat window", 0)]
         [DisplayName("Chat window mode")]
-        [Description("Display overlay: Chat appears in a small window, usually in the bottom right corner of the screen. It requires user interaction to open and overlays parts of the page content.\r\n\r\n \r\n\r\nDisplay inline: Chat area is integrated into the page layout and does not overlay other elements. Suitable for long assistant responses and prompts.")]
+        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"Display overlay: \",\"Presentation\":[0]},{\"Value\":\"Chat appears in a small window, usually in the bottom right corner of the screen. It requires user interaction to open and overlays parts of the page content.\",\"Presentation\":[]}]},{\"Type\":1,\"Chunks\":[{\"Value\":\"Display inline: \",\"Presentation\":[0]},{\"Value\":\"Chat area is integrated into the page layout and does not overlay other elements. Suitable for long assistant responses and prompts.\",\"Presentation\":[]}]}]")]
         [DataType(customDataType: KnownFieldTypes.RadioChoice)]
         public DisplayMode DisplayMode { get; set; }
 

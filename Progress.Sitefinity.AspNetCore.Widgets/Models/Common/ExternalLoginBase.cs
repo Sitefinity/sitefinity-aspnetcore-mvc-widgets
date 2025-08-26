@@ -121,16 +121,27 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
                 return this.ErrorRedirectUrl;
             }
 
-            if (!string.IsNullOrWhiteSpace(this.RedirectUrl) && !isError)
+            string redirectUrl;
+
+            if (context?.Request.Query.ContainsKey("ReturnUrl") ?? false && !isError)
+            {
+                redirectUrl = context.Request.Query["ReturnUrl"];
+            }
+            else if (!string.IsNullOrWhiteSpace(this.RedirectUrl) && !isError)
             {
                 return this.RedirectUrl;
             }
+            else
+            {
+                redirectUrl = context?.Request.GetDisplayUrl();
+            }
 
-            var redirectUrlBuilder = new UriBuilder(context?.Request.GetDisplayUrl());
+            var redirectUrlBuilder = new UriBuilder(redirectUrl);
             var currentRequestBuilder = new UriBuilder(context?.Request.GetDisplayUrl());
             var currentRequestQuery = HttpUtility.ParseQueryString(currentRequestBuilder.Query);
             currentRequestQuery.Remove(ErrorQueryKey);
             currentRequestQuery.Remove(ShowSuccessMessageQueryKey);
+            currentRequestQuery.Remove("ReturnUrl");
 
             if (isError)
             {

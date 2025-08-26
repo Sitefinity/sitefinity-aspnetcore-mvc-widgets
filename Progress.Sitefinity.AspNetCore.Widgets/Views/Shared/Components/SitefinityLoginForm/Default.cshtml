@@ -4,7 +4,7 @@
 
 @{
     var lbls = Model.Labels;
-    var returnUrl = Model.RedirectUrl ?? Model.GetDefaultReturnUrl(Context, false, false);
+    var returnUrl = Model.GetDefaultReturnUrl(Context, false, false);
     var returnErrorUrl = Model.GetDefaultReturnUrl(Context, true, false);
     var usernameInputId = Html.GetUniqueId("sf-username-");
     var passwordInputId = Html.GetUniqueId("sf-password-");

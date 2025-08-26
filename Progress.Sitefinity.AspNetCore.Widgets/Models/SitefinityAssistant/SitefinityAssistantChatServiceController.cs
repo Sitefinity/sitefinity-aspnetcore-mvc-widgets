@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +15,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     [Route("api/[controller]")]
     public class SitefinityAssistantChatServiceController : Controller
     {
+        private const string ThrottlingError = "AI assistant service is temporarily unavailable due to high activity. Please try again later.";
+        private const string QuotaExceededError = "AI assistant service is not available at the moment. Please try again later.";
         private readonly ISitefinityAssistantClient assistantClient;
 
         /// <summary>
@@ -50,6 +55,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
                    headerKey.StartsWith(AssistantApiConstants.AssistantCustomHeaderKeyPrefix, StringComparison.OrdinalIgnoreCase);
         }
 
+        private static IActionResult ProxyResendErrorResponse(HttpResponseMessage response, string message)
+        {
+            return new BadRequestObjectResult(message)
+            {
+                StatusCode = (int)response.StatusCode,
+                ContentTypes = { MediaTypeNames.Text.Plain }
+            };
+        }
+
         private async Task<IActionResult> ProxyResendRequestAsync(string endpoint)
         {
             var request = new SitefinityAssistantClientRequest();
@@ -65,6 +79,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             }
 
             var response = await this.assistantClient.SendAssistantRequestAsync(request).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                return ProxyResendErrorResponse(response, ThrottlingError);
+            }
+            else if (response.StatusCode == HttpStatusCode.PaymentRequired)
+            {
+                return ProxyResendErrorResponse(response, QuotaExceededError);
+            }
+
             response.EnsureSuccessStatusCode();
             var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
