@@ -10,8 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\NativeChat\native-chat.js" />
-    <EmbeddedResource Include="Scripts\NativeChat\native-chat.min.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\profile.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\profile.min.js" />
     <EmbeddedResource Include="Scripts\recommendations.min.js" />

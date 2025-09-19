@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http;
+using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
-using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.RestSdk;
 
@@ -14,31 +12,23 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     internal class SitefinityAssistantModel : ISitefinityAssistantModel
     {
         private readonly IRestClient restClient;
+        private readonly ISitefinityConfig config;
         private readonly ISitefinityAssistantClient assistantClient;
-        private readonly IRequestContext requestContext;
-        private readonly IAntiforgery antiforgery;
-        private readonly IHttpContextAccessor httpContextAccessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SitefinityAssistantModel"/> class.
         /// </summary>
         /// <param name="restClient">The restClient parameter.</param>
+        /// <param name="config">The Sitefinity configurations.</param>
         /// <param name="assistantClient">The Sitefinity Assistant client parameter.</param>
-        /// <param name="requestContext">The requestContext parameter.</param>
-        /// <param name="antiforgery">The antiforgery parameter.</param>
-        /// <param name="httpContextAccessor">The httpContextAccessor parameter.</param>
         public SitefinityAssistantModel(
             IRestClient restClient,
-            ISitefinityAssistantClient assistantClient,
-            IRequestContext requestContext,
-            IAntiforgery antiforgery,
-            IHttpContextAccessor httpContextAccessor)
+            ISitefinityConfig config,
+            ISitefinityAssistantClient assistantClient)
         {
             this.restClient = restClient;
+            this.config = config;
             this.assistantClient = assistantClient;
-            this.requestContext = requestContext;
-            this.antiforgery = antiforgery;
-            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <inheritdoc/>
@@ -53,9 +43,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             viewModel.AssistantAvatarUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.AssistantAvatar);
             viewModel.DisplayMode = entity.DisplayMode;
             viewModel.ChatServiceName = ChatServiceType.AzureAssistantChatService.ToString();
-            viewModel.ServiceUrl = "/api/SitefinityAssistantChatService/";
+            viewModel.ServiceUrl = $"/{this.config.WebServicePath}/SitefinityAssistantChatService/";
             viewModel.ProductVersion = versionInfo?.ProductVersion;
-            viewModel.RequestVerificationToken = this.antiforgery.GetAndStoreTokens(this.httpContextAccessor.HttpContext).RequestToken;
             viewModel.OpeningChatIconUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.OpeningChatIcon);
             viewModel.ClosingChatIconUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.ClosingChatIcon);
             viewModel.ContainerId = entity.ContainerId;

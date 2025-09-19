@@ -124,7 +124,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         public string CustomCss { get; set; }
 
         /// <summary>
-        /// Gets or sets the attributes for the NativeChat widget.
+        /// Gets or sets the attributes for the widget.
         /// </summary>
         [Category(PropertyCategory.Advanced)]
         [ContentSection(Constants.ContentSectionTitles.Attributes, 0)]

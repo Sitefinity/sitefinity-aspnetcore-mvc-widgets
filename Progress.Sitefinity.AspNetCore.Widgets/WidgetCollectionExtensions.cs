@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Preparations;
-using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Button;
@@ -15,7 +14,6 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.Facets;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Form;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Image;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Profile;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Registration;
@@ -56,7 +54,6 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<ISearchBoxModel, SearchBoxModel>();
             services.AddTransient<IRequestPreparation, ContentListPreparation>();
             services.AddTransient<IRequestPreparation, DocumentListPreparation>();
-            services.AddTransient<INativeChatModel, NativeChatModel>();
             services.AddTransient<ISitefinityAssistantModel, SitefinityAssistantModel>();
             services.AddTransient<IDocumentListModel, DocumentListModel>();
             services.AddTransient<IContentListModelBase, ContentListModel>();
@@ -71,10 +68,8 @@ namespace Progress.Sitefinity.AspNetCore
                 var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
                 return new StyleGenerator(serviceProvider.GetRequiredService<IWidgetConfig>(), httpContextAccessor);
             });
-            services.AddSingleton<INativeChatClient, NativeChatClient>();
             services.AddSingleton<ISitefinityAssistantClient, SitefinityAssistantClient>();
             services.AddSingleton<ISitefinityAssistantCDN, SitefinityAssistantCDN>();
-            services.AddSingleton<IExternalChoicesProvider>(provider => provider.GetRequiredService<INativeChatClient>());
             services.AddSingleton<IExternalChoicesProvider>(provider => provider.GetRequiredService<ISitefinityAssistantClient>());
             services.AddSingleton<IPropertyConfigurator, ExternalPropertyConfigurator>();
         }
