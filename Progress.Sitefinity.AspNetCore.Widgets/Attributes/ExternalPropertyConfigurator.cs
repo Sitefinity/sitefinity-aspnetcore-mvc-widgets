@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.NativeChat;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Dto;
 
@@ -15,7 +13,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Attributes
     /// </summary>
     internal class ExternalPropertyConfigurator : IPropertyConfigurator
     {
-        public const string ChoicesProviderNativeChat = "NativeChatClient";
         public const string ChoicesProviderSitefinityAssistant = "SitefinityAssistantClient";
         private readonly Dictionary<string, IExternalChoicesProvider> registeredProviders;
 
