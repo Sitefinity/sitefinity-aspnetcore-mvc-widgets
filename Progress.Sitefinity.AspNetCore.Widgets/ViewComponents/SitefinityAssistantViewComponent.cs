@@ -7,7 +7,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant;
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
 {
     /// <summary>
-    /// The view component for the NativeChat widget.
+    /// The view component for the widget.
     /// </summary>
     [SitefinityWidget(Title = "AI assistant", EmptyIconText = "Select an AI assistant", EmptyIcon = "pencil", Order = 1, Section = WidgetSection.Marketing, IconName = "chat")]
     [ViewComponent(Name = "SitefinityAssistant")]

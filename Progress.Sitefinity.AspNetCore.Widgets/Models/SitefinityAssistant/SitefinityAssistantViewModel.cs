@@ -39,11 +39,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         public string ProductVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the request verification token.
-        /// </summary>
-        public string RequestVerificationToken { get; set; }
-
-        /// <summary>
         /// Gets or sets the chat service name.
         /// </summary>
         public string ChatServiceName { get; set; }
