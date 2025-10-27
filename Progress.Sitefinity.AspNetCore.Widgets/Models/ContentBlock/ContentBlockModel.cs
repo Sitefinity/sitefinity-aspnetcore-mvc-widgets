@@ -76,9 +76,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentBlock
         private static IList<AttributeModel> GetAttributes(ContentBlockEntity entity)
         {
             var attributes = new List<AttributeModel>();
-            if (entity.Attributes != null && entity.Attributes.ContainsKey("SitefinityContentBlock"))
+            if (entity.Attributes != null && entity.Attributes.ContainsKey("ContentBlock"))
             {
-                foreach (var attribute in entity.Attributes["SitefinityContentBlock"])
+                foreach (var attribute in entity.Attributes["ContentBlock"])
                 {
                     attributes.Add(attribute);
                 }

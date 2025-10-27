@@ -138,6 +138,10 @@
         }
 
         function navigateToResults(input) {
+            if (!input.value) {
+                return;
+            }
+
             if (window.DataIntelligenceSubmitScript) {
                 DataIntelligenceSubmitScript._client.fetchClient.sendInteraction({
                     P: "Search for",
