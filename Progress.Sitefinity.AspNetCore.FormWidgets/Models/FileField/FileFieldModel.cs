@@ -72,6 +72,9 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Models.TextField
             var types = fileTypes.Type.Split(',').Select(x => x.Trim());
             foreach (var type in types)
             {
+                if (type == "All")
+                    return null;
+
                 if (PredefinedAcceptValues.TryGetValue(type, out string[] values))
                 {
                     foreach (var value in values)

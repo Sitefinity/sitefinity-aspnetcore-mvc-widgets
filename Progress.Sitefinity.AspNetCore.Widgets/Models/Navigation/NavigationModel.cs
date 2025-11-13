@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using Progress.Sitefinity.AspNetCore.Areas.Diagnostics.Profiling;
 using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
@@ -40,7 +38,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                 throw new ArgumentNullException(nameof(entity));
 
             var items = await this.GetItems(entity, this.restService);
-            return this.InitializeViewModel(entity, items.Value);
+            var value = items.Value;
+            value = AddManualSelectionItems(entity, value);
+
+            return this.InitializeViewModel(entity, value);
         }
 
         /// <summary>
@@ -102,6 +103,44 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                 Type = "pages",
                 AdditionalQueryParams = queryParams,
             });
+        }
+
+        private static PageViewModel[] AddManualSelectionItems(NavigationEntity entity, PageViewModel[] value)
+        {
+            if (entity.CustomSelectedPages.ManualSelectionItems?.Length > 0)
+            {
+                var valueList = value.ToList();
+                foreach (var manualSelectionItem in entity.CustomSelectedPages.ManualSelectionItems.OrderBy(m => m.Index))
+                {
+                    var externalUrl = manualSelectionItem.Item as ExternalUrlEntity;
+                    if (externalUrl != null)
+                    {
+                        var externalUrlNode = new PageViewModel()
+                        {
+                            ChildNodes = new List<PageViewModel>(),
+                            HasChildOpen = false,
+                            IsCurrentlyOpened = false,
+                            Key = externalUrl.Title,
+                            LinkTarget = externalUrl.OpenInNewWindow ? "_blank" : "_self",
+                            Title = externalUrl.Title,
+                            Url = externalUrl.Url
+                        };
+
+                        if (manualSelectionItem.Index <= valueList.Count)
+                        {
+                            valueList.Insert(manualSelectionItem.Index, externalUrlNode);
+                        }
+                        else
+                        {
+                            valueList.Add(externalUrlNode);
+                        }
+                    }
+                }
+
+                value = valueList.ToArray();
+            }
+
+            return value;
         }
 
         private IODataRestClient restService;

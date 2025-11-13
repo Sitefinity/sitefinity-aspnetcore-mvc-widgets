@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
@@ -122,6 +123,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         [ContentSection("Labels and messages", 0)]
         [DisplayName("Languages label")]
         [DefaultValue("Show results in")]
+        [Browsable(false)]
+        [Obsolete]
         public string LanguagesLabel { get; set; }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager;
 using static Progress.Sitefinity.RestSdk.Clients.Sites.Dto.SiteDto;
@@ -54,6 +56,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         /// <summary>
         /// Gets or sets the current site languages.
         /// </summary>
+        [Obsolete]
         public IEnumerable<CultureDto> Languages { get; set; }
 
         /// <summary>
@@ -64,6 +67,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
         /// <summary>
         /// Gets or sets the languages label.
         /// </summary>
+        [Obsolete]
         public string LanguagesLabel { get; set; }
 
         /// <summary>

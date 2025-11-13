@@ -49,21 +49,6 @@
             </div>
             <div>
                 <h4>@Model.TotalCount @Model.ResultsNumberLabel</h4>
-                <p data-sf-hide-while-loading="true">
-                    @Model.LanguagesLabel
-                    @{
-                        int count = Model.Languages.Count();
-                        @for (int i = 0; i < count; i++)
-                        {
-                            var language = Model.Languages.ElementAt(i);
-                            <span>
-                                <a class="text-decoration-none" data-sf-role='search-results-language'
-                                   data-sf-language='@language.Name'
-                                   href="#">@language.DisplayName</a>@(i + 1 < count ? ',' : null)
-                            </span>
-                        }
-                    }
-                </p>
             </div>
             <div class="mt-4" data-sf-hide-while-loading="true">
                 @foreach (var item in Model.SearchResults)

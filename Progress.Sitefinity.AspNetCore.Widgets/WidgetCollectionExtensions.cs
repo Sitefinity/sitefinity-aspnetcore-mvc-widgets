@@ -13,6 +13,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Facets;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Form;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Image;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.LanguageSelector;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Profile;
@@ -63,6 +64,8 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<ISearchResultsModel, SearchResultsModel>();
             services.AddTransient<IFacetsModel, FacetsModel>();
             services.AddTransient<IBreadcrumbModel, BreadcrumbModel>();
+            services.AddTransient<ILanguageSelectorModel, LanguageSelectorModel>();
+
             services.AddSingleton<IStyleClassesProvider>(serviceProvider =>
             {
                 var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();

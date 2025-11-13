@@ -98,7 +98,7 @@
                 if (config.minSuggestionLength && searchText.length >= config.minSuggestionLength) {
                     getSuggestions(e.target);
                 } else {
-                    if(autocompleteDropdown) {
+                    if (autocompleteDropdown) {
                         autocompleteDropdown.hide();
                     }
                 }
@@ -157,35 +157,47 @@
         }
 
         function getSearchUrl(input) {
-            var query = input.value.trim();
-            var resultsUrl = input.getAttribute("data-sf-results-url");
-            var separator = resultsUrl.indexOf("?") === -1 ? "?" : "&";
-            var catalogue = separator + "indexCatalogue=" + input.getAttribute("data-sf-search-catalogue");
-            var searchQuery = "&searchQuery=" + encodeURIComponent(query);
-            var wordsMode = "&wordsMode=" + "AllWords";
-            var culture = "&sf_culture=" + input.getAttribute("data-sf-culture");
+            const query = input.value.trim();
+            let resultsUrl = input.getAttribute("data-sf-results-url");
+            const params = {};
 
-            var url = resultsUrl + catalogue + searchQuery + wordsMode + culture;
+            const [baseUrl, queryStringPart] = resultsUrl.split("?");
+            resultsUrl = baseUrl;
 
-            var scoringSetting = input.getAttribute("data-sf-scoring-setting");
+            if (queryStringPart) {
+                queryStringPart.split("&").forEach(pair => {
+                    const [key, value = ""] = pair.split("=");
+                    params[key] = decodeURIComponent(value);
+                });
+            }
+
+            params.indexCatalogue = input.getAttribute("data-sf-search-catalogue");
+            params.searchQuery = query;
+            params.wordsMode = "AllWords";
+            params.sf_culture = input.getAttribute("data-sf-culture");
+
+            const scoringSetting = input.getAttribute("data-sf-scoring-setting");
             if (scoringSetting) {
-                url = url + "&scoringInfo=" + scoringSetting;
+                params.scoringInfo = scoringSetting;
             }
 
-            var sorting = input.getAttribute("data-sf-sort");
+            const sorting = input.getAttribute("data-sf-sort");
             if (sorting) {
-                url = url + "&orderBy=" + sorting;
+                params.orderBy = sorting;
             }
 
-            var resultsForAllSites = input.getAttribute("data-sf-results-all");
+            const resultsForAllSites = input.getAttribute("data-sf-results-all");
             if (resultsForAllSites == 1) {
-                url += "&resultsForAllSites=True";
-            }
-            else if (resultsForAllSites == 2) {
-                url += "&resultsForAllSites=False";
+                params.resultsForAllSites = "True";
+            } else if (resultsForAllSites == 2) {
+                params.resultsForAllSites = "False";
             }
 
-            return url;
+            const queryString = Object.entries(params)
+                .map(([key, value]) => `${key}=${encodeURIComponent(value ?? "")}`)
+                .join("&");
+
+            return `${resultsUrl}?${queryString}`;
         }
 
         /**

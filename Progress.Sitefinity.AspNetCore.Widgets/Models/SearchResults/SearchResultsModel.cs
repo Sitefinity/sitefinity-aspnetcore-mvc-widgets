@@ -65,6 +65,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
             var margins = this.styles.GetMarginsClasses(entity);
             var cssClass = (entity.CssClass + " " + margins).Trim();
 
+#pragma warning disable CS0612 // Type or member is obsolete
             var searchResultsViewModel = new SearchResultsViewModel()
             {
                 SearchResults = new List<SearchResultDocumentDto>(),
@@ -78,6 +79,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                 AllowUsersToSortResults = entity.AllowUsersToSortResults == 1,
                 Sorting = entity.Sorting,
             };
+#pragma warning restore CS0612 // Type or member is obsolete
 
             if (string.IsNullOrEmpty(searchParamsModel.SearchQuery))
             {
@@ -160,5 +162,5 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
 
             return response;
         }
-}
+    }
 }

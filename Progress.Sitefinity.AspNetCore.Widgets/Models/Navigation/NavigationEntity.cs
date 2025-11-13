@@ -50,7 +50,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
         /// </summary>
         [ContentSection("Select pages", 0)]
         [DisplayName("")]
-        [Content(Type = KnownContentTypes.Pages, AllowMultipleItemsSelection = true, OpenMultipleItemsSelection = true)]
+        [Content(
+            Type = KnownContentTypes.Pages,
+            AllowMultipleItemsSelection = true,
+            OpenMultipleItemsSelection = true,
+            ManualSelectionTabTitle = "External URLs",
+            ManualSelectionIconClass = "redirecting-page",
+            ManualSelectionBreadcrumbText ="External URL",
+            ManualSelectionEntityType = typeof(ExternalUrlEntity))]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"SelectionMode\",\"operator\":\"Equals\",\"value\":\"SelectedPages\"}],\"inline\":\"true\"}")]
         public MixedContentContext CustomSelectedPages { get; set; }
 

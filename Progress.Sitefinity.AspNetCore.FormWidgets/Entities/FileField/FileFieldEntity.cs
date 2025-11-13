@@ -72,6 +72,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.Entities.FileField
         [ContentSection(Constants.ContentSectionTitles.Limitations)]
         [DataType(customDataType: KnownFieldTypes.FileTypes)]
         [DisplayName("File types")]
+        [Required]
         public FileTypes FileTypes { get; set; }
 
         /// <inheritdoc/>

@@ -26,7 +26,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
         [Required(ErrorMessage = "Please select a search index")]
         [DataType(customDataType: KnownFieldTypes.Choices)]
         [Choice(ServiceUrl = "Default.GetSearchIndexes", ServiceWarningMessage = "No search indexes have been created.")]
-        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"Use search indexes to define different sets\",\"Presentation\":[]}, {\"Value\":\"of content visitors can search by using the\",\"Presentation\":[2]}, {\"Value\":\"internal search of the your site.\",\"Presentation\":[2]}]},{\"Type\":1,\"Chunks\":[{\"Value\":\"Manage search indexes in\",\"Presentation\":[]},{\"Value\":\"Administration > Search indexes\",\"Presentation\":[2,3]}]}]")]
+        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"Use search indexes to define different sets\",\"Presentation\":[]}, {\"Value\":\"of content visitors can search by using the\",\"Presentation\":[2]}, {\"Value\":\"internal search of your site.\",\"Presentation\":[2]}]},{\"Type\":1,\"Chunks\":[{\"Value\":\"Manage search indexes in\",\"Presentation\":[]},{\"Value\":\"Administration > Search indexes\",\"Presentation\":[2,3]}]}]")]
         public string SearchIndex { get; set; }
 
         /// <summary>
