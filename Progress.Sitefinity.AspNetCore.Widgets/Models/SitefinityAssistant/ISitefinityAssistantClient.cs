@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
@@ -9,7 +8,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     /// <summary>
     /// The ISitefinityAssistantClient interface.
     /// </summary>
-    internal interface ISitefinityAssistantClient : IExternalChoicesProvider, IDisposable
+    internal interface ISitefinityAssistantClient : IDisposable
     {
         /// <summary>
         /// Gets version information of the Assistant API.

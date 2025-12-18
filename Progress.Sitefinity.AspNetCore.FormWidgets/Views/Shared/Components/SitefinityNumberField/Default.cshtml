@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore
+@using Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.NumberField
+@using Progress.Sitefinity.AspNetCore.TagHelpers;
+
+@model Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.NumberField.NumberFieldViewModel
+
+@{
+    var numberFieldUniqueId = Model.FieldName;
+    var numberFieldErrorMessageId = Html.GetUniqueId("NumberFieldErrorMessage");
+    var ariaDescribedByAttribute = Model.HasDescription ? $"{numberFieldUniqueId} {numberFieldErrorMessageId}" : numberFieldErrorMessageId;
+
+    var hasAffix = Model.AffixType != AffixType.None && !string.IsNullOrWhiteSpace(Model.AffixText);
+    var affixId = hasAffix ? Html.GetUniqueId("NumberAffix") : null;
+    if (hasAffix)
+    {
+        ariaDescribedByAttribute = $"{ariaDescribedByAttribute} {affixId}";
+    }
+}
+
+<script data-sf-role='start_field_@numberFieldUniqueId' data-sf-role-field-name='@numberFieldUniqueId'></script>
+<div class="mb-3 @Model.CssClass" data-sf-role="number-field-container">
+    <input data-sf-role="violation-restrictions" type="hidden" value='@Model.ViolationRestrictionsJson' />
+    <input data-sf-role="violation-messages" type="hidden" value='@Model.ViolationRestrictionsMessages' />
+
+    <label class="h6" for='@numberFieldUniqueId'>@Model.Label</label>
+
+    @if (!hasAffix)
+    {
+        <input id='@numberFieldUniqueId'
+               type="number"
+               class="form-control @Model.InputCssClass"
+               name="@Model.FieldName"
+               value="@Model.PredefinedValue"
+               placeholder="@Model.PlaceholderText"
+               data-sf-role="number-field-input"
+               @(Model.Readonly ? "readonly" : "")
+               aria-describedby="@ariaDescribedByAttribute"
+               @Html.Raw(@Model.ValidationAttributes) />
+    }
+    else
+    {
+        <div class="input-group @Model.InputCssClass">
+            @if (Model.AffixType == AffixType.Prefix)
+            {
+                <span class="input-group-text" id="@affixId">@Model.AffixText</span>
+            }
+
+            <input id='@numberFieldUniqueId'
+                   type="number"
+                   class="form-control"
+                   name="@Model.FieldName"
+                   value="@Model.PredefinedValue"
+                   placeholder="@Model.PlaceholderText"
+                   data-sf-role="number-field-input"
+                   @(Model.Readonly ? "readonly" : "")
+                   aria-describedby="@ariaDescribedByAttribute"
+                   @Html.Raw(@Model.ValidationAttributes) />
+
+            @if (Model.AffixType == AffixType.Suffix)
+            {
+                <span class="input-group-text" id="@affixId">@Model.AffixText</span>
+            }            
+        </div>
+    }
+
+    @if (Model.HasDescription)
+    {
+        <div id='@Html.GetUniqueId("NumberField")' class="form-text">@Model.InstructionalText</div>
+    }
+
+    <div id='@numberFieldErrorMessageId' data-sf-role="error-message" role="alert" aria-live="assertive" class="invalid-feedback"></div>
+</div>
+<script data-sf-role='end_field_@numberFieldUniqueId'></script>

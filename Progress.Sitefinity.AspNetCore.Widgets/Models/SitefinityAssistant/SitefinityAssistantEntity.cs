@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Progress.Sitefinity.AspNetCore.Models;
-using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Attributes;
 using Progress.Sitefinity.Renderer.Entities.Content;
@@ -19,9 +18,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// </summary>
         [ContentSection("AI assistant", 0)]
         [DisplayName("Select an AI assistant")]
-        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"AI assitants are created and managed in\",\"Presentation\":[]},{\"Value\":\"Administration > AI assistants\",\"Presentation\":[2]}]}]")]
+        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"AI assistants are created and managed in\",\"Presentation\":[]},{\"Value\":\"Administration > AI assistants\",\"Presentation\":[2]}]}]")]
         [DataType(customDataType: "choices")]
-        [ExternalDataChoice(ExternalChoicesProviderNames.SitefinityAssistantClient)]
+        [Placeholder("Select")]
+        [Choice(ServiceUrl = "/Default.GetAiAssistantChoices()", ServiceWarningMessage = "No AI assistants are found.")]
         [DefaultValue("")]
         public string AssistantApiKey { get; set; }
 

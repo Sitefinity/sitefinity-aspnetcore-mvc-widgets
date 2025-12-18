@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Preparations;
-using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Button;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword;
@@ -25,7 +24,6 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.Section;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant;
 using Progress.Sitefinity.AspNetCore.Widgets.Preparations;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
-using Progress.Sitefinity.Renderer.Designers;
 
 namespace Progress.Sitefinity.AspNetCore
 {
@@ -73,8 +71,6 @@ namespace Progress.Sitefinity.AspNetCore
             });
             services.AddSingleton<ISitefinityAssistantClient, SitefinityAssistantClient>();
             services.AddSingleton<ISitefinityAssistantCDN, SitefinityAssistantCDN>();
-            services.AddSingleton<IExternalChoicesProvider>(provider => provider.GetRequiredService<ISitefinityAssistantClient>());
-            services.AddSingleton<IPropertyConfigurator, ExternalPropertyConfigurator>();
         }
     }
 }

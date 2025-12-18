@@ -9,9 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Progress.Sitefinity.AspNetCore.Configuration;
-using Progress.Sitefinity.AspNetCore.Widgets.Attributes;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant.Dto;
-using Progress.Sitefinity.Renderer.Designers.Dto;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Dto;
 using Progress.Sitefinity.RestSdk.OData;
@@ -22,8 +20,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     {
         private readonly IHttpContextAccessor httpAccessor;
         private readonly ILogger<SitefinityAssistantClient> logger;
-
-        string IExternalChoicesProvider.Name => ExternalChoicesProviderNames.SitefinityAssistantClient;
 
         private HttpClient AdministrationClient { get; set; }
 
@@ -117,19 +113,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             this.AdministrationClient?.Dispose();
 
             GC.SuppressFinalize(this);
-        }
-
-        async Task<IEnumerable<ChoiceValueDto>> IExternalChoicesProvider.FetchChoicesAsync()
-        {
-            var choices = new List<ChoiceValueDto>();
-            var assistants = await this.GetAssistantsAsync();
-
-            foreach (var assistant in assistants)
-            {
-                choices.Add(new ChoiceValueDto(assistant.Name, assistant.ApiKey));
-            }
-
-            return choices;
         }
     }
 }

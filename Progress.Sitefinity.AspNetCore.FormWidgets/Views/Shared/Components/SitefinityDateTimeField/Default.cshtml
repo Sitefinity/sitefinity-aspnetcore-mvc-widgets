@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore
+@using Progress.Sitefinity.AspNetCore.TagHelpers;
+
+@model Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.DateTimeField.DateTimeFieldViewModel
+
+@{
+    var dateTimeUniqueId = Model.FieldName;
+    var dateTimeErrorMessageId = Html.GetUniqueId("DateTimeErrorMessage");
+    var ariaDescribedByAttribute = Model.HasDescription ? $"{dateTimeUniqueId} {dateTimeErrorMessageId}" : dateTimeErrorMessageId;
+}
+
+<script data-sf-role='start_field_@dateTimeUniqueId' data-sf-role-field-name='@dateTimeUniqueId'></script>
+<div class="mb-3 @Model.CssClass" data-sf-role="date-time-field-container">
+    <input data-sf-role="violation-restrictions" type="hidden" value='@Model.ViolationRestrictionsJson' />
+    <input data-sf-role="violation-messages" type="hidden" value='@Model.ViolationRestrictionsMessages' />
+
+    <label class="h6" for='@dateTimeUniqueId'>@Model.Label</label>
+    <input id='@dateTimeUniqueId'
+           type="@Model.InputType"
+           class="form-control"
+           name="@Model.FieldName"
+           data-sf-role="date-time-field-input"
+           @(Model.Readonly ? "readonly" : "")
+           aria-describedby="@ariaDescribedByAttribute"
+           @Html.Raw(@Model.ValidationAttributes) />
+
+    @if (Model.HasDescription)
+    {
+        <div id='@Html.GetUniqueId("DateTimeInfo")' class="form-text">@Model.InstructionalText</div>
+    }
+
+    <div id='@dateTimeErrorMessageId' data-sf-role="error-message" role="alert" aria-live="assertive" class="invalid-feedback"></div>
+</div>
+<script data-sf-role='end_field_@dateTimeUniqueId'></script>

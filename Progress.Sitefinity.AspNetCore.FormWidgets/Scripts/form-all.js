@@ -125,6 +125,8 @@ function toggleHideStyles(element, shouldAdd = true) {
 function initFields(formContainer) {
     initTextbox(formContainer);
     initParagraph(formContainer);
+    initNumber(formContainer);
+    initDateTime(formContainer);
     initSubmit(formContainer);
     initMultipleChoice(formContainer);
     initCheckboxes(formContainer)
@@ -151,6 +153,14 @@ var shouldScrollToFirstErrorField = false;
 
 function initTextbox(formContainer) {
     initTextField("text-field-container", "text-field-input", formContainer);
+}
+
+function initNumber(formContainer) {
+    initNumberField("number-field-container", "number-field-input", formContainer);
+}
+
+function initDateTime(formContainer) {
+    initDateTimeField("date-time-field-container", "date-time-field-input", formContainer);
 }
 
 function initParagraph(formContainer) {
@@ -255,6 +265,12 @@ function initSubmit(formContainer) {
                 case "text-field-container":
                 case "paragraph-text-field-container":
                     localResult = handleTextValidation(formField);
+                    break;
+                case "number-field-container":
+                    localResult = handleNumberValidation(formField);
+                    break;
+                case "date-time-field-container":
+                    localResult = handleDateTimeValidation(formField);
                     break;
                 case "multiple-choice-field-container":
                     localResult = handleChoiceValidation(formField, "multiple-choice-field-input");
@@ -526,6 +542,32 @@ function initTextField(dataSfRoleContainer, dataSfRoleText, formContainer) {
     }
 }
 
+function initNumberField(dataSfRoleContainer, dataSfRoleText, formContainer) {
+    var inputs = getInputs(dataSfRoleContainer, dataSfRoleText, formContainer);
+
+    for (var k = 0; k < inputs.length; k++) {
+        inputs[k].addEventListener('change', handleNumberValidation);
+        inputs[k].addEventListener('input', function (e) {
+            handleNumberValidation(e);
+            dispatchValueChanged(e);
+        });
+        inputs[k].addEventListener('invalid', handleNumberValidation);
+    }
+}
+
+function initDateTimeField(dataSfRoleContainer, dataSfRoleText, formContainer) {
+    var inputs = getInputs(dataSfRoleContainer, dataSfRoleText, formContainer);
+
+    for (var k = 0; k < inputs.length; k++) {
+        inputs[k].addEventListener('change', handleDateTimeValidation);
+        inputs[k].addEventListener('input', function (e) {
+            handleDateTimeValidation(e);
+            dispatchValueChanged(e);
+        });
+        inputs[k].addEventListener('invalid', handleDateTimeValidation);
+    }
+}
+
 function getInputs(containerName, inputsName, parentContainer) {
     var containers = parentContainer.querySelectorAll(`[data-sf-role="${containerName}"]`);
     var inputs = [];
@@ -593,7 +635,7 @@ function handleTextValidation(source) {
     var validationMessages = getValidationMessages(target);
     var validationRestrictions = getValidationRestrictions(target);
     if (validationRestrictions) {
-        var isValidLength = target.value.length >= validationRestrictions.minLength;
+        var isValidLength = validationRestrictions.minLength === undefined || target.value.length >= validationRestrictions.minLength;
 
         if (validationRestrictions.maxLength > 0)
             isValidLength &= target.value.length <= validationRestrictions.maxLength;
@@ -611,6 +653,68 @@ function handleTextValidation(source) {
     }
     else if (target.validity.patternMismatch) {
         setErrorMessage(target, validationMessages.regularExpression, true);
+        return false;
+    }
+    else if (!target.validity.valid) {
+        setErrorMessage(target, validationMessages.invalid, true);
+        return false;
+    } else {
+        clearErrorMessage(target, true);
+    }
+
+    return true;
+}
+
+function handleNumberValidation(source) {
+    if (source instanceof Event) {
+        source = source.target;
+    }
+
+    var parentContainer = findFieldContainerElement(source);
+    var target = parentContainer.querySelector("input[data-sf-role='number-field-input']");
+
+    var validationMessages = getValidationMessages(target);
+    var validationRestrictions = getValidationRestrictions(target);
+    if (validationRestrictions) {
+        var isValidRange = (typeof validationRestrictions.minValue !== "number" || target.value >= validationRestrictions.minValue) &&
+            (typeof validationRestrictions.maxValue !== "number" || target.value <= validationRestrictions.maxValue);
+
+        if (!isValidRange) {
+            setErrorMessage(target, validationMessages.invalidRange);
+            return false;
+        }
+    }
+
+    if (target.required && target.validity.valueMissing) {
+        setErrorMessage(target, validationMessages.required);
+        return false;
+    }
+    else if (target.validity.stepMismatch && validationMessages.step) {
+        setErrorMessage(target, validationMessages.step);
+        return false;
+    }
+    else if (!target.validity.valid) {
+        setErrorMessage(target, validationMessages.invalid);
+        return false;
+    } else {
+        clearErrorMessage(target);
+    }
+
+    return true;
+}
+
+function handleDateTimeValidation(source) {
+    if (source instanceof Event) {
+        source = source.target;
+    }
+
+    var parentContainer = findFieldContainerElement(source);
+    var target = parentContainer.querySelector("input[data-sf-role='date-time-field-input']");
+
+    var validationMessages = getValidationMessages(target);
+
+    if (target.required && target.validity.valueMissing) {
+        setErrorMessage(target, validationMessages.required, true);
         return false;
     }
     else if (!target.validity.valid) {
@@ -1388,6 +1492,8 @@ SendNotificationRuleActionExecutor.prototype.isConflict = function (actionData, 
 
 (function addFieldSelectors() {
     FormRulesSettings.addFieldSelector("text-field-container", "[data-sf-role='text-field-input']");
+    FormRulesSettings.addFieldSelector("number-field-container", "[data-sf-role='number-field-input']");
+    FormRulesSettings.addFieldSelector("date-time-field-container", "[data-sf-role='date-time-field-input']");
     FormRulesSettings.addFieldSelector("email-text-field-container", "[data-sf-role='email-text-field-input']");
     FormRulesSettings.addFieldSelector("multiple-choice-field-container", "[data-sf-role='multiple-choice-field-input']", ":checked");
     FormRulesSettings.addFieldSelector("checkboxes-field-container", "[data-sf-role='checkboxes-field-input']", ":checked");

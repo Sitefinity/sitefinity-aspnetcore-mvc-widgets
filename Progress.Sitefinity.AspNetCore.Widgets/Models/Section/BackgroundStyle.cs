@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.ViewComponents.AttributeConfigurator.Attributes;
 using Progress.Sitefinity.Renderer.Designers;
@@ -35,6 +36,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"BackgroundType\",\"operator\":\"Equals\",\"value\":\"Image\"}]}")]
         [MediaItem("images", false)]
         [DataType(customDataType: "media")]
+        [JsonConverter(typeof(SingleOrArrayConverter<SdkItem>))]
         public SdkItem ImageItem { get; set; }
 
         /// <summary>
@@ -44,6 +46,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Section
         [MediaItem("videos", false)]
         [DataType(customDataType: "media")]
         [ConditionalVisibility("{\"conditions\":[{\"fieldName\":\"BackgroundType\",\"operator\":\"Equals\",\"value\":\"Video\"}]}")]
+        [JsonConverter(typeof(SingleOrArrayConverter<SdkItem>))]
         public SdkItem VideoItem { get; set; }
 
         /// <summary>

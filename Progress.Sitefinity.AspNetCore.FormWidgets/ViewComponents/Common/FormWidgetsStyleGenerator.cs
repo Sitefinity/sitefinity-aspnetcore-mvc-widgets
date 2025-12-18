@@ -13,6 +13,7 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents.Common
         private Dictionary<string, string> defaultFieldSizeClasses = new Dictionary<string, string>()
         {
             { "WidthNONE", string.Empty },
+            { "WidthXS", "w-25" },
             { "WidthS", "w-50" },
             { "WidthM", "w-75" },
             { "WidthL", "w-100" },
@@ -34,7 +35,22 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets.ViewComponents.Common
         /// <returns>The css.</returns>
         public string GetFieldSizeCss(FieldSize fieldSize)
         {
-            var key = $"Width{fieldSize.ToString()}";
+            return this.GetFieldSizeCssInternal(fieldSize.ToString());
+        }
+
+        /// <summary>
+        /// Gets the field size css.
+        /// </summary>
+        /// <param name="fieldSize">The field size.</param>
+        /// <returns>The css.</returns>
+        public string GetFieldSizeCss(string fieldSize)
+        {
+            return this.GetFieldSizeCssInternal(fieldSize);
+        }
+
+        private string GetFieldSizeCssInternal(string fieldSize)
+        {
+            var key = $"Width{fieldSize}";
 
             if (this.widgetConfiguration.Styling.FieldSizeClasses.ContainsKey(key))
                 return this.widgetConfiguration.Styling.FieldSizeClasses[key];
