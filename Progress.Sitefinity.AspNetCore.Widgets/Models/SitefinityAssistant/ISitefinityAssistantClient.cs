@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant.Dto;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
@@ -8,18 +6,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     /// <summary>
     /// The ISitefinityAssistantClient interface.
     /// </summary>
-    internal interface ISitefinityAssistantClient : IDisposable
+    internal interface ISitefinityAssistantClient
     {
         /// <summary>
         /// Gets version information of the Assistant API.
         /// </summary>
+        /// <param name="assistantType">The name of the assistant type.</param>
         /// <returns>Returns the version information.</returns>
-        Task<VersionInfoDto> GetVersionInfoAsync();
-
-        /// <summary>
-        /// Get a list of assistants.
-        /// </summary>
-        /// <returns>A list of <see cref="AssistantDto"/> representing the AI assistants.</returns>
-        Task<List<AssistantDto>> GetAssistantsAsync();
+        Task<VersionInfoDto> GetVersionInfoAsync(string assistantType);
     }
 }

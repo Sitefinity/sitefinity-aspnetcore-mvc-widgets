@@ -9,6 +9,26 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     public class SitefinityAssistantViewModel
     {
         /// <summary>
+        /// Gets or sets the knowledge box name.
+        /// </summary>
+        public string KnowledgeBoxName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the configuration name.
+        /// </summary>
+        public string ConfigurationName { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show feedback.
+        /// </summary>
+        public bool ShowFeedback { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show sources.
+        /// </summary>
+        public bool ShowSources { get; set; }
+
+        /// <summary>
         /// Gets or sets AssistantApiKey.
         /// </summary>
         public string AssistantApiKey { get; set; }
@@ -32,6 +52,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// Gets or sets the AI service url.
         /// </summary>
         public string ServiceUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the site id.
+        /// </summary>
+        public string SiteId { get; set; }
 
         /// <summary>
         /// Gets or sets the product version.

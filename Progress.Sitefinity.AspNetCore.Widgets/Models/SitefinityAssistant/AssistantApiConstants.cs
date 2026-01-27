@@ -2,7 +2,7 @@
 {
     internal static class AssistantApiConstants
     {
-        public const string SitefinityGetAssistantsFunctionName = "Default.GetAiAssistants()";
-        public const string VersionInfoEndpoint = "Version";
+        public const string SitefinityGetAssistantVersionInfoFunctionName = "Default.GetAiAssistantVersionInfo()";
+        public const string SitefinityGetPARAGAssistantVersionInfoFunctionName = "Default.GetPARAGAssistantVersionInfo()";
     }
 }

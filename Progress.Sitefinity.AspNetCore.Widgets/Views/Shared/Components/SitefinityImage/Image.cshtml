@@ -14,7 +14,7 @@
         string widthAttr = Model.Width.HasValue ? string.Format(@"width={0}", Model.Width.Value) : string.Empty;
         string heightAttr = Model.Height.HasValue ? string.Format(@"height={0}", Model.Height.Value) : string.Empty;
         string altAttr = string.IsNullOrEmpty(Model.AlternativeText) ? null : Model.AlternativeText;
-        @if (Model.ImageSize == ImageDisplayMode.Responsive)
+        @if (Model.ImageSize == ImageDisplayMode.Responsive && Model.Thumbnails != null)
         {
             var sortedList = Model.Thumbnails.OrderBy(t => t.Width).ToList();
             string pictureWrapperClass = imageWrapperClass + " " + classAttributeValue;

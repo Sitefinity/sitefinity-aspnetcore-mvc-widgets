@@ -100,6 +100,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
             viewModel.Attributes = entity.Attributes;
             var margins = this.styles.GetMarginsClasses(entity);
             viewModel.CssClass = (entity.CssClass + " " + margins).Trim();
+
             if (viewModel.Item != null)
             {
                 viewModel.Title = viewModel.Title ?? viewModel.Item.Title;
@@ -114,10 +115,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
 
                 viewModel.ActionLinkModel = entity.ActionLink;
 
-                if (viewModel.Item.Thumbnails != null)
+                var hasThumbnails = viewModel.Item.Thumbnails != null && viewModel.Item.Thumbnails.Count > 0;
+                var isThumbnailMode = entity.ImageSize == ImageDisplayMode.Thumbnail;
+                var hasEntityThumbnail = entity.Thumnail != null;
+                var isDamMediaThumbnail = isThumbnailMode && image != null && image.IsDamMedia;
+
+                if (hasThumbnails)
                 {
                     viewModel.Thumbnails = viewModel.Item.Thumbnails.OrderBy(t => t.Width).ToList();
-                    if (entity.ImageSize == ImageDisplayMode.Thumbnail && entity.Thumnail != null)
+
+                    if (isThumbnailMode && hasEntityThumbnail)
                     {
                         var selectedThumbnail = viewModel.Thumbnails.FirstOrDefault(t => t.Title == entity.Thumnail.Name);
                         viewModel.SelectedImageUrl = entity.Thumnail.Url;
@@ -128,12 +135,18 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Image
                             viewModel.Width = selectedThumbnail.Width;
                             viewModel.Height = selectedThumbnail.Height;
                         }
+                        else if (!isDamMediaThumbnail)
+                        {
+                            viewModel.SelectedImageUrl = this.AppendSfSiteToImageUrl(viewModel.Item.Url);
+                            viewModel.Width = viewModel.Item.Width;
+                            viewModel.Height = viewModel.Item.Height;
+                        }
                     }
                 }
 
                 // Thumbnails for images imported from DAM providers are not stored in Sitefinity and we do not know their width and height.
                 // We have to set width and heigth to null otherwise the image is zoomed and selected thumbnail not applied correctly.
-                if (entity.ImageSize == ImageDisplayMode.Thumbnail && image != null && image.IsDamMedia)
+                if (isDamMediaThumbnail)
                 {
                     viewModel.Width = null;
                     viewModel.Height = null;

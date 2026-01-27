@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
@@ -21,98 +18,58 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         private readonly IHttpContextAccessor httpAccessor;
         private readonly ILogger<SitefinityAssistantClient> logger;
 
-        private HttpClient AdministrationClient { get; set; }
-
-        public SitefinityAssistantClient(
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration,
-            IHttpContextAccessor httpAccessor,
-            ILogger<SitefinityAssistantClient> logger)
+        public SitefinityAssistantClient(IHttpContextAccessor httpAccessor, ILogger<SitefinityAssistantClient> logger)
         {
-            this.AdministrationClient = httpClientFactory.CreateClient();
-
-            var config = new SitefinityAssistantConfig();
-            configuration.Bind(SitefinityAssistantConfig.SectionName, config);
-
-            if (!string.IsNullOrEmpty(config.AssistantsAdminApiBaseUrl))
-            {
-                this.AdministrationClient.BaseAddress = new Uri(config.AssistantsAdminApiBaseUrl);
-            }
-
             this.httpAccessor = httpAccessor;
             this.logger = logger;
         }
 
-        public async Task<VersionInfoDto> GetVersionInfoAsync()
+        public async Task<VersionInfoDto> GetVersionInfoAsync(string assistantType)
         {
             try
             {
-                return await this.AdministrationClient.GetFromJsonAsync<VersionInfoDto>(AssistantApiConstants.VersionInfoEndpoint);
+                IODataRestClient restClient = await this.GetInitializedRestClientAsync();
+                var response = await restClient.ExecuteUnboundFunction<VersionInfoDto>(new BoundFunctionArgs()
+                {
+                    Name = assistantType == "PARAG" ? AssistantApiConstants.SitefinityGetPARAGAssistantVersionInfoFunctionName : AssistantApiConstants.SitefinityGetAssistantVersionInfoFunctionName
+                });
+
+                return response;
             }
             catch (Exception ex)
             {
-                this.logger.LogInformation($"Error calling Sitefinity Assistant version info API? Error message: {ex.Message}");
+                this.logger.LogInformation($"Error calling Sitefinity GetAiAssistantVersionInfo API? Error message: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<List<AssistantDto>> GetAssistantsAsync()
+        private async Task<IODataRestClient> GetInitializedRestClientAsync()
         {
-            List<AssistantDto> result = new List<AssistantDto>();
+            var httpContext = this.httpAccessor.HttpContext;
+            var restClient = httpContext.RequestServices.GetRequiredService<IODataRestClient>();
+            var args = new RequestArgs();
+            var requestCookie = httpContext.Request.Headers[HeaderNames.Cookie];
 
-            try
+            if (!string.IsNullOrEmpty(requestCookie))
             {
-                var httpContext = this.httpAccessor.HttpContext;
-                var restClient = httpContext.RequestServices.GetRequiredService<IODataRestClient>();
-                var args = new RequestArgs();
-                var requestCookie = httpContext.Request.Headers[HeaderNames.Cookie];
-
-                if (!string.IsNullOrEmpty(requestCookie))
-                {
-                    args.AdditionalHeaders.Add(HeaderNames.Cookie, requestCookie);
-                }
-
-                if (httpContext.Request.Query.TryGetValue(QueryParamNames.Site, out var siteId))
-                {
-                    args.AdditionalQueryParams.Add(QueryParamNames.Site, siteId);
-                }
-
-                var sitefinityConfig = httpContext.RequestServices.GetRequiredService<ISitefinityConfig>();
-                if (!string.IsNullOrEmpty(sitefinityConfig.WebServiceApiKey))
-                {
-                    args.AdditionalHeaders.Remove(Constants.Headers.WebServiceApiKey);
-                    args.AdditionalHeaders.Add(Constants.Headers.WebServiceApiKey, sitefinityConfig.WebServiceApiKey);
-                }
-
-                await restClient.Init(args);
-
-                var response = await restClient.ExecuteUnboundFunction<ODataWrapper<List<AssistantDto>>>(new BoundFunctionArgs()
-                {
-                    Name = AssistantApiConstants.SitefinityGetAssistantsFunctionName
-                });
-
-                var assistants = response.Value;
-
-                if (assistants?.Count > 0)
-                {
-                    result.AddRange(assistants);
-                }
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogInformation($"Error calling Sitefinity GetAiAssistants API? Error message: {ex.Message}");
+                args.AdditionalHeaders.Add(HeaderNames.Cookie, requestCookie);
             }
 
-            return result;
-        }
+            if (httpContext.Request.Query.TryGetValue(QueryParamNames.Site, out var siteId))
+            {
+                args.AdditionalQueryParams.Add(QueryParamNames.Site, siteId);
+            }
 
-        /// <inheritdoc/>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "Ignored.")]
-        public void Dispose()
-        {
-            this.AdministrationClient?.Dispose();
+            var sitefinityConfig = httpContext.RequestServices.GetRequiredService<ISitefinityConfig>();
+            if (!string.IsNullOrEmpty(sitefinityConfig.WebServiceApiKey))
+            {
+                args.AdditionalHeaders.Remove(Constants.Headers.WebServiceApiKey);
+                args.AdditionalHeaders.Add(Constants.Headers.WebServiceApiKey, sitefinityConfig.WebServiceApiKey);
+            }
 
-            GC.SuppressFinalize(this);
+            await restClient.Init(args);
+
+            return restClient;
         }
     }
 }

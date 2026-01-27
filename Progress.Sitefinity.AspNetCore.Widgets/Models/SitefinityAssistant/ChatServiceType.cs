@@ -3,6 +3,7 @@
     internal enum ChatServiceType
     {
         AzureAssistantChatService,
-        SampleAssistantChatService
+        SampleAssistantChatService,
+        ProgressARAGChatService
     }
 }

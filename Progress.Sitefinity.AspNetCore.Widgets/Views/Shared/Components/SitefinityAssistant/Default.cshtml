@@ -5,107 +5,125 @@
 @inject ISitefinityAssistantCDN cdn
 @inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
 
-@if (renderContext.IsEdit && (string.IsNullOrEmpty(Model.AssistantApiKey) || Model.DisplayMode == DisplayMode.Modal))
+@if (!string.IsNullOrEmpty(Model.AssistantApiKey) || !string.IsNullOrEmpty(Model.KnowledgeBoxName))
 {
-    @if (string.IsNullOrEmpty(Model.AssistantApiKey))
-    {
-        <div style="border: 1px dashed #ccc; height: 10px; width: 100%; font-size: 0px;">###placeholder###</div>
-    }
-    else
+    if (renderContext.IsEdit)
     {
         <div style="padding: 10px;">
-            <div style="background-color:#dcecf5; padding: 10px;">
+            <div style="background-color:#dcecf5; padding: 10px; border-radius: 5px;">
                 <p style="margin: 0;">AI assistant is configured.</p>
                 <p style="margin: 0;">Use "Preview" to check assistant's display on the page.</p>
             </div>
         </div>
-        
     }
-}
-
-@if(!renderContext.IsEdit && !string.IsNullOrEmpty(Model.AssistantApiKey))
-{
-    <link rel="stylesheet" type="text/css" href="@cdn.GetUrl("sf-assistant-chat-widget.min.css", Model.ProductVersion)" />
-
-    @if (!string.IsNullOrEmpty(Model.CustomCss))
+    else
     {
-        <link rel="stylesheet" type="text/css" href="@Model.CustomCss" />
-    }
+        <link rel="stylesheet" type="text/css" href="@cdn.GetUrl("sf-assistant-chat-widget.min.css", Model.ProductVersion)" />
 
-    <script src="@cdn.GetUrl("jquery.min.js", Model.ProductVersion)" section-name="Bottom"></script>
+        @if (!string.IsNullOrEmpty(Model.CustomCss))
+        {
+            <link rel="stylesheet" type="text/css" href="@Model.CustomCss" />
+        }
 
-    @if (Model.ChatServiceName == ChatServiceType.AzureAssistantChatService.ToString())
-    {
-        <script src="@cdn.GetUrl("marked.min.js", Model.ProductVersion)" section-name="Bottom"></script>
-        <script src="@cdn.GetUrl("azure-assistant-chat-service.js", Model.ProductVersion)" section-name="Bottom"></script>
-    }
-    else if (Model.ChatServiceName == ChatServiceType.SampleAssistantChatService.ToString())
-    {
-        <script src="@cdn.GetUrl("sample-chat-service.js", Model.ProductVersion)" section-name="Bottom"></script>
-    }
+        <script src="@cdn.GetUrl("jquery.min.js", Model.ProductVersion)" section-name="Bottom"></script>
 
-    <script src="@cdn.GetUrl("sf-assistant-chat.js", Model.ProductVersion)" section-name="Bottom"></script>
-    <script src="@cdn.GetUrl("sf-assistant-widget.js", Model.ProductVersion)" section-name="Bottom"></script>
+        @if (Model.ChatServiceName == ChatServiceType.AzureAssistantChatService.ToString())
+        {
+            <script src="@cdn.GetUrl("marked.min.js", Model.ProductVersion)" section-name="Bottom"></script>
+            <script src="@cdn.GetUrl("azure-assistant-chat-service.js", Model.ProductVersion)" section-name="Bottom"></script>
+        }
+        else if (Model.ChatServiceName == ChatServiceType.SampleAssistantChatService.ToString())
+        {
+            <script src="@cdn.GetUrl("sample-chat-service.js", Model.ProductVersion)" section-name="Bottom"></script>
+        }
+        else if (Model.ChatServiceName == ChatServiceType.ProgressARAGChatService.ToString())
+        {
+            <script src="@cdn.GetUrl("marked.min.js", Model.ProductVersion)" section-name="Bottom"></script>
+            <script src="@cdn.GetUrl("parag-chat-service.js", Model.ProductVersion)" section-name="Bottom"></script>
+        }
 
-    string assistantAvatarUrl = string.IsNullOrEmpty(Model.AssistantAvatarUrl) ? cdn.GetUrl("chat-avatar.svg", Model.ProductVersion) : Model.AssistantAvatarUrl;
+        <script src="@cdn.GetUrl("sf-assistant-chat.js", Model.ProductVersion)" section-name="Bottom"></script>
+        <script src="@cdn.GetUrl("sf-assistant-widget.js", Model.ProductVersion)" section-name="Bottom" defer></script>
 
-    @if (Model.DisplayMode == DisplayMode.Inline) {
-        <script type="application/json" class="sf-assistant-widget-data">
-            {
-                "id": "sf-assistant-inline-chat",
-                "display": {
-                    "mode": "inline",
-                    "containerId": "@Html.EncodeAttribute(Model.ContainerId)"
-                },
-                "chat": {
-                    "bot": {
-                        "name": "@Html.EncodeAttribute(Model.AssistantDisplayName)",
-                        "avatarUrl": "@Html.EncodeAttribute(assistantAvatarUrl)"
+        string assistantAvatarUrl = string.IsNullOrEmpty(Model.AssistantAvatarUrl) ? cdn.GetUrl("chat-avatar.svg", Model.ProductVersion) : Model.AssistantAvatarUrl;
+
+        @if (Model.DisplayMode == DisplayMode.Inline)
+        {
+            <script type="application/json" class="sf-assistant-widget-data">
+                {
+                    "id": "sf-assistant-inline-chat",
+                    "display": {
+                        "mode": "inline",
+                        "containerId": "@Html.EncodeAttribute(Model.ContainerId)"
                     },
-                    "input": {
-                    "supportsMultilineText": true,
-                    "placeholder": "@Html.EncodeAttribute(Model.InputPlaceholder)"
+                    "chat": {
+                        "bot": {
+                            "name": "@Html.EncodeAttribute(Model.AssistantDisplayName)",
+                            "avatarUrl": "@Html.EncodeAttribute(assistantAvatarUrl)"
+                        },
+                        "input": {
+                            "supportsMultilineText": true,
+                            "placeholder": "@Html.EncodeAttribute(Model.InputPlaceholder)"
+                        },
+                        "notice": "@Html.EncodeAttribute(Model.Notice)",
+                        "css": "@Html.EncodeAttribute(Model.CustomCss)"
                     },
-                    "notice": "@Html.EncodeAttribute(Model.Notice)"
-                },
-                "serviceSettings": {
-                    "serviceType": "@Html.EncodeAttribute(Model.ChatServiceName)",
-                    "greetingsMessage": "@Html.EncodeAttribute(Model.AssistantGreetingMessage)",
-                    "endpoint": "@Html.EncodeAttribute(Model.ServiceUrl)",
-                    "assistantApiKey": "@Html.EncodeAttribute(Model.AssistantApiKey)"
-                }
-            }
-        </script>
-        <div id="@Html.EncodeAttribute(Model.ContainerId)" @Html.BuildAttributes(@Model.Attributes) class="@Html.EncodeAttribute(Model.CssClass)"></div>
-    } else if (Model.DisplayMode == DisplayMode.Modal) {
-        <script type="application/json" class="sf-assistant-widget-data">
-            {
-                "id": "sf-assistant-modal-chat",
-                "display": {
-                    "mode": "modal",
-                    "launcher": {
-                        "openIconUrl":"@Html.EncodeAttribute(Model.OpeningChatIconUrl)",
-                        "closeIconUrl":"@Html.EncodeAttribute(Model.ClosingChatIconUrl)"
+                    "serviceSettings": {
+                        "serviceType": "@Html.EncodeAttribute(Model.ChatServiceName)",
+                        "greetingsMessage": "@Html.EncodeAttribute(Model.AssistantGreetingMessage)",
+                        "endpoint": "@Html.EncodeAttribute(Model.ServiceUrl)",
+                        "assistantApiKey": "@Html.EncodeAttribute(Model.AssistantApiKey)",
+                        "knowledgeBoxName": "@Html.EncodeAttribute(Model.KnowledgeBoxName)",
+                        "configurationName": "@Html.EncodeAttribute(Model.ConfigurationName)",
+                        "showSources": "@Model.ShowSources",
+                        "showFeedbackButtons": "@Model.ShowFeedback",
+                        "additionalQueryParams": {
+                            "sf_site": "@Html.EncodeAttribute(Model.SiteId)"
+                        }
                     }
-                },
-                "chat": {
-                    "bot": {
-                        "name": "@Html.EncodeAttribute(Model.AssistantDisplayName)",
-                        "avatarUrl": "@Html.EncodeAttribute(assistantAvatarUrl)"
-                    },
-                    "input": {
-                    "supportsMultilineText": true,
-                    "placeholder": "@Html.EncodeAttribute(Model.InputPlaceholder)"
-                    },
-                    "notice": "@Html.EncodeAttribute(Model.Notice)"
-                },
-                "serviceSettings": {
-                    "serviceType": "@Html.EncodeAttribute(Model.ChatServiceName)",
-                    "greetingsMessage": "@Html.EncodeAttribute(Model.AssistantGreetingMessage)",
-                    "endpoint": "@Html.EncodeAttribute(Model.ServiceUrl)",
-                    "assistantApiKey": "@Html.EncodeAttribute(Model.AssistantApiKey)"
                 }
-            }
-        </script>
+            </script>
+            <div id="@Html.EncodeAttribute(Model.ContainerId)" @Html.BuildAttributes(@Model.Attributes) class="@Html.EncodeAttribute(Model.CssClass)"></div>
+        }
+        else if (Model.DisplayMode == DisplayMode.Modal)
+        {
+            <script type="application/json" class="sf-assistant-widget-data">
+                {
+                    "id": "sf-assistant-modal-chat",
+                    "display": {
+                        "mode": "modal",
+                        "launcher": {
+                            "openIconUrl":"@Html.EncodeAttribute(Model.OpeningChatIconUrl)",
+                            "closeIconUrl":"@Html.EncodeAttribute(Model.ClosingChatIconUrl)"
+                        }
+                    },
+                    "chat": {
+                        "bot": {
+                            "name": "@Html.EncodeAttribute(Model.AssistantDisplayName)",
+                            "avatarUrl": "@Html.EncodeAttribute(assistantAvatarUrl)"
+                        },
+                        "input": {
+                        "supportsMultilineText": true,
+                        "placeholder": "@Html.EncodeAttribute(Model.InputPlaceholder)"
+                        },
+                        "notice": "@Html.EncodeAttribute(Model.Notice)",
+                        "css": "@Html.EncodeAttribute(Model.CustomCss)"
+                    },
+                    "serviceSettings": {
+                        "serviceType": "@Html.EncodeAttribute(Model.ChatServiceName)",
+                        "greetingsMessage": "@Html.EncodeAttribute(Model.AssistantGreetingMessage)",
+                        "endpoint": "@Html.EncodeAttribute(Model.ServiceUrl)",
+                        "assistantApiKey": "@Html.EncodeAttribute(Model.AssistantApiKey)",
+                        "knowledgeBoxName": "@Html.EncodeAttribute(Model.KnowledgeBoxName)",
+                        "configurationName": "@Html.EncodeAttribute(Model.ConfigurationName)",
+                        "showSources": "@Model.ShowSources",
+                        "showFeedbackButtons": "@Model.ShowFeedback",
+                        "additionalQueryParams": {
+                            "sf_site": "@Html.EncodeAttribute(Model.SiteId)"
+                        }
+                    }
+                }
+            </script>
+        }
     }
 }

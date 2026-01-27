@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
+using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.RestSdk;
 
@@ -13,6 +14,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     {
         private readonly IRestClient restClient;
         private readonly ISitefinityConfig config;
+        private readonly IRequestContext requestContext;
         private readonly ISitefinityAssistantClient assistantClient;
 
         /// <summary>
@@ -20,14 +22,17 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// </summary>
         /// <param name="restClient">The restClient parameter.</param>
         /// <param name="config">The Sitefinity configurations.</param>
+        /// <param name="requestContext">The request context.</param>
         /// <param name="assistantClient">The Sitefinity Assistant client parameter.</param>
         public SitefinityAssistantModel(
             IRestClient restClient,
             ISitefinityConfig config,
+            IRequestContext requestContext,
             ISitefinityAssistantClient assistantClient)
         {
             this.restClient = restClient;
             this.config = config;
+            this.requestContext = requestContext;
             this.assistantClient = assistantClient;
         }
 
@@ -35,15 +40,24 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         public virtual async Task<SitefinityAssistantViewModel> GetViewModel(IViewComponentContext<SitefinityAssistantEntity> context)
         {
             var entity = context.Entity;
-            var versionInfo = await this.assistantClient.GetVersionInfoAsync();
+            var versionInfo = await this.assistantClient.GetVersionInfoAsync(entity.AssistantType);
             var viewModel = new SitefinityAssistantViewModel();
+            viewModel.KnowledgeBoxName = entity.AssistantType == "PARAG" ? entity.KnowledgeBoxName : null;
+            viewModel.ConfigurationName = entity.ConfigurationName;
+            viewModel.ShowFeedback = entity.ShowFeedback;
+            viewModel.ShowSources = entity.ShowSources;
             viewModel.AssistantApiKey = entity.AssistantApiKey;
             viewModel.AssistantDisplayName = entity.Nickname;
             viewModel.AssistantGreetingMessage = entity.GreetingMessage;
             viewModel.AssistantAvatarUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.AssistantAvatar);
             viewModel.DisplayMode = entity.DisplayMode;
-            viewModel.ChatServiceName = ChatServiceType.AzureAssistantChatService.ToString();
-            viewModel.ServiceUrl = $"/{this.config.WebServicePath}/SitefinityAssistantChatService/";
+            viewModel.ChatServiceName = entity.AssistantType == "PARAG" ?
+                ChatServiceType.ProgressARAGChatService.ToString() :
+                ChatServiceType.AzureAssistantChatService.ToString();
+            viewModel.ServiceUrl = entity.AssistantType == "PARAG" ?
+                $"/{this.config.WebServicePath}/AgenticRag/" :
+                $"/{this.config.WebServicePath}/SitefinityAssistantChatService/";
+            viewModel.SiteId = this.requestContext.Site.Id;
             viewModel.ProductVersion = versionInfo?.ProductVersion;
             viewModel.OpeningChatIconUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.OpeningChatIcon);
             viewModel.ClosingChatIconUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.ClosingChatIcon);
