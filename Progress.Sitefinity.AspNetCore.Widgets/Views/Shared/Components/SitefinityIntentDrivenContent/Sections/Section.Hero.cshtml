@@ -1,0 +1,31 @@
+@using Progress.Sitefinity.AspNetCore.Web
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
+
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent.SectionViewModel
+
+<div class="hero-section @Model.CssClass" data-dg-section="herosection">
+    @if (!renderContext.IsEdit)
+    {
+        <template id="dg-template-hero">
+            <section class="container mt-5 mb-5">
+                <div class="text-center pt-4 pb-4">
+                    <h2 data-dg-if="title" data-dg-text="title"></h2>
+                    <p data-dg-if="description" data-dg-text="description"></p>
+                </div>
+            </section>
+        </template>
+        <intent-section template-id="dg-template-hero">
+            <div data-dg-skeleton class="skeleton-loader d-flex justify-content-center mb-4" style="display: none !important;">
+                <svg width="915" height="111" viewBox="0 0 915 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="628" height="38" fill="#F0F0F0" />
+                    <rect y="65" width="915" height="16" fill="#F0F0F0" />
+                    <rect y="95" width="696" height="16" fill="#F0F0F0" />
+                </svg>
+            </div>
+        </intent-section>
+    }
+    else
+    {
+        <h2>Hero</h2>
+    }
+</div>

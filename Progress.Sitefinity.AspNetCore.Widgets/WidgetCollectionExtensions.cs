@@ -12,6 +12,8 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.DocumentList;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Facets;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Form;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Image;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.IntentBox;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.LanguageSelector;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.LoginForm;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
@@ -57,6 +59,9 @@ namespace Progress.Sitefinity.AspNetCore
             services.AddTransient<IDocumentListModel, DocumentListModel>();
             services.AddTransient<IContentListModelBase, ContentListModel>();
             services.AddTransient<IContentListModelBase, DocumentListModel>();
+
+            services.AddTransient<IIntentBoxModel, IntentBoxModel>();
+            services.AddTransient<IIntentDrivenContentModel, IntentDrivenContentModel>();
 
             services.AddTransient<IFormModel, FormModel>();
             services.AddTransient<ISearchResultsModel, SearchResultsModel>();

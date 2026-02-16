@@ -1,0 +1,34 @@
+@using Progress.Sitefinity.AspNetCore.Web
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
+
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent.SectionViewModel
+
+<div class="richtext-section @Model.CssClass" data-dg-section="richtext">
+    @if (!renderContext.IsEdit)
+    {
+        <template id="dg-template-richtext">
+            <div class="container">
+                <section class="row pt-5 pb-5">
+                    <div class="col-md-12">
+                        <div class="rich-text-content" data-dg-html="content"></div>
+                    </div>
+                </section>
+            </div>
+        </template>
+        <intent-section template-id="dg-template-richtext">
+            <div data-dg-skeleton class="skeleton-loader d-flex justify-content-center mb-4" style="display: none !important;">
+                <svg width="808" height="199" viewBox="0 0 808 199" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="299" width="211" height="38" fill="#F0F0F0" />
+                    <rect y="96" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="125" width="738" height="16" fill="#F0F0F0" />
+                    <rect y="154" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="183" width="738" height="16" fill="#F0F0F0" />
+                </svg>
+            </div>
+        </intent-section>
+    }
+    else
+    {
+        <h2>Rich Text</h2>
+    }
+</div>

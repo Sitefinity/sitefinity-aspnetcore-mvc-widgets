@@ -34,6 +34,14 @@
     <EmbeddedResource Include="Scripts\SearchWidgets\search-box.min.js" />
     <EmbeddedResource Include="Scripts\SearchWidgets\search-results.js" />
     <EmbeddedResource Include="Scripts\SearchWidgets\search-results.min.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\intent-driven-content.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\intent-driven-content.min.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\intent-box.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\intent-box.min.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\intent-section.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\intent-section.min.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\libs\marked.umd.min.js" />
+    <EmbeddedResource Include="Scripts\IntentDrivenContent\libs\purify.min.js" />
     <EmbeddedResource Include="Views\Shared\Components\SitefinityContentList\ViewsMetaData.json" />
     <EmbeddedResource Include="Views\Shared\Components\SitefinityDocumentList\ViewsMetaData.json" />
 
@@ -50,8 +58,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.4.8624.15" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.4.8624.15" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.4.8624.15" />
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.4.8625.23" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.4.8625.23" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.4.8625.23" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,74 @@
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent.IntentDrivenContentViewModel
+@using Progress.Sitefinity.AspNetCore.Web
+@using Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent
+
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
+@inject Progress.Sitefinity.AspNetCore.Web.IRequestContext requestContext;
+
+<div class="sf-intent-driven-content @Model.CssClass"
+    data-sf-intent-driven-content
+    data-sf-default-query="@Model.DefaultQuery"
+    data-sf-service-url="@Model.ServiceUrl"
+    data-sf-site-id="@requestContext.Site.Id"
+    data-sf-page-id="@requestContext.PageNode.Id"
+    data-sf-language="@requestContext.Culture.Name"
+    data-sf-section-names="@string.Join(",", Model.SectionNames ?? new string[] { })">
+    @{
+        if (Model.SectionsConfiguration != null)
+        {
+            if (!renderContext.IsEdit)
+            {
+                @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.Error.cshtml", new SectionViewModel { SectionType = SectionType.Error, CssClass = "d-none" })
+            }
+
+            foreach (var sectionItem in Model.SectionsConfiguration)
+            {
+            <div class="section @sectionItem.SectionType.ToString().ToLowerInvariant()">
+                @if (sectionItem.SectionType == SectionType.TitleAndSummary)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.TitleAndSummary.cshtml", sectionItem)
+                }
+                else if (sectionItem.SectionType == SectionType.RichText)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.RichText.cshtml", sectionItem)
+                }
+                else if (sectionItem.SectionType == SectionType.FAQ)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.FAQ.cshtml", sectionItem)
+                }
+                else if (sectionItem.SectionType == SectionType.Hero)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.Hero.cshtml", sectionItem)
+                }
+                else if (sectionItem.SectionType == SectionType.ContentList)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.ContentList.cshtml", sectionItem)
+                }
+                else if (sectionItem.SectionType == SectionType.ContentListCards)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.ContentListCards.cshtml", sectionItem)
+                }
+                else if (sectionItem.SectionType == SectionType.Error)
+                {
+                    @await Html.PartialAsync("/Views/Shared/Components/SitefinityIntentDrivenContent/Sections/Section.Error.cshtml", sectionItem)
+                }
+            </div>
+            }
+        }
+    }
+</div>
+
+<script src="Scripts/IntentDrivenContent/libs/purify.min.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+<script src="Scripts/IntentDrivenContent/libs/marked.umd.min.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+
+@if (!renderContext.IsEdit)
+{
+    <environment include="Development">
+        <script src="Scripts/IntentDrivenContent/intent-driven-content.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+        <script src="Scripts/IntentDrivenContent/intent-section.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="Scripts/IntentDrivenContent/intent-driven-content.min.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+        <script src="Scripts/IntentDrivenContent/intent-section.min.js" section-name="Bottom" assembly-ref="Progress.Sitefinity.AspNetCore.Widgets"></script>
+    </environment>
+}

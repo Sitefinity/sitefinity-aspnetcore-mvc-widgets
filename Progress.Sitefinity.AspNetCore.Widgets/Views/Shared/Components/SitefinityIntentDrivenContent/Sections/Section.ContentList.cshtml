@@ -1,0 +1,47 @@
+@using Progress.Sitefinity.AspNetCore.Web
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
+
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent.SectionViewModel
+
+<div class="content-list-section @Model.CssClass" data-dg-section="contentlist" data-dg-type="list">
+    @if (!renderContext.IsEdit)
+    {
+        <template id="dg-template-contentlist">
+            <div class="container mt-4 mb-4">
+                <div class="row">
+                    <div class="col-12" data-dg-each="root" data-dg-item="item">
+                        <div class="mb-3">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0" data-dg-if="item.image.url">
+                                    <img class="card-img-top" style="max-width: 500px;"
+                                        data-dg-attr-src="item.image.url" data-dg-attr-alt="item.title"
+                                        data-dg-attr-title="item.title" />
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h4 data-dg-text="item.title"></h4>
+                                    <p data-dg-text="item.content"></p>
+                                    <a data-dg-if="item.url" class="btn btn-outline-dark" target="_blank"
+                                        rel="noopener noreferrer" data-dg-attr-href="item.url">Learn more</a>
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <intent-section template-id="dg-template-contentlist">
+            <div data-dg-skeleton class="skeleton-loader d-flex justify-content-center mb-4" style="display: none !important;">
+                <svg width="915" height="111" viewBox="0 0 915 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="628" height="38" fill="#F0F0F0" />
+                    <rect y="65" width="915" height="16" fill="#F0F0F0" />
+                    <rect y="95" width="696" height="16" fill="#F0F0F0" />
+                </svg>
+            </div>
+        </intent-section>
+    }
+    else
+    {
+        <h2>Content List</h2>
+    }
+</div>

@@ -1,0 +1,28 @@
+@using Progress.Sitefinity.AspNetCore.Web
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
+
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent.SectionViewModel
+
+<div class="error-section @Model.CssClass" data-dg-section="error">
+    @if (!renderContext.IsEdit)
+    {
+        <template id="dg-template-error">
+            <div class="container">
+                <section class="row pt-4 pb-4">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <div data-dg-text="errorMessage"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </template>
+        <intent-section template-id="dg-template-error">
+            <div data-dg-skeleton class="skeleton-loader d-flex justify-content-center mb-4" style="display: none !important;">
+                <svg width="808" height="150" viewBox="0 0 808 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="808" height="150" fill="#F0F0F0" />
+                </svg>
+            </div>
+        </intent-section>
+    }
+</div>

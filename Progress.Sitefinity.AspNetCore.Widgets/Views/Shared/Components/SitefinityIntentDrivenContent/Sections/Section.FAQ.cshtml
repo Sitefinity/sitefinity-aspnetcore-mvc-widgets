@@ -1,0 +1,42 @@
+@using Progress.Sitefinity.AspNetCore.Web
+@inject Progress.Sitefinity.AspNetCore.Web.IRenderContext renderContext;
+
+@model Progress.Sitefinity.AspNetCore.Widgets.Models.IntentDrivenContent.SectionViewModel
+
+<div class="faq-section @Model.CssClass" data-dg-section="faq">
+    @if (!renderContext.IsEdit)
+    {
+        <template id="dg-template-faq">
+            <div class="container mt-4 mb-4">
+                <div class="row">
+                    <div class="col-12" data-dg-each="root" data-dg-item="item">
+                        <div class="mb-3">
+                            <h6 data-dg-text="item.question"></h6>
+                            <p data-dg-text="item.answer"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <intent-section template-id="dg-template-faq">
+            <div data-dg-skeleton class="skeleton-loader d-flex justify-content-center mb-4" style="display: none !important;">
+                <svg width="808" height="437" viewBox="0 0 808 437" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="148" width="496" height="38" fill="#F0F0F0" />
+                    <rect y="99" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="128" width="738" height="16" fill="#F0F0F0" />
+                    <rect y="157" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="231" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="260" width="738" height="16" fill="#F0F0F0" />
+                    <rect y="289" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="363" width="808" height="16" fill="#F0F0F0" />
+                    <rect y="392" width="738" height="16" fill="#F0F0F0" />
+                    <rect y="421" width="808" height="16" fill="#F0F0F0" />
+                </svg>
+            </div>
+        </intent-section>
+    }
+    else
+    {
+        <h2>FAQ</h2>
+    }
+</div>
