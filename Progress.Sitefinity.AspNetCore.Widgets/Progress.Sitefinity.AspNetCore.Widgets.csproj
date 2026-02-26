@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\AISearchWidgets\results.js" />
+    <EmbeddedResource Include="Scripts\AISearchWidgets\results.min.js" />
+    <EmbeddedResource Include="Scripts\AISearchWidgets\ask-box.js" />
+    <EmbeddedResource Include="Scripts\AISearchWidgets\ask-box.min.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\profile.js" />
     <EmbeddedResource Include="Scripts\LoginWidgets\profile.min.js" />
     <EmbeddedResource Include="Scripts\recommendations.min.js" />
@@ -58,8 +62,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.4.8625.23" />
-    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.4.8625.23" />
-    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.4.8625.23" />
+    <PackageReference Include="Progress.Sitefinity.AspNetCore" Version="15.4.8626.64" />
+    <PackageReference Include="Progress.Sitefinity.Renderer" Version="15.4.8626.64" />
+    <PackageReference Include="Progress.Sitefinity.RestSdk" Version="15.4.8626.64" />
   </ItemGroup>
 </Project>

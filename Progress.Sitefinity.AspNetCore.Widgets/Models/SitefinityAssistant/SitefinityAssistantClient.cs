@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +7,6 @@ using Microsoft.Net.Http.Headers;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant.Dto;
 using Progress.Sitefinity.RestSdk;
-using Progress.Sitefinity.RestSdk.Dto;
 using Progress.Sitefinity.RestSdk.OData;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
@@ -31,7 +29,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
                 IODataRestClient restClient = await this.GetInitializedRestClientAsync();
                 var response = await restClient.ExecuteUnboundFunction<VersionInfoDto>(new BoundFunctionArgs()
                 {
-                    Name = assistantType == "PARAG" ? AssistantApiConstants.SitefinityGetPARAGAssistantVersionInfoFunctionName : AssistantApiConstants.SitefinityGetAssistantVersionInfoFunctionName
+                    Name = assistantType == AssistantApiConstants.PARAG ? AssistantApiConstants.SitefinityGetPARAGAssistantVersionInfoFunctionName : AssistantApiConstants.SitefinityGetAssistantVersionInfoFunctionName
                 });
 
                 return response;

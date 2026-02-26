@@ -4,5 +4,6 @@
     {
         public const string SitefinityGetAssistantVersionInfoFunctionName = "Default.GetAiAssistantVersionInfo()";
         public const string SitefinityGetPARAGAssistantVersionInfoFunctionName = "Default.GetPARAGAssistantVersionInfo()";
+        public const string PARAG = "PARAG";
     }
 }

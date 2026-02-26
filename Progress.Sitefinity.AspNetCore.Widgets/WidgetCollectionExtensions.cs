@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Preparations;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Answer;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Button;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ChangePassword;
@@ -20,6 +22,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Profile;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Registration;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ResetPassword;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Results;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Search;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Section;
@@ -40,6 +43,9 @@ namespace Progress.Sitefinity.AspNetCore
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         public static void AddViewComponentModels(this IServiceCollection services)
         {
+            services.AddTransient<IAnswerModel, AnswerModel>();
+            services.AddTransient<IAskBoxModel, AskBoxModel>();
+            services.AddTransient<IResultsModel, ResultsModel>();
             services.AddTransient<IChangePasswordModel, ChangePasswordModel>();
             services.AddTransient<IContentBlockModel, ContentBlockModel>();
             services.AddTransient<ILoginFormModel, LoginFormModel>();

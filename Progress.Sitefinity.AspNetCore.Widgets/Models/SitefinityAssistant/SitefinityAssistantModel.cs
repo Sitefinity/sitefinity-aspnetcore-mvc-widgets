@@ -42,7 +42,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             var entity = context.Entity;
             var versionInfo = await this.assistantClient.GetVersionInfoAsync(entity.AssistantType);
             var viewModel = new SitefinityAssistantViewModel();
-            viewModel.KnowledgeBoxName = entity.AssistantType == "PARAG" ? entity.KnowledgeBoxName : null;
+            viewModel.KnowledgeBoxName = entity.AssistantType == AssistantApiConstants.PARAG ? entity.KnowledgeBoxName : null;
             viewModel.ConfigurationName = entity.ConfigurationName;
             viewModel.ShowFeedback = entity.ShowFeedback;
             viewModel.ShowSources = entity.ShowSources;
@@ -51,10 +51,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             viewModel.AssistantGreetingMessage = entity.GreetingMessage;
             viewModel.AssistantAvatarUrl = await this.restClient.GetSingleSelectedImageUrlAsync(entity.AssistantAvatar);
             viewModel.DisplayMode = entity.DisplayMode;
-            viewModel.ChatServiceName = entity.AssistantType == "PARAG" ?
+            viewModel.ChatServiceName = entity.AssistantType == AssistantApiConstants.PARAG ?
                 ChatServiceType.ProgressARAGChatService.ToString() :
                 ChatServiceType.AzureAssistantChatService.ToString();
-            viewModel.ServiceUrl = entity.AssistantType == "PARAG" ?
+            viewModel.ServiceUrl = entity.AssistantType == AssistantApiConstants.PARAG ?
                 $"/{this.config.WebServicePath}/AgenticRag/" :
                 $"/{this.config.WebServicePath}/SitefinityAssistantChatService/";
             viewModel.SiteId = this.requestContext.Site.Id;

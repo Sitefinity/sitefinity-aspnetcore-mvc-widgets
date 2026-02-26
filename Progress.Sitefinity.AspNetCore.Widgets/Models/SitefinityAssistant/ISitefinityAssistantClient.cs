@@ -6,7 +6,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
     /// <summary>
     /// The ISitefinityAssistantClient interface.
     /// </summary>
-    internal interface ISitefinityAssistantClient
+    public interface ISitefinityAssistantClient
     {
         /// <summary>
         /// Gets version information of the Assistant API.
