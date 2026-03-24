@@ -66,6 +66,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
             viewModel.Notice = entity.Notice;
             viewModel.CustomCss = entity.CustomCss;
             viewModel.CssClass = entity.CssClass;
+            viewModel.PositiveFeedbackTooltip = entity.PositiveFeedbackTooltip;
+            viewModel.NegativeFeedbackTooltip = entity.NegativeFeedbackTooltip;
+            viewModel.ThankYouMessage = entity.ThankYouMessage;
+            viewModel.SourcesHeader = entity.SourcesHeader;
             viewModel.Attributes = entity.Attributes;
 
             return viewModel;

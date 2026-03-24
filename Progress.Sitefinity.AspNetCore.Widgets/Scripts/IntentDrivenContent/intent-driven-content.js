@@ -87,8 +87,9 @@
         }
     }
 
-    function changeLoadersVisibility(show) {
-        document.querySelectorAll('[data-dg-skeleton]').forEach(function (loaderElement) {
+    function changeLoadersVisibility(show, containerElement) {
+        const scope = containerElement || document;
+        scope.querySelectorAll('[data-dg-skeleton]').forEach(function (loaderElement) {
             if (show) {
                 loaderElement.style.removeProperty('display');
             } else {
@@ -97,15 +98,10 @@
         });
     }
 
-    document.addEventListener('IntentDrivenContentRequestInProgress', function () {
-        changeLoadersVisibility(true);
-    });
-
     document.addEventListener('DOMContentLoaded', function () {
         const isInsightsEnabled = !!document.querySelector('script#sf-insight-settings');
         const containers = document.querySelectorAll('[data-sf-intent-driven-content]');
-        for (var i = 0; i < containers.length; i++) {
-            var container = containers[i];
+        for (const container of containers) {
 
             if (!container) {
                 return;
@@ -129,12 +125,15 @@
                 return;
             }
 
-            var onData = function (data, innerContainer) {
+            let sectionsRendered = false;
+
+            const onData = function (data, innerContainer) {
                 const sections = innerContainer.querySelectorAll('[data-dg-section="' + data.sectionName + '"]');
                  if (sections?.length) {
                         sections.forEach(section => {
                             renderSection(section, data.sectionData, onError);
                         });
+                        sectionsRendered = true;
                 }
 
                 // Dispatch event for each section loaded
@@ -142,10 +141,9 @@
                 document.dispatchEvent(new Event('IntentDrivenContentSectionLoaded', { detail: eventDetail }));
             };
 
-            var onError = function (error, innerContainer, renderErrorSection) {
+            const onError = function (error, innerContainer, renderErrorSection) {
                 if (renderErrorSection) {
-                        const cnt = innerContainer || container;
-                        const errorSection = (cnt && cnt.querySelector('[data-dg-section="error"]')) || document.querySelector('[data-dg-section="error"]');
+                        const errorSection = innerContainer.querySelector('[data-dg-section="error"]');
                         if (errorSection) {
                             errorSection.classList.remove('d-none');
                         let sectionData = error;
@@ -165,8 +163,8 @@
                     }
                 }
 
-                // Remove loaders
-                changeLoadersVisibility(false);
+                // Remove loaders for this widget only
+                changeLoadersVisibility(false, innerContainer);
 
                 // Dispatch error event for whatever error we receive
                 document.dispatchEvent(new Event('IntentDrivenContentSectionError', { detail: error }));
@@ -192,10 +190,12 @@
                 return false;
             }
 
-            var onDone = function (innerContainer, collectedData) {
+            const onDone = function (innerContainer, collectedData) {
                 const dataArray = Array.isArray(collectedData) ? collectedData : [];
                 const hasNoData = dataArray.length === 0 || dataArray.every(item => responseContainsNoData(item?.sectionData));
-                if (hasNoData) {
+
+                // Only show the no-data error if nothing was rendered during streaming
+                if (hasNoData && !sectionsRendered) {
                     onError?.({
                         errorMessage: ERROR_MESSAGES.NO_DATA_FOUND,
                         errorType: 'NoContent'
@@ -213,14 +213,16 @@
                     }
                 });
 
-                // Remove loaders
-                changeLoadersVisibility(false);
+                // Remove loaders for this widget only
+                changeLoadersVisibility(false, innerContainer);
 
                 // Dispatch event for all content loaded
                 document.dispatchEvent(new Event('IntentDrivenContentContentLoaded', { detail: collectedData }));
             };
 
             function executeRequest() {
+                changeLoadersVisibility(true, container);
+
                 fetchDataStream(
                     serviceUrl,
                     { sections: sections, query: query, siteId: siteId, pageId: pageId, language: language, variationId: variationId, isUserQuery: isUserQuery },

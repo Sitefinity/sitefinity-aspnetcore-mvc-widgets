@@ -109,6 +109,26 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         public string CustomCss { get; set; }
 
         /// <summary>
+        /// Gets or sets the tooltip text displayed when the user provides positive feedback.
+        /// </summary>
+        public string PositiveFeedbackTooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tooltip text displayed when providing negative feedback.
+        /// </summary>
+        public string NegativeFeedbackTooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message displayed to users after they complete an action or transaction.
+        /// </summary>
+        public string ThankYouMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header text for the sources section in the chat response.
+        /// </summary>
+        public string SourcesHeader { get; set; }
+
+        /// <summary>
         /// Gets or sets the attributes for the widget.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Must be able to set in property editor.")]

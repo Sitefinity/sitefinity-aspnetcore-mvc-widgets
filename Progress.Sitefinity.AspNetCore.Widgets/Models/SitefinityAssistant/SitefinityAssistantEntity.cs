@@ -179,10 +179,46 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant
         /// <summary>
         /// Gets or sets the CustomCss property.
         /// </summary>
-        [Category("Advanced")]
+        [Category(PropertyCategory.Advanced)]
         [DisplayName("CSS for custom design")]
         [Placeholder("type URL or path to file...")]
         public string CustomCss { get; set; }
+
+        /// <summary>
+        /// Gets or sets the positive feedback tooltip.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages, 0)]
+        [DefaultValue("Helpful")]
+        [DisplayName("Positive feedback tooltip")]
+        public string PositiveFeedbackTooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the negative feedback tooltip.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages, 1)]
+        [DefaultValue("Not helpful")]
+        [DisplayName("Negative feedback tooltip")]
+        public string NegativeFeedbackTooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the thank you message after feedback.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages, 2)]
+        [DefaultValue("Thank you for your feedback!")]
+        [DisplayName("Thank you message")]
+        public string ThankYouMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header text displayed above the sources section.
+        /// </summary>
+        [Category(PropertyCategory.Advanced)]
+        [ContentSection(Constants.ContentSectionTitles.LabelsAndMessages, 3)]
+        [DefaultValue("Sources")]
+        [DisplayName("Sources header")]
+        public string SourcesHeader { get; set; }
 
         /// <summary>
         /// Gets or sets the attributes for the widget.
