@@ -4,6 +4,8 @@ using Progress.Sitefinity.AspNetCore.FormWidgets.Models.DateField;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.Dropdown;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.DynamicList;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.FileField;
+using Progress.Sitefinity.AspNetCore.FormWidgets.Models.FormNavigation;
+using Progress.Sitefinity.AspNetCore.FormWidgets.Models.FormPage;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.FormSection;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.MultipleChoice;
 using Progress.Sitefinity.AspNetCore.FormWidgets.Models.NumberField;
@@ -28,6 +30,8 @@ namespace Progress.Sitefinity.AspNetCore.FormWidgets
             services.AddTransient<ITextFieldModel, TextFieldModel>();
             services.AddTransient<ISubmitButtonModel, SubmitButtonModel>();
             services.AddTransient<IFormSectionModel, FormSectionModel>();
+            services.AddTransient<IFormPageModel, FormPageModel>();
+            services.AddTransient<IFormNavigationModel, FormNavigationModel>();
             services.AddTransient<IParagraphModel, ParagraphModel>();
             services.AddTransient<IMultipleChoiceModel, MultipleChoiceModel>();
             services.AddTransient<IDropdownModel, DropdownModel>();

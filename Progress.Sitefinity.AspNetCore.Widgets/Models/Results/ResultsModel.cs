@@ -71,35 +71,30 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results
                     foreach (var resourceEntry in response.Resources)
                     {
                         var resource = resourceEntry.Value;
-
-                        if (resource.Origin != null)
+                        var result = new ResultItemViewModel()
                         {
-                            var result = new ResultItemViewModel
-                            {
-                                Title = resource.Title
-                            };
+                            Title = resource.Title,
+                            Link = resource.Origin.Url
+                        };
 
-                            result.Link = resource.Origin.Url;
-
-                            var allParagraphs = new List<ParagraphDto>();
-                            if (resource.Fields != null)
+                        var allParagraphs = new List<ParagraphDto>();
+                        if (resource.Fields != null)
+                        {
+                            foreach (var fieldEntry in resource.Fields)
                             {
-                                foreach (var fieldEntry in resource.Fields)
+                                if (fieldEntry.Value?.Paragraphs != null)
                                 {
-                                    if (fieldEntry.Value?.Paragraphs != null)
+                                    foreach (var paraEntry in fieldEntry.Value.Paragraphs)
                                     {
-                                        foreach (var paraEntry in fieldEntry.Value.Paragraphs)
-                                        {
-                                            allParagraphs.Add(paraEntry.Value);
-                                        }
+                                        allParagraphs.Add(paraEntry.Value);
                                     }
                                 }
                             }
-
-                            allParagraphs.Sort((a, b) => a.Order.CompareTo(b.Order));
-                            result.Order = allParagraphs.FirstOrDefault()?.Order ?? 0;
-                            viewModel.SearchResults.Add(result);
                         }
+
+                        allParagraphs.Sort((a, b) => a.Order.CompareTo(b.Order));
+                        result.Order = allParagraphs.FirstOrDefault()?.Order ?? 0;
+                        viewModel.SearchResults.Add(result);
                     }
 
                     viewModel.SearchResults.Sort((a, b) => a.Order.CompareTo(b.Order));

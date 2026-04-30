@@ -113,12 +113,21 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 httpContext.Request.Query.TryGetValue(template, out queryValue);
 
                 if (queryValue.Count > 0)
+                {
                     pageValue = queryValue;
+                }
             }
 
-            var pageNumber = int.TryParse(pageValue, out int number) ? number : 1;
+            if (pageValue == null)
+            {
+                return 1;
+            }
+            else if (int.TryParse(pageValue, out int parsedNumber))
+            {
+                return parsedNumber;
+            }
 
-            return pageNumber;
+            return 0;
         }
 
         private protected static async Task<Tuple<CombinedFilter, IList<string>>> GetClassificationFilter(string typename, ReadOnlyCollection<string> urlParameters, IRestClient restService)
@@ -309,20 +318,18 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             }
         }
 
-        private protected static void AddSkipTake(ContentListEntityBase entity, GetAllArgs getAllArgs, ref int currentPage, int pageNumber)
+        private protected static void AddSkipTake(ContentListEntityBase entity, GetAllArgs getAllArgs, int pageNumber)
         {
             if (entity.ListSettings != null)
             {
                 switch (entity.ListSettings.DisplayMode)
                 {
                     case ListDisplayMode.Paging:
-                        currentPage = pageNumber;
-
                         getAllArgs.Take = entity.ListSettings.ItemsPerPage;
 
-                        if (currentPage > 1)
+                        if (pageNumber > 1)
                         {
-                            getAllArgs.Skip = entity.ListSettings.ItemsPerPage * (currentPage - 1);
+                            getAllArgs.Skip = entity.ListSettings.ItemsPerPage * (pageNumber - 1);
                         }
 
                         getAllArgs.Count = true;
@@ -358,7 +365,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 if (listViewModel.Pager != null)
                 {
                     listViewModel.Pager.ProcessedUrlSegments = processedUrlSegments;
-                    listViewModel.Pager.IsPageNumberValid = listViewModel.Pager.IsPageValid(listViewModel.Pager.CurrentPage);
                 }
             }
 
@@ -411,14 +417,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             string filterByParentExpressionSerialized = null;
 
             var viewModel = this.PopulateViewModel(entity);
-            var currentPage = 1;
 
             if (this.HideListView(entity, selectedItemsType))
                 return new ContentListViewModel();
 
             var getAllArgs = new GetAllArgs();
             if (entity.ContentViewDisplayMode == ContentViewDisplayMode.Detail)
-                getAllArgs = this.ConstructGetAllArgs(entity, ref currentPage, pageNumber, filterByParentExpressionSerialized, classificationFilter);
+                getAllArgs = this.ConstructGetAllArgs(entity, pageNumber, filterByParentExpressionSerialized, classificationFilter);
             var contentListModelForDetail = new ContentListModelForDetail(this.RestService, this.RequestContext, this.StylesProvider);
             contentListModelForDetail.GetAllArgs = getAllArgs;
             var detailItemResult = await contentListModelForDetail.HandleDetailItem(entity, this.ShowDetailsViewOnChildDetailsView(entity));
@@ -451,7 +456,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
             if (hasSelectedItemsType || hasSelectedDynamicParentFiltering)
             {
-                getAllArgs = this.ConstructGetAllArgs(entity, ref currentPage, pageNumber, filterByParentExpressionSerialized, classificationFilter);
+                getAllArgs = this.ConstructGetAllArgs(entity, pageNumber, filterByParentExpressionSerialized, classificationFilter);
                 var result = await this.RestService.GetItems<SdkItem>(entity.SelectedItems, getAllArgs).ConfigureAwait(false);
                 viewModel.Items = result.Items;
 
@@ -460,7 +465,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
                 {
                     var pagerTemplate = string.IsNullOrEmpty(entity.PagerTemplate) ? ContentPagerViewModel.PageNumberDefaultTemplate : entity.PagerTemplate;
                     var pagerQueryTemplate = string.IsNullOrEmpty(entity.PagerQueryTemplate) ? ContentPagerViewModel.PageNumberDefaultQueryTemplate : entity.PagerQueryTemplate;
-                    viewModel.Pager = new ContentPagerViewModel(currentPage, (int)result.TotalCount, entity.ListSettings.ItemsPerPage, pagerTemplate, pagerQueryTemplate, entity.PagerMode);
+                    viewModel.Pager = new ContentPagerViewModel(pageNumber, (int)result.TotalCount, entity.ListSettings.ItemsPerPage, pagerTemplate, pagerQueryTemplate, entity.PagerMode);
                     viewModel.Pager.ViewUrl = this.RequestContext.PageNode?.ViewUrl;
                 }
 
@@ -489,13 +494,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             return true;
         }
 
-        private GetAllArgs ConstructGetAllArgs(ContentListEntityBase entity, ref int currentPage, int pageNumber, string filterByParentExpressionSerialized, CombinedFilter classificationFilter)
+        private GetAllArgs ConstructGetAllArgs(ContentListEntityBase entity, int pageNumber, string filterByParentExpressionSerialized, CombinedFilter classificationFilter)
         {
             var getAllArgs = new GetAllArgs();
 
             ContentListModelBase.AddOrderByExpression(entity, getAllArgs);
 
-            ContentListModelBase.AddSkipTake(entity, getAllArgs, ref currentPage, pageNumber);
+            ContentListModelBase.AddSkipTake(entity, getAllArgs, pageNumber);
 
             this.AddSelectExpression(entity, getAllArgs);
 

@@ -1,0 +1,29 @@
+﻿@model Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.FormNavigation.FormNavigationViewModel
+
+<div class="mb-3 @Model.CssClass" data-sf-role="form-navigation-container">
+    <ol class="list-unstyled d-inline-flex gap-3 mb-0">
+
+        @{
+            var pageCounter = 0;
+            if (Model.NavigationSteps != null)
+            {
+                foreach (var navigationStep in Model.NavigationSteps)
+                {
+                    pageCounter++;
+
+                    <li class="d-inline-flex align-items-center gap-2" data-sf-navigation-index="@pageCounter" aria-hidden="true">
+                        <span data-sf-progress-indicator="incomplete" class="align-items-center justify-content-center">
+                            <b class="bg-white border border-1 border-secondary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 1.6em; aspect-ratio: 1">@pageCounter</b>
+                        </span>
+
+                        <span data-sf-progress-indicator="past" class="align-items-center justify-content-center" style="display:none">
+                            <b class="bg-white border border-1 border-secondary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 1.6em; aspect-ratio: 1">&#x2713;</b>
+                        </span>
+                        <span data-sf-page-title="@navigationStep">@navigationStep</span>
+                    </li>
+                }
+            }
+
+        }
+    </ol>
+</div>

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList;
 using Progress.Sitefinity.Clients.LayoutService.Dto;
 
@@ -63,11 +62,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager
         /// <summary>
         /// Validate if the requested page number is valid.
         /// </summary>
-        /// <param name="pageNumber">The page number.</param>
         /// <returns>If the requested page number is valid.</returns>
-        public bool IsPageValid(int pageNumber)
+        public bool IsPageValid()
         {
-            return pageNumber >= 1 && pageNumber <= this.EndPageIndex;
+            return this.CurrentPage >= 1 && this.CurrentPage <= this.EndPageIndex;
         }
 
         /// <summary>
@@ -136,11 +134,6 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager
         public IEnumerable<string> ProcessedUrlSegments { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the page number is valid.
-        /// </summary>
-        public bool IsPageNumberValid { get; set; }
-
-        /// <summary>
         /// Gets or sets the page view url.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings", Justification = "ViewModel")]
@@ -187,17 +180,23 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentPager
             else
             {
                 var template = this.PagerQueryParameterTemplate;
-                var queryPattern = $"{template}=(\\d{{1,}})";
                 var queryDesiredPage = $"{template}={pageNumber}";
-                StringValues value;
-                context.Request.Query.TryGetValue(template, out value);
-                if (value.Count > 0 && int.TryParse(value, out int page))
+
+                // Replace the page param in-place (preserving its position) to prevent duplicates
+                // when the current value is non-numeric (e.g. ?page=asdasd).
+                // If the param doesn't exist yet, append it.
+                if (context.Request.Query.ContainsKey(template))
                 {
-                    return path + Regex.Replace(queryString, queryPattern, queryDesiredPage);
+                    var updatedParams = context.Request.Query
+                        .SelectMany(x => x.Value.Select(v => new KeyValuePair<string, string>(
+                            x.Key,
+                            x.Key == template ? pageNumber.ToString(CultureInfo.InvariantCulture) : v)));
+
+                    return path + QueryString.Create(updatedParams).ToString();
                 }
 
-                if (!string.IsNullOrEmpty(queryString))
-                    return path + queryString + "&" + queryDesiredPage;
+                if (!string.IsNullOrEmpty(context.Request.QueryString.Value))
+                    return path + context.Request.QueryString.Value + "&" + queryDesiredPage;
 
                 return path + "?" + queryDesiredPage;
             }

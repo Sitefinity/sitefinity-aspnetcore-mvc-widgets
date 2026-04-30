@@ -61,9 +61,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                         if (listViewModel.Pager != null)
                         {
                             var processedUrlSegments = listViewModel.Pager.ProcessedUrlSegments;
-                            var isPageNumberValid = listViewModel.Pager.IsPageNumberValid;
 
-                            if (isPageNumberValid)
+                            if (listViewModel.Pager.IsPageValid())
                             {
                                 component.State.Add(ContentListPreparation.PreparedData, listViewModel);
                                 resolvedSegments.AddRange(processedUrlSegments);
@@ -71,6 +70,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
                             else
                             {
                                 allTasksResolved = false;
+
+                                // bad request if the page number is invalid (string, zero, negative) otherwise fallback to first page
+                                if (component.Entity.PagerMode == PagerMode.QueryParameter && listViewModel.Pager.CurrentPage <= 0)
+                                    pageModel.MarkAsBadRequest();
                             }
                         }
                         else

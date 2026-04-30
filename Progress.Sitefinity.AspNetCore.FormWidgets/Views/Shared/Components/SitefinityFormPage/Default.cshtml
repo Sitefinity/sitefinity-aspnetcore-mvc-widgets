@@ -1,0 +1,18 @@
+@using Progress.Sitefinity.AspNetCore.Web
+@model Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.FormPage.FormPageViewModel;
+@inject IRenderContext renderContext;
+
+<sf-wrapper class="row @Model.CssClass" data-sf-role="form-page-container" style="display: @(renderContext.IsEdit ? "block" : "none")">
+    <h3 data-sf-role="form-page-title">@Model.PageLabel</h3>
+    <div data-sfcontainer container-context="@this.Model.Context.ContainerContext("formpage", null)">
+    </div>
+
+    <div class="mb-3 mt-3" data-sf-role="next-button-container">
+        <button type="button" data-sf-role="next-button" class="btn btn-secondary">@Model.ButtonLabel</button>
+
+        @if (Model.AllowStepBackward)
+        {
+            <button type="button" data-sf-role="back-link" class="btn btn-link shadow-none text-decoration-none">@Model.BackLinkLabel</button>
+        }
+    </div>
+</sf-wrapper>

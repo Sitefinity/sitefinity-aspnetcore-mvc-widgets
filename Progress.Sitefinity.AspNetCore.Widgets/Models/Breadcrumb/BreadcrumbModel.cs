@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Newtonsoft.Json;
-using Progress.Sitefinity.AspNetCore.Models;
 using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
@@ -63,7 +61,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Breadcrumb
                     args.AdditionalQueryParams.Add("startingPageId", entity.SelectedPage.ItemIdsOrdered[0]);
 
                 args.AdditionalQueryParams.Add("currentPageId", currentPageId);
-                args.AdditionalQueryParams.Add("currentPageUrl", HttpUtility.UrlEncode(this.httpContextAccessor.HttpContext.Request.GetEncodedUrl()));
+
+                // Build current page URL without query parameters (and fragment) to avoid unnecessary cache busting
+                var request = this.httpContextAccessor.HttpContext.Request;
+                var pageUrl = UriHelper.BuildAbsolute(request.Scheme, request.Host, request.PathBase, request.Path);
+                args.AdditionalQueryParams.Add("currentPageUrl", HttpUtility.UrlEncode(pageUrl));
+
                 args.AdditionalQueryParams.Add("addStartingPageAtEnd", entity.AddCurrentPageLinkAtTheEnd.ToString());
                 args.AdditionalQueryParams.Add("addHomePageAtBeginning", entity.AddHomePageLinkAtBeginning.ToString());
                 args.AdditionalQueryParams.Add("includeGroupPages", entity.IncludeGroupPages.ToString());

@@ -123,6 +123,8 @@ function toggleHideStyles(element, shouldAdd = true) {
 }
 
 function initFields(formContainer) {
+    initFormPage(formContainer);
+    initFormNavigation(formContainer);
     initTextbox(formContainer);
     initParagraph(formContainer);
     initNumber(formContainer);
@@ -173,6 +175,51 @@ function initMultipleChoice(formContainer) {
 
 function initCheckboxes(formContainer) {
     initChoiceField("checkboxes-field-container", "checkboxes-field-input", formContainer);
+}
+
+function validateFields(formContainer) {
+    var isValid = true;
+
+    if (!formContainer) {
+        return isValid;
+    }
+
+    var formFields = formContainer.querySelectorAll('[data-sf-role*="field-container"]');
+
+    Array.from(formFields).filter(x => !x.hasAttribute(hiddenDataAttr)).forEach(formField => {
+        var fieldType = formField.getAttribute("data-sf-role");
+        var localResult = true;
+        switch (fieldType) {
+            case "file-field-container":
+                localResult = handleFileValidation(formField);
+                break;
+            case "text-field-container":
+            case "paragraph-text-field-container":
+                localResult = handleTextValidation(formField);
+                break;
+            case "number-field-container":
+                localResult = handleNumberValidation(formField);
+                break;
+            case "date-time-field-container":
+                localResult = handleDateTimeValidation(formField);
+                break;
+            case "multiple-choice-field-container":
+                localResult = handleChoiceValidation(formField, "multiple-choice-field-input");
+                break;
+            case "checkboxes-field-container":
+                localResult = handleChoiceValidation(formField, "checkboxes-field-input");
+                break;
+            case "dropdown-list-field-container":
+                localResult = handleDropdownValidation(formField);
+                break;
+            default:
+                break;
+        }
+
+        isValid = isValid && localResult;
+    });
+
+    return isValid;
 }
 
 function initSubmit(formContainer) {
@@ -252,41 +299,7 @@ function initSubmit(formContainer) {
     form.onsubmit = function (e) {
         e?.preventDefault();
 
-        var formFields = e.target.querySelectorAll('[data-sf-role*="field-container"');
-        var isValid = true;
-
-        Array.from(formFields).filter(x => !x.hasAttribute(hiddenDataAttr)).forEach(formField => {
-            var fieldType = formField.getAttribute("data-sf-role");
-            var localResult = true;
-            switch (fieldType) {
-                case "file-field-container":
-                    localResult = handleFileValidation(formField);
-                    break;
-                case "text-field-container":
-                case "paragraph-text-field-container":
-                    localResult = handleTextValidation(formField);
-                    break;
-                case "number-field-container":
-                    localResult = handleNumberValidation(formField);
-                    break;
-                case "date-time-field-container":
-                    localResult = handleDateTimeValidation(formField);
-                    break;
-                case "multiple-choice-field-container":
-                    localResult = handleChoiceValidation(formField, "multiple-choice-field-input");
-                    break;
-                case "checkboxes-field-container":
-                    localResult = handleChoiceValidation(formField, "checkboxes-field-input");
-                    break;
-                case "dropdown-list-field-container":
-                    localResult = handleDropdownValidation(formField);
-                    break;
-                default:
-                    break;
-            }
-
-            isValid = isValid && localResult;
-        });
+        var isValid = validateFields(e.target);
 
         if (!isValid) {
             return false;
@@ -528,6 +541,136 @@ function initFileField(formContainer) {
         }
     }
 }
+function initFormNavigation(formContainer) {
+    updateFormNavigationStep(formContainer, 0);
+}
+
+function updateFormNavigationStep(formContainer, currentPageIndex) {
+    var formNavigation = formContainer.querySelector('[data-sf-role="form-navigation-container"]');
+
+    if (!formNavigation) {
+        return;
+    }
+
+    var navigationItems = formNavigation.querySelectorAll('[data-sf-navigation-index]');
+
+    navigationItems.forEach(function (navigationItem) {
+        var navIndex = parseInt(navigationItem.getAttribute('data-sf-navigation-index')) - 1;
+        var pageTitleElement = navigationItem.querySelector('[data-sf-page-title]');
+        var incompleteIndicator = navigationItem.querySelector('[data-sf-progress-indicator="incomplete"]');
+        var pastIndicator = navigationItem.querySelector('[data-sf-progress-indicator="past"]');
+
+        if (pageTitleElement) {
+            pageTitleElement.classList.remove('fw-bold');
+            pageTitleElement.classList.remove('text-secondary');
+        }
+
+        if (navIndex < currentPageIndex) {
+            if (pageTitleElement) {
+                pageTitleElement.classList.add('text-secondary');
+            }
+            if (incompleteIndicator) {
+                incompleteIndicator.style.display = 'none';
+            }
+            if (pastIndicator) {
+                pastIndicator.style.display = '';
+            }
+        }
+
+        if (navIndex >= currentPageIndex) {
+            if (incompleteIndicator) {
+                incompleteIndicator.style.display = '';
+            }
+            if (pastIndicator) {
+                pastIndicator.style.display = 'none';
+            }
+        }
+
+        if (navIndex === currentPageIndex) {
+            if (pageTitleElement) {
+                pageTitleElement.classList.add('fw-bold');
+            }
+        }
+    });
+}
+
+function initFormPage(formContainer) {
+    function handleFormPageClick(e, goForward) {
+        var currentPage = e.target.closest('[data-sf-role="form-page-container"]');
+        var pageIndex = parseInt(currentPage.getAttribute('data-sf-page-index'));
+        var formContainerElement = currentPage.closest('[data-sf-role="form-container"]');
+        var formPages = formContainerElement.querySelectorAll('[data-sf-role="form-page-container"]');
+
+        if (goForward) {
+            var isValid = validateFields(currentPage);
+            if (!isValid) {
+                return;
+            }
+
+            formPages[pageIndex].style.display = 'none';
+            formPages[pageIndex + 1].style.display = 'block';
+            updateFormNavigationStep(formContainerElement, pageIndex + 1);
+        } else {
+            formPages[pageIndex].style.display = 'none';
+            formPages[pageIndex - 1].style.display = 'block';
+            updateFormNavigationStep(formContainerElement, pageIndex - 1);
+        }
+    }
+
+    function configureSubmitButton(button) {
+        button.setAttribute('type', 'submit');
+        if (button.parentElement) {
+            button.parentElement.setAttribute('data-sf-role', 'submit-button-container');
+        }
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-primary');
+    }
+
+    function setupPageVisibility(formPages) {
+        formPages.forEach((page, index) => {
+            page.style.display = index === 0 ? 'block' : 'none';
+            page.setAttribute('data-sf-page-index', index);
+        });
+    }
+
+    function setupNextButton(button, isLastPage) {
+        if (isLastPage) {
+            configureSubmitButton(button);
+            initSubmit(button.parentElement);
+        } else {
+            button.addEventListener('click', (e) => handleFormPageClick(e, true));
+        }
+    }
+
+    function setupBackLink(backLink, isFirstPage) {
+        if (!isFirstPage) {
+            backLink.addEventListener('click', (e) => handleFormPageClick(e, false));
+        }
+    }
+
+    var formPages = formContainer.querySelectorAll(`[data-sf-role="form-page-container"]`);
+
+    if (!formPages || formPages.length < 1) {
+        return;
+    }
+
+    setupPageVisibility(formPages);
+
+    formPages.forEach((page, index) => {
+        const isFirstPage = index === 0;
+        const isLastPage = index === formPages.length - 1;
+
+        const nextButton = page.querySelector('[data-sf-role="next-button"]');
+        if (nextButton) {
+            setupNextButton(nextButton, isLastPage);
+        }
+
+        const backLink = page.querySelector('[data-sf-role="back-link"]');
+        if (backLink) {
+            setupBackLink(backLink, isFirstPage);
+        }
+    });
+}
 
 function initTextField(dataSfRoleContainer, dataSfRoleText, formContainer) {
     var inputs = getInputs(dataSfRoleContainer, dataSfRoleText, formContainer);
@@ -625,7 +768,7 @@ function handleChoiceValidation(element, dataSfRoleInput) {
 }
 
 function handleTextValidation(source) {
-    if (source instanceof Event) {
+    if (source instanceof Event || source.constructor.name === "Event") {
         source = source.target;
     }
 
@@ -666,7 +809,7 @@ function handleTextValidation(source) {
 }
 
 function handleNumberValidation(source) {
-    if (source instanceof Event) {
+    if (source instanceof Event || source.constructor.name === "Event") {
         source = source.target;
     }
 
@@ -704,7 +847,7 @@ function handleNumberValidation(source) {
 }
 
 function handleDateTimeValidation(source) {
-    if (source instanceof Event) {
+    if (source instanceof Event || source.constructor.name === "Event") {
         source = source.target;
     }
 
@@ -730,7 +873,7 @@ function handleDateTimeValidation(source) {
 function handleFileValidation(source) {
     var classInvalid = getInvalidClass();
 
-    if (source instanceof Event) {
+    if (source instanceof Event || source.constructor.name === "Event") {
         source = source.target;
     }
 
@@ -828,7 +971,7 @@ function handleFileValidation(source) {
 }
 
 function handleDropdownValidation(source) {
-    if (source instanceof Event) {
+    if (source instanceof Event || source.constructor.name === "Event") {
         source = source.target;
     }
 
@@ -910,7 +1053,7 @@ function clearErrorMessage(input, isErrorContainerSibling) {
 
 function findFieldContainerElement(element) {
     var container = element;
-    while (true) {
+    while (container) {
         if (container.hasAttribute('data-sf-role')) {
             const attributeValue = container.getAttribute('data-sf-role');
             if (attributeValue.indexOf("field-container") !== -1) {

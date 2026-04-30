@@ -11,7 +11,7 @@
                 <div class="row row-cols-1 row-cols-md-3" data-dg-each="root" data-dg-item="item">
                     <div class="col mb-4">
                             <div class="card">
-                                <img class="card-img-top" data-dg-attr-src="item.image.url"
+                                <img data-dg-if="item.image.url" class="card-img-top" data-dg-attr-src="item.image.url"
                                     data-dg-attr-alt="item.title" data-dg-attr-title="item.title" />
                                 <div class="card-body">
                                     <h4 class="card-title" data-dg-text="item.title"></h4>
