@@ -81,6 +81,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
         public string ActiveClass { get; set; }
 
         /// <summary>
+        /// Gets or sets the filter expression used to refine the data selection.
+        /// </summary>
+        /// <remarks>The filter expression should be a valid string that defines the criteria for filtering data. Ensure
+        /// that the expression is properly formatted to avoid runtime errors.</remarks>
+        public string FilterExpression { get; set; }
+
+        /// <summary>
         /// Gets or sets the search autocomplete items class.
         /// </summary>
         public string SearchAutocompleteItemClass { get; set; }

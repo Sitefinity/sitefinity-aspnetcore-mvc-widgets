@@ -104,6 +104,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
         public string SuggestionFields { get; set; }
 
         /// <summary>
+        /// Gets or sets the filter expression used to determine which items are included based on specified criteria.
+        /// </summary>
+        /// <remarks>The filter expression should be a valid string that can be evaluated to filter items. Ensure
+        /// that the expression is correctly formatted to avoid runtime errors.</remarks>
+        [Category(PropertyCategory.Advanced)]
+        [DisplayName("Filter expression")]
+        [Description("[{\"Type\":1,\"Chunks\":[{\"Value\":\"Custom filter expression applied to search\",\"Presentation\":[]},{\"Value\":\"results from this widget.\",\"Presentation\":[2]}]},{\"Type\":1,\"Chunks\":[{\"Value\":\"Example\",\"Presentation\":[4]},{\"Value\":\"{\",\"Presentation\":[2]},{\"Value\":\"\\u00A0\\u00A0 \\\"FieldName\\\":\\\"MyShortTextFieldName\\\",\",\"Presentation\":[2]},{\"Value\":\"\\u00A0\\u00A0 \\\"Operator\\\":\\\"eq\\\",\",\"Presentation\":[2]},{\"Value\":\"\\u00A0\\u00A0 \\\"FieldValue\\\":\\\"custom search value\\\"\",\"Presentation\":[2]},{\"Value\":\"}\",\"Presentation\":[2]}]}]")]
+        public string FilterExpression { get; set; }
+
+        /// <summary>
         /// Gets or sets the option to show search results from all indexed sites or from current site only.
         /// </summary>
         [Category(PropertyCategory.Advanced)]

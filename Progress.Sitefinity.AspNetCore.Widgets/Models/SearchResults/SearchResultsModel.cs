@@ -53,7 +53,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
             if (httpContext == null)
                 throw new ArgumentNullException(nameof(httpContext));
 
-            httpContext.AddVaryByQueryParams(new[] { "searchQuery", "page", "sf_culture", "orderBy", "filter" });
+            httpContext.AddVaryByQueryParams(new[] { "searchQuery", "page", "sf_culture", "orderBy", "filter", "filterExpression" });
 
             var currentSite = this.requestContext.Site;
             var languages = currentSite.Cultures.Select(x => new Sitefinity.RestSdk.Clients.Sites.Dto.SiteDto.CultureDto()
@@ -157,6 +157,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.SearchResults
                 ScroingInfo = searchParamsModel.ScroingInfo,
                 ShowResultsForAllIndexedSites = searchParamsModel.ShowResultsForAllIndexedSites,
                 Filter = searchParamsModel.Filter,
+                FilterExpression = searchParamsModel.FilterExpression,
                 AdditionalResultFields = entity.AdditionalResultFields,
             });
 

@@ -30,6 +30,7 @@
              data-sf-results-all='@queryCollection["resultsForAllSites"]'
              data-sf-sorting='@sorting'
              data-sf-filter='@queryCollection["filter"]'
+             data-sf-filter-expression='@queryCollection["filterExpression"]'
         @Html.BuildAttributes(Model.Attributes)>
             <div class="d-flex align-items-center justify-content-between my-3">
                 <h1 role="alert" aria-live="assertive">@Model.ResultsHeader</h1>

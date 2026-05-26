@@ -71,7 +71,8 @@
                 suggestionFields: input.getAttribute("data-sf-suggestions-fields"),
                 servicePath: input.getAttribute("data-sf-service-path"),
                 orderBy: input.getAttribute("data-sf-sort"),
-                resultsForAllSites: input.getAttribute("data-sf-results-all")
+                resultsForAllSites: input.getAttribute("data-sf-results-all"),
+                filterExpression: input.getAttribute("data-sf-filter-expression"),
             };
         }
 
@@ -119,13 +120,18 @@
                 "&sf_culture=" + data.culture +
                 "&siteId=" + data.siteId +
                 "&scoringInfo=" + data.scoringSetting +
-                "&suggestionFields=" + data.suggestionFields +
+                "&suggestionFields=" + data.suggestionFields +              
                 "&searchQuery=" + input.value;
+
             if (data.resultsForAllSites == 1) {
                 requestUrl += "&resultsForAllSites=True";
             }
             else if (data.resultsForAllSites == 2) {
                 requestUrl += "&resultsForAllSites=False";
+            }
+
+            if (data.filterExpression) {
+                requestUrl += "&filterExpression=" + data.filterExpression;
             }
 
             fetch(requestUrl).then(function (res) {
@@ -184,6 +190,11 @@
             const sorting = input.getAttribute("data-sf-sort");
             if (sorting) {
                 params.orderBy = sorting;
+            }
+
+            const filterExpression = input.getAttribute("data-sf-filter-expression");
+            if (filterExpression) {
+                params.filterExpression = filterExpression;
             }
 
             const resultsForAllSites = input.getAttribute("data-sf-results-all");

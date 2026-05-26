@@ -67,7 +67,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
                 string filter = httpContext.Request.Query["filter"];
                 string culture = httpContext.Request.Query["sf_culture"];
                 string resultsForAllSites = httpContext.Request.Query["resultsForAllSites"];
-                var searchServiceFacetResponse = await this.GetFacets(searchQuery, culture, entity.IndexCatalogue, filter, resultsForAllSites, entity.SearchFields, facets);
+                string filterExpression = httpContext.Request.Query["filterExpression"];
+                var searchServiceFacetResponse = await this.GetFacets(searchQuery, culture, entity.IndexCatalogue, filter, filterExpression, resultsForAllSites, entity.SearchFields, facets);
 
                 var facetsDict = searchServiceFacetResponse.ToDictionary(x => x.FacetKey, x => x.FacetResponses);
 
@@ -102,7 +103,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
             return response.Value;
         }
 
-        private async Task<IList<FacetFlatResponseDto>> GetFacets(string searchQuery, string culture, string indexCatalogue, string filter, string resultsForAllSites, string searchFields, List<Facet> facets)
+        private async Task<IList<FacetFlatResponseDto>> GetFacets(string searchQuery, string culture, string indexCatalogue, string filter, string filterExpression, string resultsForAllSites, string searchFields, List<Facet> facets)
         {
             string facetsStr = JsonConvert.SerializeObject(facets);
 
@@ -118,6 +119,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
                     ["resultsForAllSites"] = resultsForAllSites,
                     ["searchFields"] = searchFields,
                     ["facetFields"] = facetsStr,
+                    ["$filter"] = filterExpression
                 },
             });
 

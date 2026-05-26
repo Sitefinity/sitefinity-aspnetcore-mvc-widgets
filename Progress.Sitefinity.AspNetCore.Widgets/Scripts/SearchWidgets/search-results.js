@@ -44,6 +44,7 @@
             var scroingInfo = parentElement.getAttribute("data-sf-scoring-info");
             var resultsForAllSites = parentElement.getAttribute("data-sf-results-all");
             var filter = parentElement.getAttribute("data-sf-filter");
+            var filterExpression = parentElement.getAttribute("data-sf-filter-expression");
 
             var query = "?searchQuery=" + query +
                 "&indexCatalogue=" + index +
@@ -57,6 +58,10 @@
 
             if (filter) {
                 query = query + "&filter=" + filter;
+            }
+
+            if (filterExpression) {
+                query = query + "&filterExpression=" + encodeURIComponent(filterExpression);
             }
 
             if (resultsForAllSites == "True") {

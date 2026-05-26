@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Web;
+using Progress.Sitefinity.AspNetCore.Widgets.Models.Search.Filters;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Clients.Pages.Dto;
+using Progress.Sitefinity.RestSdk.Filters;
 using Progress.Sitefinity.RestSdk.OData;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
@@ -59,6 +62,17 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Search
             viewModel.WebServicePath = $"/{this.sfConfig.SearchWebServicePath ?? this.sfConfig.WebServicePath}";
             viewModel.SearchResultsPageUrl = await this.GetPageNodeUrl(entity.SearchResultsPage);
             viewModel.ShowResultsForAllIndexedSites = entity.ShowResultsForAllIndexedSites;
+
+            var deserializedFilter = FilterConverter.From(new KeyValuePair<string, string>("Complex", entity.FilterExpression));
+            var newFilterContext = new FilterContext()
+            {
+                Type = "Search",
+                Filter = deserializedFilter,
+            };
+
+            string odataFilter = new ODataFilterSerializer(new SearchFilterMetadataProvider()).Serialize(newFilterContext);
+
+            viewModel.FilterExpression = odataFilter;
             viewModel.ScoringProfile = new ScoringProfile
             {
                 ScoringSetting = entity.ScoringProfile ?? string.Empty,

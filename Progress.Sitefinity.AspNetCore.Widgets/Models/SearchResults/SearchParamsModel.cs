@@ -49,5 +49,12 @@
         /// Gets or sets the filter parameter.
         /// </summary>
         public string Filter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the OData filter expression used to refine the data selection.
+        /// </summary>
+        /// <remarks>The filter expression should be a valid string that defines the criteria for filtering data.
+        /// Ensure that the expression is correctly formatted to avoid runtime errors.</remarks>
+        public string FilterExpression { get; set; }
     }
 }

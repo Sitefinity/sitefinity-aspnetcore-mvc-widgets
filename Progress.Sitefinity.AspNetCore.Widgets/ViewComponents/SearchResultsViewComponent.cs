@@ -70,6 +70,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
             string scoringProfile = this.HttpContext.Request.Query["scoringInfo"];
             string showResultsForAllIndexedSites = this.HttpContext.Request.Query["resultsForAllSites"];
             string filter = this.HttpContext.Request.Query["filter"];
+            string filterExpression = this.HttpContext.Request.Query["filterExpression"];
+
             int page = 1;
             var resultsForAllSites = ConvertResultsSetting(showResultsForAllIndexedSites);
             if (!string.IsNullOrEmpty(pageParam) && int.TryParse(pageParam, out int pageNumber) && pageNumber > 0)
@@ -88,6 +90,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
                 ScroingInfo = scoringProfile,
                 ShowResultsForAllIndexedSites = resultsForAllSites,
                 Filter = filter,
+                FilterExpression = filterExpression,
             };
 
             return searchParams;
