@@ -72,7 +72,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
         /// <param name="entity">The entity class.</param>
         /// <param name="restClient">The rest client.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
-        public Task<ODataWrapper<PageViewModel[]>> GetItems(NavigationEntity entity, IODataRestClient restClient)
+        public async Task<ODataWrapper<PageViewModel[]>> GetItems(NavigationEntity entity, IODataRestClient restClient)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -93,16 +93,45 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                 { "levelsToInclude", entity.LevelsToInclude.ToString() },
                 { "showParentPage", entity.ShowParentPage.ToString() },
                 { "selectedPageId", selectedPageId.ToString() },
-                { Constants.QueryParams.PageNodeId, this.requestContext.Model.Id.ToString() },
                 { "selectedPages", JsonConvert.SerializeObject(entity.CustomSelectedPages.ItemIdsOrdered) },
             };
 
-            return restClient.ExecuteBoundFunction<ODataWrapper<PageViewModel[]>>(new BoundFunctionArgs()
+            if (entity.SelectionMode == PageSelectionMode.CurrentPageChildren || entity.SelectionMode == PageSelectionMode.CurrentPageSiblings)
+                queryParams[Constants.QueryParams.PageNodeId] = this.requestContext.Model.Id.ToString();
+
+            var items = await restClient.ExecuteBoundFunction<ODataWrapper<PageViewModel[]>>(new BoundFunctionArgs()
             {
                 Name = $"Default.HierarhicalByLevelsResponse()",
                 Type = "pages",
                 AdditionalQueryParams = queryParams,
             });
+
+            TrySetCurrentlyOpened(items.Value, this.requestContext.Model.Id.ToString().ToUpperInvariant());
+
+            return items;
+        }
+
+        private static bool TrySetCurrentlyOpened(IEnumerable<PageViewModel> items, string currentPageId)
+        {
+            if (items == null)
+                return false;
+
+            foreach (var item in items)
+            {
+                if (item == null)
+                    continue;
+
+                if (item.Key == currentPageId)
+                {
+                    item.IsCurrentlyOpened = true;
+                    return true;
+                }
+
+                if (TrySetCurrentlyOpened(item.ChildNodes, currentPageId))
+                    return true;
+            }
+
+            return false;
         }
 
         private static PageViewModel[] AddManualSelectionItems(NavigationEntity entity, PageViewModel[] value)

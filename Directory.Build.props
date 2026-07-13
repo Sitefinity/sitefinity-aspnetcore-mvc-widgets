@@ -1,7 +1,7 @@
 <Project>
   <!-- Project Meta Information -->
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <!-- StyleCop Analyzers configuration -->
   <PropertyGroup>

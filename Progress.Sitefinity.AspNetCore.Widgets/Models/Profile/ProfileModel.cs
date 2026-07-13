@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Progress.Sitefinity.AspNetCore.Configuration;
+using Progress.Sitefinity.AspNetCore.Http;
 using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Profile.Dto;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Registration;
@@ -68,8 +69,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
             var confirmEmailChangeTitleLabel = string.Empty;
             var confirmEmailChangeDescriptionLabel = string.Empty;
 
+            var httpContext = this.httpContextAccessor.HttpContext;
             viewModel.ActivationMethod = registrationSettings.ActivationMethod;
-            if (registrationSettings.ActivationMethod == "AfterConfirmation" && this.httpContextAccessor.HttpContext.Request.Query.TryGetValue(EncryptedParam, out var encryptedParam))
+            if (registrationSettings.ActivationMethod == "AfterConfirmation" && httpContext.Request.Query.TryGetValue(EncryptedParam, out var encryptedParam))
             {
                 try
                 {
@@ -188,6 +190,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Profile
             {
                 viewModel.Warning = this.localizer.GetString("Confirmation email cannot be sent because the system has not been configured to send emails. Configure SMTP settings or contact your administrator for assistance.");
             }
+
+            httpContext.FlagUserSpecificDataIfAuthenticated();
 
             return viewModel;
         }

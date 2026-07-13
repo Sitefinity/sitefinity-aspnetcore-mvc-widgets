@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides urls to static files.
     /// </summary>
-    internal interface ISitefinityAssistantCDN
+    public interface ISitefinityAssistantCDN
     {
         /// <summary>
         /// Gets the url of a static file.
