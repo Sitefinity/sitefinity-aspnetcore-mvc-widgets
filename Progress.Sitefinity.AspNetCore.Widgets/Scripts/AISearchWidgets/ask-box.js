@@ -7,6 +7,8 @@
             var controlServerData = {
                 knowledgeBoxName: getHiddenValue(container, "knowledgeBoxName"),
                 searchConfigurationName: getHiddenValue(container, "searchConfigurationName"),
+                contentTypes: getHiddenValue(container, "contentTypes"),
+                lastModified: getHiddenValue(container, "lastModified"),
                 resultsPageUrl: getHiddenValue(container, "resultsPageUrl"),
                 suggestionsTriggerCharCount: parseInt(getHiddenValue(container, "suggestionsTriggerCharCount"), 10) || 0,
                 suggestionsServicePath: getHiddenValue(container, "suggestionsServicePath"),
@@ -137,6 +139,8 @@
             function buildResultsUrl(query) {
                 var knowledgeBoxName = serverData.knowledgeBoxName || "";
                 var searchConfigurationName = serverData.searchConfigurationName;
+                var contentTypes = serverData.contentTypes;
+                var lastModified = serverData.lastModified;
                 var trimmedQuery = query.trim();
 
                 var baseUrl;
@@ -148,6 +152,15 @@
                     if (searchConfigurationName) {
                         url += "&searchConfigurationName=" + encodeURIComponent(searchConfigurationName);
                     }
+
+                    if (contentTypes) {
+                        url += "&contentTypes=" + encodeURIComponent(contentTypes);
+                    }
+
+                    if (lastModified) {
+                        url += "&lastModified=" + encodeURIComponent(lastModified);
+                    }
+
                     return url;
                 } else {
                     var params = new URLSearchParams(window.location.search);
@@ -158,6 +171,19 @@
                     } else {
                         params.delete("searchConfigurationName");
                     }
+
+                    if (contentTypes) {
+                        params.set("contentTypes", contentTypes);
+                    } else {
+                        params.delete("contentTypes");
+                    }
+
+                    if (lastModified) {
+                        params.set("lastModified", lastModified);
+                    } else {
+                        params.delete("lastModified");
+                    }
+
                     params.delete("page");
                     return window.location.pathname + "?" + params.toString();
                 }

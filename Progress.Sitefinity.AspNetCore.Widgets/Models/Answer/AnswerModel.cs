@@ -40,12 +40,14 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Answer
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            httpContext.AddVaryByQueryParams(new[] { "searchQuery" });
+            httpContext.AddVaryByQueryParams(["searchQuery", "knowledgeBoxName", "searchConfigurationName", "contentTypes", "lastModified"]);
 
             var versionInfo = await this.assistantClient.GetVersionInfoAsync(AssistantApiConstants.PARAG);
             var knowledgeBoxName = httpContext.Request.Query["knowledgeBoxName"];
             var searchConfiguarionName = httpContext.Request.Query["searchConfigurationName"];
             var searchQuery = httpContext.Request.Query["searchQuery"];
+            var lastModified = httpContext.Request.Query["lastModified"];
+            var contentTypes = httpContext.Request.Query["contentTypes"];
 
             var viewModel = new AnswerViewModel();
             viewModel.Title = !string.IsNullOrEmpty(entity.Title) ? entity.Title : "AI answer";
@@ -69,6 +71,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Answer
             viewModel.ConfigName = searchConfiguarionName;
             viewModel.KnowledgeBoxName = knowledgeBoxName;
             viewModel.SearchQuery = searchQuery;
+            viewModel.LastModified = lastModified;
+            viewModel.ContentTypes = contentTypes;
 
             viewModel.Attributes = entity.Attributes;
 

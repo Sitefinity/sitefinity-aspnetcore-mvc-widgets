@@ -1,10 +1,12 @@
 using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.RestSdk;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.SitefinityAssistant;
 using Progress.Sitefinity.AspNetCore.Widgets.ViewComponents.Common;
+using Progress.Sitefinity.Renderer.Models;
 using Progress.Sitefinity.RestSdk;
 using Progress.Sitefinity.RestSdk.Clients.Pages.Dto;
 using Progress.Sitefinity.RestSdk.OData;
@@ -48,6 +50,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox
             viewModel.KnowledgeBoxName = entity.KnowledgeBoxName;
             viewModel.SearchConfigurationName = entity.ConfigurationName;
             viewModel.Suggestions = JsonSerializer.Serialize(entity.Suggestions);
+            viewModel.ContentTypes = entity.ContentTypes != null ? string.Join(",", entity.ContentTypes) : null;
+            viewModel.LastModified = ResolveDate(entity.ModifiedDateFilter);
             viewModel.Placeholder = entity.Placeholder;
             viewModel.ButtonLabel = entity.ButtonLabel;
             viewModel.SuggestionsLabel = entity.SuggestionsLabel;
@@ -63,6 +67,34 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox
             viewModel.VisibilityClasses = this.styles.StylingConfig.VisibilityClasses;
 
             return viewModel;
+        }
+
+        private static string ResolveDate(DateTimeFilterValue filter)
+        {
+            if (filter == null)
+                return null;
+
+            switch (filter.PeriodType)
+            {
+                case PeriodType.Last:
+                    var now = DateTime.UtcNow.Date;
+                    DateTime? date = filter.TimeSpanInterval switch
+                    {
+                        TimeSpanInterval.Days => now.AddDays(-filter.TimeSpanValue),
+                        TimeSpanInterval.Weeks => now.AddDays(-filter.TimeSpanValue * 7),
+                        TimeSpanInterval.Months => now.AddMonths(-filter.TimeSpanValue),
+                        TimeSpanInterval.Years => now.AddYears(-filter.TimeSpanValue),
+                        _ => null,
+                    };
+
+                    return date?.ToString("O", DateTimeFormatInfo.InvariantInfo);
+
+                case PeriodType.Period:
+                    return filter.FromDate?.Date.ToString("O", DateTimeFormatInfo.InvariantInfo);
+
+                default:
+                    return null;
+            }
         }
 
         private async Task<string> GetPageNodeUrl(Sitefinity.Renderer.Entities.Content.MixedContentContext context)

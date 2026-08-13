@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Progress.Sitefinity.AspNetCore.Configuration;
 using Progress.Sitefinity.AspNetCore.Models;
@@ -28,6 +29,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox
         /// Gets or sets the list of suggestion phrases.
         /// </summary>
         public string Suggestions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of content types to ask for, comma separated.
+        /// </summary>
+        public string ContentTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date filter for the last modified date of the content items.
+        /// </summary>
+        public string LastModified { get; set; }
 
         /// <summary>
         /// Gets or sets the placeholder text displayed in the AI ask box input field.

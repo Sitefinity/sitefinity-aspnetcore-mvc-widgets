@@ -41,11 +41,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            httpContext.AddVaryByQueryParams(["searchQuery", "knowledgeBoxName", "searchConfigurationName"]);
+            httpContext.AddVaryByQueryParams(["searchQuery", "knowledgeBoxName", "searchConfigurationName", "contentTypes", "lastModified"]);
 
             var searchQuery = httpContext.Request.Query["searchQuery"].ToString();
             var knowledgeBoxName = httpContext.Request.Query["knowledgeBoxName"].ToString();
             var searchConfigurationName = httpContext.Request.Query["searchConfigurationName"].ToString();
+            var contentTypes = httpContext.Request.Query["contentTypes"].ToString();
+            var lastModified = httpContext.Request.Query["lastModified"].ToString();
 
             var noResultsHeader = !string.IsNullOrEmpty(entity.NoResultsHeader) ? entity.NoResultsHeader : "No results for \"{0}\"";
             var searchResultsHeader = !string.IsNullOrEmpty(entity.SearchResultsHeader) ? entity.SearchResultsHeader : "Results for \"{0}\"";
@@ -64,7 +66,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results
             if (!string.IsNullOrEmpty(searchQuery) && !string.IsNullOrEmpty(knowledgeBoxName))
             {
                 viewModel.SearchResults = new List<ResultItemViewModel>();
-                var response = await this.PerformSearchAsync(searchQuery, knowledgeBoxName, searchConfigurationName);
+                var response = await this.PerformSearchAsync(searchQuery, knowledgeBoxName, searchConfigurationName, contentTypes, lastModified);
 
                 if (response?.Resources != null && response.Resources.Count > 0)
                 {
@@ -112,7 +114,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results
             return viewModel;
         }
 
-        private async Task<FindResponse> PerformSearchAsync(string searchQuery, string knowledgeBoxName, string searchConfigurationName)
+        private async Task<FindResponse> PerformSearchAsync(string searchQuery, string knowledgeBoxName, string searchConfigurationName, string contentTypes, string lastModified)
         {
             var findRequest = new FindRequest
             {
@@ -124,6 +126,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results
             if (!string.IsNullOrEmpty(searchConfigurationName))
             {
                 findRequest.ConfigurationName = searchConfigurationName;
+            }
+
+            if (!string.IsNullOrEmpty(contentTypes))
+            {
+                findRequest.ContentTypes = contentTypes.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(lastModified))
+            {
+                findRequest.LastModified = lastModified;
             }
 
             var args = new BoundActionArgs

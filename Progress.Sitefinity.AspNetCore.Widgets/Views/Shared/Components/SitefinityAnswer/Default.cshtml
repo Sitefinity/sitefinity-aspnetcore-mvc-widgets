@@ -75,7 +75,9 @@ else
                 "configurationName": "@Html.EncodeAttribute(Model.ConfigName)",
                 "showSources": "@Model.ShowSources",
                 "showFeedbackButtons": "@Model.ShowFeedback",
-                "initialPrompt": "@Html.EncodeAttribute(Model.SearchQuery)"
+                "initialPrompt": "@Html.EncodeAttribute(Model.SearchQuery)",
+                "lastModified": "@Html.EncodeAttribute(Model.LastModified)",
+                "contentTypes": "@Html.EncodeAttribute(Model.ContentTypes)"
             }
         }
     </script>

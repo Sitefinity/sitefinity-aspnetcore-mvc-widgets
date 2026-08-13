@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results.Dto
@@ -26,5 +27,15 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Results.Dto
         /// Gets or sets the number of results to return.
         /// </summary>
         public int Take { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of content types to find items for.
+        /// </summary>
+        public List<string> ContentTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date filter for the last modified date of the content items.
+        /// </summary>
+        public string LastModified { get; set; }
     }
 }

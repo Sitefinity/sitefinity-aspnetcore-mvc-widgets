@@ -95,6 +95,16 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Answer
         public string SearchQuery { get; set; }
 
         /// <summary>
+        /// Gets or sets the last modified filter.
+        /// </summary>
+        public string LastModified { get; set; }
+
+        /// <summary>
+        /// Gets or sets the content types filter.
+        /// </summary>
+        public string ContentTypes { get; set; }
+
+        /// <summary>
         /// Gets or sets the CSS class.
         /// </summary>
         public string CssClass { get; set; }

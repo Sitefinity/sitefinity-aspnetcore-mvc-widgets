@@ -8,6 +8,7 @@ using Progress.Sitefinity.AspNetCore.Widgets.Models.Common;
 using Progress.Sitefinity.Renderer.Designers;
 using Progress.Sitefinity.Renderer.Designers.Attributes;
 using Progress.Sitefinity.Renderer.Entities.Content;
+using Progress.Sitefinity.Renderer.Models;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox
 {
@@ -17,6 +18,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox
     public class AskBoxEntity : IHasMargins<MarginStyle>
     {
         private const string SetupSectionName = "AI ask box setup";
+        private const string KnowledgeScopeSectionName = "Knowledge scope";
 
         /// <summary>
         /// Gets or sets the name of the knowledge box connection to use for AI-powered search.
@@ -68,6 +70,23 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.AskBox
         [Description("Suggestions are example questions or phrases displayed under the AI ask box.")]
         [TableView(Reorderable = true)]
         public IList<string> Suggestions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Gets or sets the content types that the AI ask box will search within. This is only applicable for knowledge boxes that are set up using the connector.
+        /// </summary>
+        [ContentSection(KnowledgeScopeSectionName, 0)]
+        [DisplayName("Base answers on...")]
+        [Description("Choose which content types this widget can use as knowledge when searching or answering questions.")]
+        [ContentTypeSelector(CanSelectAll = true, IsMultipleSelection = true, IsLifecycleContentType = true, UseFullTypeName = true)]
+        public IList<string> ContentTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the content modified date range that the AI ask box will search within. This is only applicable for knowledge boxes that are set up using the connector.
+        /// </summary>
+        [ContentSection(KnowledgeScopeSectionName, 1)]
+        [DisplayName("Content modified")]
+        [DatePeriodSelector(DateTimeMode = DateTimeMode.DateOnly, FromToMode = FromToMode.FromOnly)]
+        public DateTimeFilterValue ModifiedDateFilter { get; set; }
 
         /// <summary>
         /// Gets or sets the view name for the widget template.
