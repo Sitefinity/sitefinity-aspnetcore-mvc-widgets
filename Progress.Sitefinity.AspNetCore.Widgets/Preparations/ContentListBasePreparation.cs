@@ -22,7 +22,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
 
         public ContentListBasePreparation(IContentListModelBase contentListModelBase)
         {
-               this.contentListModelBase = contentListModelBase;
+            this.contentListModelBase = contentListModelBase;
         }
 
         public Task Prepare(PageModel pageModel, IRestClient batchClient, HttpContext httpContext)
@@ -36,74 +36,122 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Preparations
             if (!contentListWidgets.Any())
                 return Task.CompletedTask;
 
-            return this.PreparePager(pageModel, httpContext, contentListWidgets);
+            return this.PreparePagerAsync(pageModel, httpContext, contentListWidgets);
         }
 
-        private Task PreparePager(PageModel pageModel, HttpContext httpContext, IList<IViewComponentContext<ContentListEntityBase>> components)
+        private async Task PreparePagerAsync(PageModel pageModel, HttpContext httpContext, IList<IViewComponentContext<ContentListEntityBase>> components)
         {
-            var tasks = new List<Task>();
+            var tasks = components.Select(component => this.PrepareComponentAsync(component, pageModel, httpContext)).ToArray();
+            var taskResults = await Task.WhenAll(tasks);
+
             var allTasksResolved = true;
-            var resolvedSegments = new List<string>();
-            foreach (var component in components)
+            var allResolvedSegments = new List<string>();
+            foreach (var taskResult in taskResults)
             {
-                var task = this.contentListModelBase.HandleListView(component.Entity, pageModel.UrlParameters, httpContext).ContinueWith(
-                (itemsTask) =>
+                if (taskResult.IsFaulted || !taskResult.IsPageValid)
                 {
-                    if (itemsTask.IsFaulted)
+                    allTasksResolved = false;
+                }
+
+                if (taskResult.MarkAsBadRequest)
+                {
+                    pageModel.MarkAsBadRequest();
+                }
+
+                if (taskResult.ResolvedUrlSegments != null)
+                {
+                    allResolvedSegments.AddRange(taskResult.ResolvedUrlSegments);
+                }
+
+                if (taskResult.State != null && taskResult.State.Any())
+                {
+                    foreach (var kvp in taskResult.State)
                     {
-                        allTasksResolved = false;
-                        return;
+                        taskResult.Component.State[kvp.Key] = kvp.Value;
                     }
+                }
+            }
 
-                    var listViewModel = itemsTask.Result as ContentListCommonViewModel;
-                    if (listViewModel != null)
+            allResolvedSegments = allResolvedSegments.Distinct().ToList();
+            lock (pageModel)
+            {
+                var allParametersResolved = false;
+                if (allTasksResolved)
+                {
+                    if (pageModel.UrlParameters.Count == allResolvedSegments.Count || Enumerable.SequenceEqual(pageModel.UrlParameters.OrderBy(x => x), allResolvedSegments.OrderBy(x => x)))
                     {
-                        if (listViewModel.Pager != null)
-                        {
-                            var processedUrlSegments = listViewModel.Pager.ProcessedUrlSegments;
-
-                            if (listViewModel.Pager.IsPageValid())
-                            {
-                                component.State.Add(ContentListPreparation.PreparedData, listViewModel);
-                                resolvedSegments.AddRange(processedUrlSegments);
-                            }
-                            else
-                            {
-                                allTasksResolved = false;
-
-                                // bad request if the page number is invalid (string, zero, negative) otherwise fallback to first page
-                                if (component.Entity.PagerMode == PagerMode.QueryParameter && listViewModel.Pager.CurrentPage <= 0)
-                                    pageModel.MarkAsBadRequest();
-                            }
-                        }
-                        else
-                        {
-                            component.State.Add(ContentListPreparation.PreparedData, listViewModel);
-                        }
-
-                        pageModel.MarkUrlParametersResolved(listViewModel.ResolvedUrlSegments);
+                        pageModel.MarkUrlParametersResolved();
+                        allParametersResolved = true;
                     }
-                }, TaskScheduler.Current);
+                }
 
-                tasks.Add(task);
+                if (!allParametersResolved)
+                {
+                    pageModel.MarkUrlParametersResolved(allResolvedSegments);
+                }
             }
+        }
 
-            Task.WaitAll(tasks.ToArray());
-
-            resolvedSegments = resolvedSegments.Distinct().ToList();
-            if (pageModel.UrlParameters.Count != resolvedSegments.Count || !Enumerable.SequenceEqual(pageModel.UrlParameters.OrderBy(x => x), resolvedSegments.OrderBy(x => x)))
-                allTasksResolved = false;
-
-            if (allTasksResolved)
+        private async Task<ComponentPreparationResult> PrepareComponentAsync(IViewComponentContext<ContentListEntityBase> component, PageModel pageModel, HttpContext httpContext)
+        {
+            try
             {
-                pageModel.MarkUrlParametersResolved();
-            }
-            else
-            {
-                pageModel.MarkUrlParametersResolved(resolvedSegments);
-            }
+                var items = await this.contentListModelBase.HandleListView(component.Entity, pageModel.UrlParameters, httpContext);
+                var listViewModel = items as ContentListCommonViewModel;
+                if (listViewModel == null)
+                    return new ComponentPreparationResult();
 
-            return Task.WhenAll(tasks);
+                var result = new ComponentPreparationResult()
+                {
+                    ResolvedUrlSegments = listViewModel.ResolvedUrlSegments,
+                    Component = component
+                };
+
+                if (listViewModel.Pager != null)
+                {
+                    if (listViewModel.Pager.IsPageValid())
+                    {
+                        result.State.Add(ContentListPreparation.PreparedData, listViewModel);
+                        foreach (var pagerSegment in listViewModel.Pager.ProcessedUrlSegments)
+                        {
+                            result.ResolvedUrlSegments.Add(pagerSegment);
+                        }
+                    }
+                    else
+                    {
+                        result.IsPageValid = false;
+
+                        // bad request if the page number is invalid (string, zero, negative) otherwise fallback to first page
+                        if (component.Entity.PagerMode == PagerMode.QueryParameter && listViewModel.Pager.CurrentPage <= 0)
+                            result.MarkAsBadRequest = true;
+                    }
+                }
+                else
+                {
+                    result.State.Add(ContentListPreparation.PreparedData, listViewModel);
+                }
+
+                return result;
+            }
+            catch
+            {
+                return new ComponentPreparationResult() { IsFaulted = true, IsPageValid = false };
+            }
+        }
+
+        private sealed class ComponentPreparationResult
+        {
+            public bool IsFaulted { get; set; }
+
+            public bool IsPageValid { get; set; } = true;
+
+            public bool MarkAsBadRequest { get; set; }
+
+            public IList<string> ResolvedUrlSegments { get; set; }
+
+            public Dictionary<string, object> State { get; set; } = new Dictionary<string, object>();
+
+            public IViewComponentContext<ContentListEntityBase> Component { get; set; }
         }
     }
 }

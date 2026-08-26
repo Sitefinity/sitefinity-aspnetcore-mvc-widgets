@@ -10,7 +10,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     /// <summary>
     /// Language selector widget.
     /// </summary>
-    [SitefinityWidget(Title="Language selector", HideEmptyVisual=true, Section = WidgetSection.NavigationAndSearch, Category = WidgetCategory.Content, IconName="language", NotPersonalizable=true)]
+    [SitefinityWidget(Title = "Language selector", HideEmptyVisual = true, Section = WidgetSection.NavigationAndSearch, Category = WidgetCategory.Content, IconName = "language", NotPersonalizable = true)]
     [ViewComponent(Name = "SitefinityLanguageSelector")]
     public class LanguageSelectorViewComponent : ViewComponent
     {

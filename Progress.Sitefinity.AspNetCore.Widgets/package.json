@@ -12,6 +12,6 @@
     "start": "uglifyjs-folder Scripts -e -o Scripts --pattern '**/*.js,!**/*min.js'"
   },
   "dependencies": {
-    "foundation-sites": "^6.7.5"
+    "foundation-sites": "6.7.5"
   }
 }
