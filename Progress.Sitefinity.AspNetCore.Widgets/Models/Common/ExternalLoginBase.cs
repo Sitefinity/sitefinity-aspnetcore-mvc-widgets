@@ -136,8 +136,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Common
                 redirectUrl = context?.Request.GetDisplayUrl();
             }
 
-            var redirectUrlBuilder = new UriBuilder(redirectUrl);
             var currentRequestBuilder = new UriBuilder(context?.Request.GetDisplayUrl());
+            if (!Uri.TryCreate(redirectUrl, UriKind.Absolute, out Uri redirectUri))
+            {
+                redirectUri = new Uri(currentRequestBuilder.Uri, redirectUrl);
+            }
+
+            var redirectUrlBuilder = new UriBuilder(redirectUri);
             var currentRequestQuery = HttpUtility.ParseQueryString(currentRequestBuilder.Query);
             currentRequestQuery.Remove(ErrorQueryKey);
             currentRequestQuery.Remove(ShowSuccessMessageQueryKey);
