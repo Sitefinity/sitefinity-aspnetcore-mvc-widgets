@@ -299,6 +299,10 @@ function initSubmit(formContainer) {
     form.onsubmit = function (e) {
         e?.preventDefault();
 
+        if (!e || !e.target) {
+            return false;
+        }
+
         var isValid = validateFields(e.target);
 
         if (!isValid) {
@@ -880,7 +884,7 @@ function handleFileValidation(source) {
     var parentContainer = findFieldContainerElement(source);
     var fileInputs = parentContainer.querySelectorAll('input[type="file"]');
 
-    var validationRestrictions = getValidationRestrictions(source);
+    var validationRestrictions = getValidationRestrictions(source) || {};
     if (validationRestrictions.required) {
         var violationMessageContainer = parentContainer.querySelector('[data-sf-role="required-violation-message"]');
         var validInput = null;

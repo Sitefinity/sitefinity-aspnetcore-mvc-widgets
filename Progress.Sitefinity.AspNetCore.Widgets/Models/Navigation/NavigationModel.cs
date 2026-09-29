@@ -96,8 +96,9 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                 { "selectedPages", JsonConvert.SerializeObject(entity.CustomSelectedPages.ItemIdsOrdered) },
             };
 
-            if (entity.SelectionMode == PageSelectionMode.CurrentPageChildren || entity.SelectionMode == PageSelectionMode.CurrentPageSiblings)
-                queryParams[Constants.QueryParams.PageNodeId] = this.requestContext.Model.Id.ToString();
+            // Sent for every selection mode so the service can resolve the open state of nodes whose
+            // descendants fall outside the requested levels.
+            queryParams[Constants.QueryParams.PageNodeId] = this.requestContext.Model.Id.ToString();
 
             var items = await restClient.ExecuteBoundFunction<ODataWrapper<PageViewModel[]>>(new BoundFunctionArgs()
             {
@@ -106,12 +107,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                 AdditionalQueryParams = queryParams,
             });
 
-            TrySetCurrentlyOpened(items.Value, this.requestContext.Model.Id.ToString().ToUpperInvariant());
+            TrySetOpenState(items.Value, this.requestContext.Model.Id.ToString().ToUpperInvariant());
 
             return items;
         }
 
-        private static bool TrySetCurrentlyOpened(IEnumerable<PageViewModel> items, string currentPageId)
+        private static bool TrySetOpenState(IEnumerable<PageViewModel> items, string currentPageId)
         {
             if (items == null)
                 return false;
@@ -127,8 +128,11 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Navigation
                     return true;
                 }
 
-                if (TrySetCurrentlyOpened(item.ChildNodes, currentPageId))
+                if (TrySetOpenState(item.ChildNodes, currentPageId))
+                {
+                    item.HasChildOpen = true;
                     return true;
+                }
             }
 
             return false;
