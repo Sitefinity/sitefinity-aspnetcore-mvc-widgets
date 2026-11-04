@@ -101,27 +101,26 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
 
                     if (entity.ContentViewDisplayMode == ContentViewDisplayMode.Detail)
                     {
-                        var item = new SdkItem();
                         if (entity.SelectedItems.ItemIdsOrdered.Length == 0)
                         {
-                            this.GetAllArgs.Take = 1;
-                            this.GetAllArgs.Skip = 0;
-                            this.GetAllArgs.Fields = ExtractFieldsFromExpression((entity as ContentListEntity)?.DetailItemSelectExpression);
-                            var detailItemCollection = await this.restService.GetItems<SdkItem>(entity.SelectedItems, this.GetAllArgs);
-                            if (detailItemCollection.Items.Count == 0)
-                                return null;
-                            item = detailItemCollection.Items[0];
-                        }
-                        else
-                        {
-                            item = await this.restService.GetItem<SdkItem>(new GetItemArgs()
+                            // No manual selection - render the item resolved from the request URL, if any.
+                            if (detailItem != null &&
+                                detailItem.ItemType == selectedItemsType &&
+                                entity.DetailPageMode == DetailPageSelectionMode.SamePage)
                             {
-                                Id = entity.SelectedItems.ItemIdsOrdered[0],
-                                Type = selectedItemsType,
-                                Provider = entity.SelectedItems.Content[0].Variations[0].Source,
-                                Fields = ExtractFieldsFromExpression((entity as ContentListEntity)?.DetailItemSelectExpression),
-                            });
+                                return new ContentDetailViewModel(this.requestContext.ResolvedDetailItem);
+                            }
+
+                            return null;
                         }
+
+                        var item = await this.restService.GetItem<SdkItem>(new GetItemArgs()
+                        {
+                            Id = entity.SelectedItems.ItemIdsOrdered[0],
+                            Type = selectedItemsType,
+                            Provider = entity.SelectedItems.Content[0].Variations[0].Source,
+                            Fields = ExtractFieldsFromExpression((entity as ContentListEntity)?.DetailItemSelectExpression),
+                        });
 
                         return new ContentDetailViewModel(item);
                     }

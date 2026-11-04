@@ -42,6 +42,12 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
         public IList<FacetElement> FacetElements { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the current search returns any results.
+        /// Custom ranges are not shown when there are no results.
+        /// </summary>
+        public bool HasSearchResults { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets the title of the field that the facets are for.
         /// </summary>
         public string FacetTitle { get; set; }
@@ -63,7 +69,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
         {
             get
             {
-                return this.facetField.FacetFieldSettings.DisplayCustomRange &&
+                return this.HasSearchResults &&
+                this.facetField.FacetFieldSettings.DisplayCustomRange &&
                 (this.FacetFieldType == SearchIndexAdditonalFieldType.NumberWhole.ToString() ||
                  this.FacetFieldType == SearchIndexAdditonalFieldType.NumberDecimal.ToString());
             }
@@ -76,7 +83,8 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
         {
             get
             {
-                return this.facetField.FacetFieldSettings.RangeType == 1 &&
+                return this.HasSearchResults &&
+                this.facetField.FacetFieldSettings.RangeType == 1 &&
                 this.facetField.FacetFieldSettings.DisplayCustomRange &&
                 this.FacetFieldType == SearchIndexAdditonalFieldType.DateAndTime.ToString();
             }

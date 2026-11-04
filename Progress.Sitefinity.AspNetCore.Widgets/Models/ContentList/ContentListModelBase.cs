@@ -430,6 +430,10 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.ContentList
             if (detailItemResult != null)
                 return detailItemResult;
 
+            // In detail mode a null result means no item is manually selected - render nothing instead of falling back to the list.
+            if (entity.ContentViewDisplayMode == ContentViewDisplayMode.Detail)
+                return viewModel;
+
             // handle parent filtering
             var hasSelectedDynamicParentFiltering = IsSelectedDynamicParentFiltering(variation);
             if (hasSelectedDynamicParentFiltering)

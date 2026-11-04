@@ -136,18 +136,16 @@
         }
 
         function navigateToPage(page) {
-            var params = new URLSearchParams(window.location.search);
-            params.set('page', page);
-            var newUrl = window.location.pathname + '?' + params.toString();
-            history.pushState({ page: page }, '', newUrl);
+            history.pushState({ page: page }, '', buildPageUrl(page));
             renderPage(page);
             scrollToContainer();
         }
 
         function buildPageUrl(page) {
-            var params = new URLSearchParams(window.location.search);
-            params.set('page', page);
-            return window.location.pathname + '?' + params.toString();
+            var url = new URL(window.location.href);
+            url.searchParams.set('page', parseInt(page, 10) || 1);
+            // A pathname like "//host/path" would otherwise become a protocol-relative link to another origin.
+            return url.pathname.replace(/^\/{2,}/, '/') + url.search;
         }
 
         function scrollToContainer() {

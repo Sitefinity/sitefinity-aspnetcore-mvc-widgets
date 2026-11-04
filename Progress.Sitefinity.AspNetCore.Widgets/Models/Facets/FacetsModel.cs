@@ -73,6 +73,13 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
                 var facetsDict = searchServiceFacetResponse.ToDictionary(x => x.FacetKey, x => x.FacetResponses);
 
                 viewModel.SearchFacets = SearchFacetsModelBuilder.BuildFacetsViewModel(entity.SelectedFacets, facetsDict, facetableFieldsKeys, entity.SortType);
+
+                // The facet counts reflect the current search, so no positive count means no results.
+                bool hasSearchResults = searchServiceFacetResponse.Any(x => x.FacetResponses != null && x.FacetResponses.Any(r => r.Count > 0));
+                foreach (var searchFacet in viewModel.SearchFacets)
+                {
+                    searchFacet.HasSearchResults = hasSearchResults;
+                }
             }
 
             viewModel.HasAnyFacetElements = HasAnyFacetElements(viewModel.SearchFacets);
@@ -87,7 +94,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.Models.Facets
             bool hasAnyFacetElements = false;
             if (searchFacets.Any())
             {
-                hasAnyFacetElements = searchFacets.Any(sf => sf.FacetElements.Any());
+                hasAnyFacetElements = searchFacets.Any(sf => sf.FacetElements.Any() || sf.ShowNumberCustomRange || sf.ShowDateCustomRanges);
             }
 
             return hasAnyFacetElements;
