@@ -2,8 +2,6 @@
 {
     internal class SearchMetadataDto
     {
-        public bool IsSearchModuleActivated { get; set; }
-
         public bool SearchServiceSupportsFacets { get; set; }
     }
 }

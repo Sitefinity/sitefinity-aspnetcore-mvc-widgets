@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.Extensions.Logging;
 using Progress.Sitefinity.AspNetCore.ViewComponents;
 using Progress.Sitefinity.AspNetCore.Web;
 using Progress.Sitefinity.AspNetCore.Widgets.Models.Facets;
-using Progress.Sitefinity.AspNetCore.Widgets.Models.Recommendations;
 using Progress.Sitefinity.RestSdk;
+using Progress.Sitefinity.RestSdk.Exceptions;
 using Progress.Sitefinity.RestSdk.OData;
 
 namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
@@ -18,6 +19,7 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
     [ViewComponent(Name = "SitefinityFacets")]
     public class FacetsViewComponent : ViewComponent
     {
+        private readonly ILogger<FacetsViewComponent> logger;
         private IFacetsModel model;
         private IRenderContext renderContext;
         private IODataRestClient restService;
@@ -28,11 +30,17 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
         /// <param name="model">The <see cref="IFacetsModel"/> model.</param>
         /// <param name="renderContext">The render context.</param>
         /// <param name="restService">The rest service.</param>
-        public FacetsViewComponent(IFacetsModel model, IRenderContext renderContext, IODataRestClient restService)
+        /// <param name="logger">The logger.</param>
+        public FacetsViewComponent(
+            IFacetsModel model,
+            IRenderContext renderContext,
+            IODataRestClient restService,
+            ILogger<FacetsViewComponent> logger)
         {
             this.model = model;
             this.renderContext = renderContext;
             this.restService = restService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -49,12 +57,24 @@ namespace Progress.Sitefinity.AspNetCore.Widgets.ViewComponents
 
             if (this.renderContext.IsEdit)
             {
-                var searchMetadata = await this.GetSearchMetadata();
+                SearchMetadataDto searchMetadata;
+
+                try
+                {
+                    searchMetadata = await this.GetSearchMetadata();
+                }
+                catch (ErrorCodeException exception) when (exception.Code == "General")
+                {
+                    this.logger.LogError(exception, "Failed to retrieve search metadata for the facets widget.");
+                    context.SetWarning("This widget cannot be displayed because search metadata could not be retrieved. Check the application logs for details.");
+                    context.SetHideEmptyVisual(true);
+                    return new ContentViewComponentResult(string.Empty);
+                }
 
                 // with unsupported search service
-                if (searchMetadata.IsSearchModuleActivated && !searchMetadata.SearchServiceSupportsFacets)
+                if (!searchMetadata.SearchServiceSupportsFacets)
                 {
-                    context.SetWarning("This widget cannot be used with your current search service. Search facets works only with Azure Search and Elasticsearch services.");
+                    context.SetWarning("This widget cannot be used with your current search service. Search facets work only with Lucene, Azure Search, and Elasticsearch services.");
                     context.SetHideEmptyVisual(true);
                     return new ContentViewComponentResult(string.Empty);
                 }
